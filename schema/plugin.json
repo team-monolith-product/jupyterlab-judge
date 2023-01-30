@@ -1,0 +1,8 @@
+{
+  "jupyter.lab.shortcuts": [],
+  "title": "jupyterlab_judge",
+  "description": "jupyterlab_judge settings.",
+  "type": "object",
+  "properties": {},
+  "additionalProperties": false
+}
