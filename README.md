@@ -1,7 +1,42 @@
-# jupyterlab_judge
+# Jupyter Lab Judge
 
 [![Github Actions Status](https://github.com/team-monolith-product/jupyterlab-judge/workflows/Build/badge.svg)](https://github.com/team-monolith-product/jupyterlab-judge/actions/workflows/build.yml)
+
+Work In Progress.
+
 A simple online judge for Jupyter Lab.
+
+## Highlights
+
+![highlights](https://user-images.githubusercontent.com/4434752/174207715-fff3ecb5-0143-41f0-a162-d4b17a517874.gif)
+
+## Goal
+- No additional system for code execution
+- Solve and get result on Jupyter Lab
+- Replaceable backend
+
+### No Additional System For Code Execution
+
+Typical online judge systems require task manager for code executions. 
+This project uses kernels to execute codes. Therefore no other system is required.
+However this architecture leads some security risks. It will be explained later.
+
+### Solve And Get Result On Jupyter Lab
+
+This project includes jupyter lab extension for solving problems and submitting solutions.
+
+### Replaceable Backend
+
+(WIP) Basically, problems are retrieved from [codle.io](https://codle.io/), and submission history is stored in browsers.
+Problem and submission storage can be configured.
+
+## Security
+
+In this system, code is executed at users' notebook server.
+Therefore test cases for problems must be delivered to the users.
+This could be a serious risk for some systems. Be aware of it.
+
+## Architecture
 
 This extension is composed of a Python package named `jupyterlab_judge`
 for the server extension and a NPM package named `jupyterlab_judge`
@@ -9,7 +44,15 @@ for the frontend extension.
 
 ## Requirements
 
-- JupyterLab >= 3.0
+### 0.\*.\*
+
+* JupyterLab >= 3.0
+
+### 1.\*.\*
+
+* JupyterLab >= 4.0
+
+During 4.0 development process pypi `4.0.0a27` and npm `4.0.0-alpha.12` is used. Not actively maintained.
 
 ## Install
 
@@ -44,6 +87,20 @@ jupyter labextension list
 ```
 
 ## Contributing
+
+### Development Environment
+
+In `0.*.*`, you can create Conda environment by executing :
+```
+conda create -n jupyterlab-ext --override-channels --strict-channel-priority -c conda-forge -c nodefaults jupyterlab=3 cookiecutter nodejs jupyter-packaging git
+```
+
+In `1.*.*`, you can create Conda environment by executing :
+```
+conda create -n jupyterlab4-ext --override-channels --strict-channel-priority -c conda-forge -c nodefaults cookiecutter nodejs jupyter-packaging git
+conda activate jupyterlab4-ext
+pip install jupyterlab==4.0.0a27
+```
 
 ### Development install
 
@@ -94,44 +151,6 @@ pip uninstall jupyterlab_judge
 In development mode, you will also need to remove the symlink created by `jupyter labextension develop`
 command. To find its location, you can run `jupyter labextension list` to figure out where the `labextensions`
 folder is located. Then you can remove the symlink named `jupyterlab_judge` within that folder.
-
-### Testing the extension
-
-#### Server tests
-
-This extension is using [Pytest](https://docs.pytest.org/) for Python code testing.
-
-Install test dependencies (needed only once):
-
-```sh
-pip install -e ".[test]"
-# Each time you install the Python package, you need to restore the front-end extension link
-jupyter labextension develop . --overwrite
-```
-
-To execute them, run:
-
-```sh
-pytest -vv -r ap --cov jupyterlab_judge
-```
-
-#### Frontend tests
-
-This extension is using [Jest](https://jestjs.io/) for JavaScript code testing.
-
-To execute them, execute:
-
-```sh
-jlpm
-jlpm test
-```
-
-#### Integration tests
-
-This extension uses [Playwright](https://playwright.dev/docs/intro/) for the integration tests (aka user level tests).
-More precisely, the JupyterLab helper [Galata](https://github.com/jupyterlab/jupyterlab/tree/master/galata) is used to handle testing the extension in JupyterLab.
-
-More information are provided within the [ui-tests](./ui-tests/README.md) README.
 
 ### Packaging the extension
 

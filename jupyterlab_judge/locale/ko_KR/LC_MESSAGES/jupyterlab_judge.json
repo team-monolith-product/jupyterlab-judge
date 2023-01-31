@@ -1,0 +1,101 @@
+{
+    "": {
+        "domain": "jupyterlab_judge",
+        "language": "ko-KR",
+        "plural_forms": "nplurals=1; plural=0",
+        "version": "0.2.0"
+    },
+    "Accepted": [
+        "\uc815\ub2f5\uc785\ub2c8\ub2e4"
+    ],
+    "Cannot Save": [
+        "\uc800\uc7a5\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4"
+    ],
+    "Cell not executed due to pending input": [
+        "\uc785\ub825\uc744 \uae30\ub2e4\ub9ac\uace0 \uc788\uc5b4 \uc2e4\ud589\ud558\uc9c0 \ubabb\ud588\uc2b5\ub2c8\ub2e4"
+    ],
+    "Document is read-only": [
+        "\uc77c\uae30 \uc804\uc6a9 \ubb38\uc11c\uc785\ub2c8\ub2e4"
+    ],
+    "Error": [
+        "\uc624\ub958 \ubc1c\uc0dd"
+    ],
+    "Execute": [
+        "\uc2e4\ud589"
+    ],
+    "History Not Available": [
+        "\ud655\uc778\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4."
+    ],
+    "In Progress": [
+        "\ucc44\uc810\uc911"
+    ],
+    "Judge": [
+        "\ubb38\uc81c"
+    ],
+    "Judge File": [
+        "\ubb38\uc81c \ud30c\uc77c"
+    ],
+    "Judge the code": [
+        "\ucf54\ub4dc \uc81c\ucd9c"
+    ],
+    "Load": [
+        "\ubd88\ub7ec\uc624\uae30"
+    ],
+    "Loading History": [
+        "\ubd88\ub7ec\uc624\ub294 \uc911\uc785\ub2c8\ub2e4."
+    ],
+    "No History": [
+        "\uc81c\ucd9c \uae30\ub85d\uc774 \uc5c6\uc2b5\ub2c8\ub2e4."
+    ],
+    "No Submission History Found.": [
+        "\uc81c\ucd9c \uae30\ub85d\uc744 \ud655\uc778\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4."
+    ],
+    "No Submissions Judging": [
+        "\uc9c4\ud589\uc911\uc778 \ucc44\uc810\uc774 \uc5c6\uc2b5\ub2c8\ub2e4"
+    ],
+    "Ok": [
+        "\ud655\uc778"
+    ],
+    "Open Judge": [
+        "\ubb38\uc81c \uc5f4\uae30"
+    ],
+    "Open or Create Judge From Hash": [
+        "\ud574\uc2dc\uc5d0\uc11c \uc0c8 \ubb38\uc81c \uc5f4\uae30"
+    ],
+    "Output Limit": [
+        "\ucd9c\ub825 \ucd08\uacfc"
+    ],
+    "Please Try Again": [
+        "\ub2e4\uc2dc \uc2dc\ub3c4\ud574\uc8fc\uc138\uc694"
+    ],
+    "Problem Not Available.": [
+        "\ubb38\uc81c\ub97c \ubd88\ub7ec\uc624\uc9c0 \ubabb\ud588\uc2b5\ub2c8\ub2e4."
+    ],
+    "Run All Code": [
+        "\uc2e4\ud589"
+    ],
+    "Run Code": [
+        "\uc2e4\ud589"
+    ],
+    "Run the code": [
+        "\ucf54\ub4dc \uc2e4\ud589"
+    ],
+    "Save the judge contents and create checkpoint": [
+        "\ubb38\uc81c \ud480\uc774 \uc800\uc7a5"
+    ],
+    "The cell has not been executed to avoid kernel deadlock as there is another pending input! Submit your pending input and try again.": [
+        "\uc785\ub825\uc744 \uae30\ub2e4\ub9ac\uace0 \uc788\uc5b4 \uad50\ucc29 \uc0c1\ud0dc\ub97c \ubc29\uc9c0\ud558\uae30 \uc704\ud574 \ucf54\ub4dc\ub97c \uc2e4\ud589\ud558\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4. \uc785\ub825\uc744 \uc644\ub8cc\ud558\uace0 \ub2e4\uc2dc \uc2dc\ub3c4\ud574\uc8fc\uc138\uc694."
+    ],
+    "Time Limit": [
+        "\uc2dc\uac04 \ucd08\uacfc"
+    ],
+    "Wrong": [
+        "\ud2c0\ub838\uc2b5\ub2c8\ub2e4"
+    ],
+    "schema\u0004jupyterlab_judge": [
+        "jupyterlab_judge"
+    ],
+    "schema\u0004jupyterlab_judge settings.": [
+        "jupyterlab_judge \uc124\uc815"
+    ]
+}
