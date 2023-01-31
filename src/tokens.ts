@@ -7,9 +7,13 @@ import { JudgePanel } from './widgets/JudgePanel';
 /**
  * The Problem Provider token.
  */
-export const IProblemProvider = new Token<IProblemProvider>(
-  `${PLUGIN_ID}:IProblemProvider`
+export const IProblemProviderRegistry = new Token<IProblemProviderRegistry>(
+  `${PLUGIN_ID}:IProblemProviderRegistry`
 );
+
+export interface IProblemProviderRegistry {
+  register(provider: IProblemProvider): void;
+}
 
 export interface IProblemProvider {
   getProblem(id: string): Promise<ProblemProvider.IProblem | null>;
@@ -24,12 +28,12 @@ export interface IProblemProvider {
   ): Promise<ProblemProvider.ISubmission>;
 }
 
-export const IJudgePanelFactory = new Token<IJudgePanelFactory>(
-  `${PLUGIN_ID}:IJudgePanelFactory`
+export const IJudgePanelFactoryRegistry = new Token<IJudgePanelFactoryRegistry>(
+  `${PLUGIN_ID}:IJudgePanelFactoryRegistry`
 );
 
-export interface IJudgePanelFactory {
-  create(options: JudgePanel.IOptions): JudgePanel;
+export interface IJudgePanelFactoryRegistry {
+  register(factory: (options: JudgePanel.IOptions) => JudgePanel): void;
 }
 
 export const IJudgeSignal = new Token<IJudgeSignal>(

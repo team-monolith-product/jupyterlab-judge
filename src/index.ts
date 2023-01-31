@@ -29,7 +29,11 @@ import { ISettingRegistry } from '@jupyterlab/settingregistry';
 import { JSONObject } from '@lumino/coreutils';
 import { JudgeTools } from './widgets/JudgeTools';
 import { JudgeModel } from './model';
-import { IJudgePanelFactory, IProblemProvider } from './tokens';
+import {
+  IJudgePanelFactoryRegistry,
+  IProblemProvider,
+  IProblemProviderRegistry
+} from './tokens';
 import { HardCodedProblemProvider } from './problemProvider/HardCodedProblemProvider';
 import { ProblemProvider } from './problemProvider/problemProvider';
 import { Signal } from '@lumino/signaling';
@@ -46,6 +50,37 @@ const submitted = new Signal<
   }
 >({});
 
+let problemProvider: IProblemProvider = new HardCodedProblemProvider();
+const problemProviderRegistry: JupyterFrontEndPlugin<IProblemProviderRegistry> =
+  {
+    id: `${PLUGIN_ID}:IProblemProviderRegistry`,
+    provides: IProblemProviderRegistry,
+    activate: (_app: JupyterFrontEnd) => {
+      return {
+        register: (provider: IProblemProvider) => {
+          problemProvider = provider;
+        }
+      };
+    },
+    autoStart: true
+  };
+
+let judgePanelFactory = (options: JudgePanel.IOptions) =>
+  new JudgePanel(options);
+const judgePanelFactoryRegistry: JupyterFrontEndPlugin<IJudgePanelFactoryRegistry> =
+  {
+    id: `${PLUGIN_ID}:IJudgePanelFactoryRegistry`,
+    provides: IJudgePanelFactoryRegistry,
+    activate: (_app: JupyterFrontEnd) => {
+      return {
+        register: (factory: (options: JudgePanel.IOptions) => JudgePanel) => {
+          judgePanelFactory = factory;
+        }
+      };
+    },
+    autoStart: true
+  };
+
 /**
  * Initialization data for the jupyterlab_judge extension.
  */
@@ -59,9 +94,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
     IDocumentManager,
     IFileBrowserFactory,
     IPropertyInspectorProvider,
-    IMainMenu,
-    IProblemProvider,
-    IJudgePanelFactory
+    IMainMenu
   ],
   optional: [ISettingRegistry, ILayoutRestorer],
   activate: async (
@@ -73,8 +106,6 @@ const plugin: JupyterFrontEndPlugin<void> = {
     browserFactory: IFileBrowserFactory,
     inspectorProvider: IPropertyInspectorProvider,
     menu: IMainMenu,
-    problemProvider: IProblemProvider,
-    judgePanelFactory: IJudgePanelFactory,
     settingRegistry: ISettingRegistry | null,
     restorer: ILayoutRestorer | null
   ) => {
@@ -102,7 +133,8 @@ const plugin: JupyterFrontEndPlugin<void> = {
       rendermime: rendermime,
       commands: app.commands,
       editorConfig: editorConfig,
-      judgePanelFactory: judgePanelFactory,
+      judgePanelFactory: (options: JudgePanel.IOptions) =>
+        judgePanelFactory(options),
       submitted,
       factoryOptions: {
         name: judgeDocumentFactoryName,
@@ -138,7 +170,9 @@ const plugin: JupyterFrontEndPlugin<void> = {
     app.docRegistry.addWidgetFactory(widgetFactory);
 
     app.docRegistry.addModelFactory(
-      new JudgeModel.JudgeModelFactory({ problemProvider })
+      new JudgeModel.JudgeModelFactory({
+        problemProviderFactory: () => problemProvider
+      })
     );
     app.docRegistry.addFileType({
       name: 'judge',
@@ -171,33 +205,13 @@ const plugin: JupyterFrontEndPlugin<void> = {
   }
 };
 
-const problemProvider: JupyterFrontEndPlugin<IProblemProvider> = {
-  id: `${PLUGIN_ID}:problemProvider`,
-  activate: (_app: JupyterFrontEnd): IProblemProvider => {
-    return new HardCodedProblemProvider();
-  },
-  autoStart: true,
-  provides: IProblemProvider
-};
-
-const judgePanelFactory: JupyterFrontEndPlugin<IJudgePanelFactory> = {
-  id: `${PLUGIN_ID}:judgePanelFactory`,
-  activate: (_app: JupyterFrontEnd): IJudgePanelFactory => {
-    return {
-      create: options => new JudgePanel(options)
-    };
-  },
-  autoStart: true,
-  provides: IJudgePanelFactory
-};
-
 /**
  * Export the plugins as default.
  */
 const plugins: JupyterFrontEndPlugin<any>[] = [
   plugin,
-  problemProvider,
-  judgePanelFactory
+  problemProviderRegistry,
+  judgePanelFactoryRegistry
 ];
 
 export default plugins;

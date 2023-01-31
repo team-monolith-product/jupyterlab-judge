@@ -267,8 +267,8 @@ export namespace JudgeModel {
   export class JudgeModelFactory
     implements DocumentRegistry.IModelFactory<JudgeModel>
   {
-    constructor(options: { problemProvider: IProblemProvider }) {
-      this._problemProvider = options.problemProvider;
+    constructor(options: { problemProviderFactory: () => IProblemProvider }) {
+      this._problemProviderFactory = options.problemProviderFactory;
     }
 
     /**
@@ -332,11 +332,11 @@ export namespace JudgeModel {
      * @returns The model
      */
     createNew(languagePreference?: string, modelDB?: IModelDB): JudgeModel {
-      return new JudgeModel(this._problemProvider);
+      return new JudgeModel(this._problemProviderFactory());
     }
 
     private _disposed = false;
-    private _problemProvider: IProblemProvider;
+    private _problemProviderFactory: () => IProblemProvider;
   }
 
   export interface IJudgeChange

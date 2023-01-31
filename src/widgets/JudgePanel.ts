@@ -37,7 +37,6 @@ import { IPropertyInspector } from '@jupyterlab/property-inspector';
 import { NoPromptOutputArea } from './NoPromptOutputArea';
 import { ToolbarItems } from '../toolbar';
 import { TRANSLATOR_DOMAIN } from '../constants';
-import { IJudgePanelFactory } from '../tokens';
 import { Signal } from '@lumino/signaling';
 
 /**
@@ -505,7 +504,7 @@ export class JudgeDocumentFactory extends ABCWidgetFactory<
   protected createNewWidget(
     context: DocumentRegistry.IContext<JudgeModel>
   ): JudgeDocument {
-    const judgePanel = this._judgePanelFactory.create({
+    const judgePanel = this._judgePanelFactory({
       rendermime: this._rendermime,
       editorConfig: this._editorConfig,
       context,
@@ -526,7 +525,7 @@ export class JudgeDocumentFactory extends ABCWidgetFactory<
   private _rendermime: IRenderMimeRegistry;
   private _commands: CommandRegistry;
   private _editorConfig: Partial<CodeEditor.IConfig>;
-  private _judgePanelFactory: IJudgePanelFactory;
+  private _judgePanelFactory: (options: JudgePanel.IOptions) => JudgePanel;
   private _submitted: Signal<
     any,
     {
@@ -556,7 +555,7 @@ export namespace JudgeDocumentFactory {
       IDocumentWidget<JudgePanel>
     >;
 
-    judgePanelFactory: IJudgePanelFactory;
+    judgePanelFactory: (options: JudgePanel.IOptions) => JudgePanel;
     submitted: Signal<
       any,
       {
