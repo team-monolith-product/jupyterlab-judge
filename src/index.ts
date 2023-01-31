@@ -55,7 +55,7 @@ const problemProviderRegistry: JupyterFrontEndPlugin<IProblemProviderRegistry> =
   {
     id: `${PLUGIN_ID}:IProblemProviderRegistry`,
     provides: IProblemProviderRegistry,
-    activate: (_app: JupyterFrontEnd) => {
+    activate: (_app: JupyterFrontEnd): IProblemProviderRegistry => {
       return {
         register: (provider: IProblemProvider) => {
           problemProvider = provider;
@@ -71,7 +71,7 @@ const judgePanelFactoryRegistry: JupyterFrontEndPlugin<IJudgePanelFactoryRegistr
   {
     id: `${PLUGIN_ID}:IJudgePanelFactoryRegistry`,
     provides: IJudgePanelFactoryRegistry,
-    activate: (_app: JupyterFrontEnd) => {
+    activate: (_app: JupyterFrontEnd): IJudgePanelFactoryRegistry => {
       return {
         register: (factory: (options: JudgePanel.IOptions) => JudgePanel) => {
           judgePanelFactory = factory;
@@ -215,3 +215,5 @@ const plugins: JupyterFrontEndPlugin<any>[] = [
 ];
 
 export default plugins;
+
+export * from './tokens';
