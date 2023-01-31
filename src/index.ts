@@ -169,14 +169,7 @@ const judgePanelFactory: JupyterFrontEndPlugin<IJudgePanelFactory> = {
   id: `${PLUGIN_ID}:judgePanelFactory`,
   activate: (_app: JupyterFrontEnd): IJudgePanelFactory => {
     return {
-      create: options =>
-        new JudgePanel(
-          options.services,
-          options.editorConfig,
-          options.rendermime,
-          options.context,
-          options.translator
-        )
+      create: options => new JudgePanel(options)
     };
   },
   autoStart: true,

@@ -50,17 +50,20 @@ interface RunResult {
   cpuTime: number;
 }
 
+export namespace JudgePanel {
+  export interface IOptions {
+    editorConfig: Partial<CodeEditor.IConfig>;
+    rendermime: IRenderMimeRegistry;
+    context: DocumentRegistry.IContext<JudgeModel>;
+    translator: ITranslator;
+  }
+}
+
 export class JudgePanel extends Panel {
-  constructor(
-    editorServices: IEditorServices,
-    editorConfig: Partial<CodeEditor.IConfig>,
-    rendermime: IRenderMimeRegistry,
-    context: DocumentRegistry.IContext<JudgeModel>,
-    translator: ITranslator
-  ) {
+  constructor(options: JudgePanel.IOptions) {
     super();
-    this._context = context;
-    this._translator = translator;
+    this._context = options.context;
+    this._translator = options.translator;
     this._trans = this._translator.load(TRANSLATOR_DOMAIN);
 
     this.addClass(PANEL_CLASS);
@@ -73,11 +76,11 @@ export class JudgePanel extends Panel {
       factory: new CodeMirrorEditorFactory({
         scrollbarStyle: 'null'
       }).newInlineEditor,
-      config: { ...editorConfig, lineNumbers: true }
+      config: { ...options.editorConfig, lineNumbers: true }
     };
     this._editorWidget = new CodeEditorWrapper(editorOptions);
 
-    this._markdownRenderer = rendermime.createRenderer('text/markdown');
+    this._markdownRenderer = options.rendermime.createRenderer('text/markdown');
     this.renderProblem();
     this.model.problemChanged.connect((sender, _) => {
       this.renderProblem();
@@ -85,7 +88,7 @@ export class JudgePanel extends Panel {
 
     this._outputArea = new NoPromptOutputArea({
       model: this.model.outputAreaModel,
-      rendermime: rendermime
+      rendermime: options.rendermime
     });
 
     this.addWidget(this._markdownRenderer);
@@ -186,10 +189,10 @@ export class JudgePanel extends Panel {
     }
   }
 
-  public async execute(): Promise<void> {
+  public async execute(): Promise<KernelMessage.IExecuteReplyMsg | null> {
     if (this.session.hasNoKernel) {
       void sessionContextDialogs.selectKernel(this.session);
-      return;
+      return null;
     }
 
     if (this.session.pendingInput) {
@@ -200,12 +203,18 @@ export class JudgePanel extends Panel {
         ),
         buttons: [Dialog.okButton({ label: this._trans.__('Ok') })]
       });
-      return;
+      return null;
     }
 
     const code = this.model.source;
+    const reply = await OutputArea.execute(
+      code,
+      this._outputArea,
+      this.session,
+      {}
+    );
 
-    await OutputArea.execute(code, this._outputArea, this.session, {});
+    return reply || null;
   }
 
   // This is called by command
@@ -459,7 +468,6 @@ export class JudgeDocumentFactory extends ABCWidgetFactory<
    */
   constructor(options: JudgeDocumentFactory.IOptions) {
     super(options.factoryOptions);
-    this._services = options.editorServices;
     this._rendermime = options.rendermime;
     this._commands = options.commands;
     this._editorConfig = options.editorConfig;
@@ -473,7 +481,6 @@ export class JudgeDocumentFactory extends ABCWidgetFactory<
     context: DocumentRegistry.IContext<JudgeModel>
   ): JudgeDocument {
     const judgePanel = this._judgePanelFactory.create({
-      services: this._services,
       rendermime: this._rendermime,
       editorConfig: this._editorConfig,
       context,
@@ -490,7 +497,6 @@ export class JudgeDocumentFactory extends ABCWidgetFactory<
     return widget;
   }
 
-  private _services: IEditorServices;
   private _rendermime: IRenderMimeRegistry;
   private _commands: CommandRegistry;
   private _editorConfig: Partial<CodeEditor.IConfig>;

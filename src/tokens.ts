@@ -1,10 +1,5 @@
-import { CodeEditor, IEditorServices } from '@jupyterlab/codeeditor';
-import { DocumentRegistry } from '@jupyterlab/docregistry';
-import { IRenderMimeRegistry } from '@jupyterlab/rendermime';
-import { ITranslator } from '@jupyterlab/translation';
 import { Token } from '@lumino/coreutils';
 import { PLUGIN_ID } from './constants';
-import { JudgeModel } from './model';
 import { ProblemProvider } from './problemProvider/problemProvider';
 import { JudgePanel } from './widgets/JudgePanel';
 
@@ -33,15 +28,5 @@ export const IJudgePanelFactory = new Token<IJudgePanelFactory>(
 );
 
 export interface IJudgePanelFactory {
-  create(options: IJudgePanelFactory.IOptions): JudgePanel;
-}
-
-export namespace IJudgePanelFactory {
-  export interface IOptions {
-    services: IEditorServices,
-    editorConfig: Partial<CodeEditor.IConfig>,
-    rendermime: IRenderMimeRegistry,
-    context: DocumentRegistry.IContext<JudgeModel>,
-    translator: ITranslator
-  }
+  create(options: JudgePanel.IOptions): JudgePanel;
 }
