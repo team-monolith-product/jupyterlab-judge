@@ -31,6 +31,20 @@ import { JudgeTools } from './widgets/JudgeTools';
 import { JudgeModel } from './model';
 import { IJudgePanelFactory, IProblemProvider } from './tokens';
 import { HardCodedProblemProvider } from './problemProvider/HardCodedProblemProvider';
+import { ProblemProvider } from './problemProvider/problemProvider';
+import { Signal } from '@lumino/signaling';
+
+/**
+ * A signal that emits whenever a submission is submitted.
+ */
+const submitted = new Signal<
+  any,
+  {
+    widget: JudgePanel;
+    problem: ProblemProvider.IProblem;
+    submission: ProblemProvider.ISubmission;
+  }
+>({});
 
 /**
  * Initialization data for the jupyterlab_judge extension.
@@ -89,6 +103,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
       commands: app.commands,
       editorConfig: editorConfig,
       judgePanelFactory: judgePanelFactory,
+      submitted,
       factoryOptions: {
         name: judgeDocumentFactoryName,
         modelName: 'judge-model',
