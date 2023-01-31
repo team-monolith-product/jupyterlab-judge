@@ -1,5 +1,5 @@
 {
-    "name": "jupyterlab_judge",
+    "name": "jupyterlab-judge",
     "version": "0.1.0",
     "description": "A simple online judge for Jupyter Lab.",
     "keywords": [

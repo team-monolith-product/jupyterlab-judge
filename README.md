@@ -39,7 +39,7 @@ This could be a serious risk for some systems. Be aware of it.
 ## Architecture
 
 This extension is composed of a Python package named `jupyterlab_judge`
-for the server extension and a NPM package named `jupyterlab_judge`
+for the server extension and a NPM package named `jupyterlab-judge`
 for the frontend extension.
 
 ## Requirements
