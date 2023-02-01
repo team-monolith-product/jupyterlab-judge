@@ -2,8 +2,8 @@
     "": {
         "domain": "jupyterlab_judge",
         "language": "ko-KR",
-        "plural_forms": "nplurals=1; plural=0",
-        "version": "0.2.0"
+        "plural_forms": "nplurals=1; plural=0;",
+        "version": "0.7.0"
     },
     "Accepted": [
         "\uc815\ub2f5\uc785\ub2c8\ub2e4"
@@ -15,7 +15,7 @@
         "\uc785\ub825\uc744 \uae30\ub2e4\ub9ac\uace0 \uc788\uc5b4 \uc2e4\ud589\ud558\uc9c0 \ubabb\ud588\uc2b5\ub2c8\ub2e4"
     ],
     "Document is read-only": [
-        "\uc77c\uae30 \uc804\uc6a9 \ubb38\uc11c\uc785\ub2c8\ub2e4"
+        "\uc77d\uae30 \uc804\uc6a9 \ubb38\uc11c\uc785\ub2c8\ub2e4"
     ],
     "Error": [
         "\uc624\ub958 \ubc1c\uc0dd"
@@ -59,8 +59,8 @@
     "Open Judge": [
         "\ubb38\uc81c \uc5f4\uae30"
     ],
-    "Open or Create Judge From Hash": [
-        "\ud574\uc2dc\uc5d0\uc11c \uc0c8 \ubb38\uc81c \uc5f4\uae30"
+    "Open or Create Judge From Id": [
+        "ID\ub85c\ubd80\ud130 \ubb38\uc81c \uc5f4\uae30"
     ],
     "Output Limit": [
         "\ucd9c\ub825 \ucd08\uacfc"
@@ -92,10 +92,10 @@
     "Wrong": [
         "\ud2c0\ub838\uc2b5\ub2c8\ub2e4"
     ],
-    "schema\u0004jupyterlab_judge": [
+    "schema\u0004jupyterlab-judge": [
         "jupyterlab_judge"
     ],
-    "schema\u0004jupyterlab_judge settings.": [
+    "schema\u0004jupyterlab-judge settings.": [
         "jupyterlab_judge \uc124\uc815"
     ]
 }
