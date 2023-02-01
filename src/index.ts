@@ -31,6 +31,7 @@ import { JudgeTools } from './widgets/JudgeTools';
 import { JudgeModel } from './model';
 import {
   IJudgePanelFactoryRegistry,
+  IJudgeSignal,
   IProblemProvider,
   IProblemProviderRegistry
 } from './tokens';
@@ -49,6 +50,20 @@ const submitted = new Signal<
     submission: ProblemProvider.ISubmission;
   }
 >({});
+
+const signal: JupyterFrontEndPlugin<IJudgeSignal> = {
+  id: `${PLUGIN_ID}:IJudgeSignal`,
+  provides: IJudgeSignal,
+  activate: (_app: JupyterFrontEnd): IJudgeSignal => {
+    return {
+      get submitted() {
+        return submitted;
+      }
+    };
+  },
+  autoStart: true
+};
+
 
 let problemProvider: IProblemProvider = new HardCodedProblemProvider();
 const problemProviderRegistry: JupyterFrontEndPlugin<IProblemProviderRegistry> =
@@ -80,6 +95,8 @@ const judgePanelFactoryRegistry: JupyterFrontEndPlugin<IJudgePanelFactoryRegistr
     },
     autoStart: true
   };
+
+
 
 /**
  * Initialization data for the jupyterlab_judge extension.
@@ -211,7 +228,8 @@ const plugin: JupyterFrontEndPlugin<void> = {
 const plugins: JupyterFrontEndPlugin<any>[] = [
   plugin,
   problemProviderRegistry,
-  judgePanelFactoryRegistry
+  judgePanelFactoryRegistry,
+  signal
 ];
 
 export default plugins;
