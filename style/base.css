@@ -3,3 +3,19 @@
 
     https://jupyterlab.readthedocs.io/en/stable/developer/css.html
 */
+
+.jp-JudgePanel {
+  overflow: auto;
+}
+
+.jp-JudgePanel .jp-RenderedMarkdown {
+  padding: 20px;
+  box-shadow: var(--jp-toolbar-box-shadow);
+  border-bottom: var(--jp-border-width) solid var(--jp-border-color1);
+  z-index: 2;
+}
+
+.jp-JudgePanel .jp-OutputArea {
+  padding: 10px;
+}
+

@@ -1,0 +1,32 @@
+.jce-judge-submission-area {
+  font-size: var(--jp-ui-font-size1);
+}
+
+.jce-judge-submission-item {
+  display: flex;
+  padding: 8px;
+  border-bottom: solid var(--jp-border-width) var(--jp-border-color2);
+}
+
+.jce-judge-submission-status {
+  padding: 8px;
+  font-size: var(--jp-ui-font-size2);
+  box-shadow: var(--jp-toolbar-box-shadow);
+  border-bottom: var(--jp-border-width) solid var(--jp-border-color1);
+  z-index: 2;
+}
+
+.jce-judge-submission-item-status {
+  flex-grow: 1;
+  padding: 3px 0;
+}
+
+.jce-judge-submission-item-created-at {
+  padding: 3px 0;
+}
+
+.jce-judge-submission-list-error {
+  text-align: center;
+  padding: 5px;
+  font-size: var(--jp-ui-font-size2);
+}
