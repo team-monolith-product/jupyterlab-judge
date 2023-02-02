@@ -16,6 +16,17 @@
 }
 
 .jp-JudgePanel .jp-OutputArea {
-  padding: 10px;
+  padding: 12px;
 }
 
+/* Will be hidden when there are jp-OutputArea-output */
+.jp-JudgePanel .jp-OutputArea-placeholder {
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 16px;
+  color: #C7C7C7;
+}
+
+.jp-JudgePanel .jp-OutputArea-output ~ .jp-OutputArea-placeholder {
+    display: none;
+}

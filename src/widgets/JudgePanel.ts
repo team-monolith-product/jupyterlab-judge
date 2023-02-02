@@ -7,7 +7,6 @@ import {
 } from '@jupyterlab/apputils';
 import { Message } from '@lumino/messaging';
 import { ITranslator, TranslationBundle } from '@jupyterlab/translation';
-import { Panel } from '@lumino/widgets';
 import { textEditorIcon } from '@jupyterlab/ui-components';
 import {
   CodeEditor,
@@ -34,10 +33,11 @@ import { IKernelConnection } from '@jupyterlab/services/lib/kernel/kernel';
 import { JudgeModel } from '../model';
 import { ProblemProvider } from '../problemProvider/problemProvider';
 import { IPropertyInspector } from '@jupyterlab/property-inspector';
-import { NoPromptOutputArea } from './NoPromptOutputArea';
+import { JudgeOutputArea } from './JudgeOutputArea';
 import { ToolbarItems } from '../toolbar';
 import { TRANSLATOR_DOMAIN } from '../constants';
 import { Signal } from '@lumino/signaling';
+import { SplitPanel } from '@lumino/widgets';
 
 /**
  * The class name added to the panels.
@@ -67,7 +67,7 @@ export namespace JudgePanel {
   }
 }
 
-export class JudgePanel extends Panel {
+export class JudgePanel extends SplitPanel {
   constructor(options: JudgePanel.IOptions) {
     super();
     this._context = options.context;
@@ -82,9 +82,7 @@ export class JudgePanel extends Panel {
 
     const editorOptions = {
       model: this.model.codeModel,
-      factory: new CodeMirrorEditorFactory({
-        scrollbarStyle: 'null'
-      }).newInlineEditor,
+      factory: new CodeMirrorEditorFactory().newInlineEditor,
       config: { ...options.editorConfig, lineNumbers: true }
     };
     this._editorWidget = new CodeEditorWrapper(editorOptions);
@@ -95,14 +93,20 @@ export class JudgePanel extends Panel {
       this.renderProblem();
     });
 
-    this._outputArea = new NoPromptOutputArea({
+    this._outputArea = new JudgeOutputArea({
       model: this.model.outputAreaModel,
-      rendermime: options.rendermime
+      rendermime: options.rendermime,
+      translator: this._translator
     });
 
     this.addWidget(this._markdownRenderer);
-    this.addWidget(this._editorWidget);
-    this.addWidget(this._outputArea);
+
+    const rightPanel = new SplitPanel();
+    rightPanel.orientation = 'vertical';
+    rightPanel.addWidget(this._editorWidget);
+    rightPanel.addWidget(this._outputArea);
+
+    this.addWidget(rightPanel);
 
     if (!this.session.isReady) {
       void this.session.initialize();

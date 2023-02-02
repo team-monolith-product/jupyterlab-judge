@@ -1,9 +1,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: jupyterlab_judge 0.7.0\n"
+"Project-Id-Version: jupyterlab_judge 0.8.1\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-02-01 12:47+0900\n"
+"POT-Creation-Date: 2023-02-02 14:21+0900\n"
 "PO-Revision-Date: 2023-02-01 12:47+0900\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: ko_KR <LL@li.org>\n"
@@ -94,11 +94,11 @@ msgstr "채점중"
 msgid "No Submissions Judging"
 msgstr "진행중인 채점이 없습니다"
 
-#: src/index.ts:117 src/widgets/JudgePanel.ts:80
+#: src/index.ts:117 src/index.ts:134 src/widgets/JudgePanel.ts:80
 msgid "Judge"
 msgstr "문제"
 
-#: src/index.ts:181
+#: src/index.ts:181 src/index.ts:198
 msgid "Judge File"
 msgstr "문제 파일"
 
@@ -115,6 +115,7 @@ msgid "Document is read-only"
 msgstr "읽기 전용 문서입니다"
 
 #: src/toolbar.tsx:40 src/widgets/JudgePanel.ts:213
+#: src/widgets/JudgePanel.ts:217
 msgid "Ok"
 msgstr "확인"
 
@@ -126,15 +127,19 @@ msgstr "문제 풀이 저장"
 msgid "Run the code"
 msgstr "코드 실행"
 
-#: src/widgets/JudgePanel.ts:135
+#: src/widgets/JudgeOutputArea.ts:30 src/widgets/JudgeOutputArea.ts:31
+msgid "Execution result will be shown here"
+msgstr "여기에 실행 결과가 나타납니다."
+
+#: src/widgets/JudgePanel.ts:135 src/widgets/JudgePanel.ts:139
 msgid "Problem Not Available."
 msgstr "문제를 불러오지 못했습니다."
 
-#: src/widgets/JudgePanel.ts:209
+#: src/widgets/JudgePanel.ts:209 src/widgets/JudgePanel.ts:213
 msgid "Cell not executed due to pending input"
 msgstr "입력을 기다리고 있어 실행하지 못했습니다"
 
-#: src/widgets/JudgePanel.ts:210
+#: src/widgets/JudgePanel.ts:210 src/widgets/JudgePanel.ts:214
 msgid ""
 "The cell has not been executed to avoid kernel deadlock as there is "
 "another pending input! Submit your pending input and try again."
