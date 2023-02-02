@@ -1,4 +1,4 @@
-import { Widget } from '@lumino/widgets';
+import { Widget, Panel } from '@lumino/widgets';
 import { JudgeOutputArea } from './JudgeOutputArea';
 import { runIcon, stopIcon } from '@jupyterlab/ui-components';
 import { TRANSLATOR_DOMAIN } from '../constants';
@@ -13,7 +13,7 @@ export namespace JudgeTerminal {
 
 // This is terminal look-like widget for judge output.
 // It includes execute and stop buttons
-export class JudgeTerminal extends Widget {
+export class JudgeTerminal extends Panel {
   private _outputArea: JudgeOutputArea;
 
   constructor(options: JudgeTerminal.IOptions) {
@@ -25,9 +25,11 @@ export class JudgeTerminal extends Widget {
     this.addClass('jp-JudgeTerminal');
 
     // Create toolbar
+    const toolbar = new Widget();
+
+
     // Execute Button
-    const toolbar = document.createElement('div');
-    toolbar.className = 'jp-JudgeTerminal-toolbar';
+    toolbar.addClass('jp-JudgeTerminal-toolbar');
     const executeButton = document.createElement('button');
     executeButton.className = 'jp-JudgeTerminal-executeButton';
     runIcon.element({ container: executeButton });
@@ -54,15 +56,15 @@ export class JudgeTerminal extends Widget {
       options.panel.session.shutdown();
     });
     stopButton.appendChild(stopButtonLabel);
+    
+    toolbar.node.appendChild(executeButton);
+    toolbar.node.appendChild(seperator);
+    toolbar.node.appendChild(stopButton);
 
-    toolbar.appendChild(executeButton);
-    toolbar.appendChild(seperator);
-    toolbar.appendChild(stopButton);
-
-    this.node.appendChild(toolbar);
+    this.addWidget(toolbar);
 
     this._outputArea = new JudgeOutputArea(options);
-    this.node.appendChild(this._outputArea.node);
+    this.addWidget(this._outputArea);
   }
 
   get outputArea(): JudgeOutputArea {

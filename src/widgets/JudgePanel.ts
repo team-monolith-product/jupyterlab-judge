@@ -40,6 +40,7 @@ import { SplitPanel } from '@lumino/widgets';
 import { JudgeTerminal } from './JudgeTerminal';
 import { JudgeTools } from './JudgeTools';
 
+
 /**
  * The class name added to the panels.
  */

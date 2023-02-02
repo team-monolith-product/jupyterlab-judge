@@ -4,19 +4,11 @@
     https://jupyterlab.readthedocs.io/en/stable/developer/css.html
 */
 
-.jp-JudgePanel {
-  overflow: auto;
-}
-
 .jp-JudgePanel .jp-RenderedMarkdown {
   padding: 20px;
   box-shadow: var(--jp-toolbar-box-shadow);
   border-bottom: var(--jp-border-width) solid var(--jp-border-color1);
   z-index: 2;
-}
-
-.jp-JudgePanel .jp-OutputArea {
-  padding: 12px;
 }
 
 /* Will be hidden when there are jp-OutputArea-output */
@@ -31,7 +23,18 @@
   display: none;
 }
 
+.jp-JudgePanel .jp-OutputArea-stdin-item ~ .jp-OutputArea-placeholder {
+  display: none;
+}
+
+.jp-JudgePanel .jp-JudgeTerminal {
+  display: flex;
+  flex-direction: column;
+}
+
 .jp-JudgePanel .jp-JudgeTerminal-toolbar {
+  flex-shrink: 0;
+
   display: flex;
   align-items: center;
   justify-content: flex-end;
