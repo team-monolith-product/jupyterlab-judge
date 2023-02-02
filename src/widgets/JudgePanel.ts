@@ -38,6 +38,7 @@ import { TRANSLATOR_DOMAIN } from '../constants';
 import { Signal } from '@lumino/signaling';
 import { SplitPanel } from '@lumino/widgets';
 import { JudgeTerminal } from './JudgeTerminal';
+import { JudgeTools } from './JudgeTools';
 
 /**
  * The class name added to the panels.
@@ -100,12 +101,18 @@ export class JudgePanel extends SplitPanel {
       translator: this._translator
     });
 
+    const submissionPanel = new JudgeTools({
+      model: this.model,
+      translator: this._translator,
+    })
+
     this.addWidget(this._markdownRenderer);
 
     const rightPanel = new SplitPanel();
     rightPanel.orientation = 'vertical';
     rightPanel.addWidget(this._editorWidget);
     rightPanel.addWidget(this._terminal);
+    rightPanel.addWidget(submissionPanel);
 
     this.addWidget(rightPanel);
 

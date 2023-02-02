@@ -15,7 +15,6 @@ import { addCommands, addMenuItems, CommandIDs } from './commands';
 import { IRenderMimeRegistry } from '@jupyterlab/rendermime';
 import { IDocumentManager } from '@jupyterlab/docmanager';
 import { IFileBrowserFactory } from '@jupyterlab/filebrowser';
-import { IPropertyInspectorProvider } from '@jupyterlab/property-inspector';
 import { IMainMenu } from '@jupyterlab/mainmenu';
 import {
   BROWSER_NAME,
@@ -27,7 +26,6 @@ import { Drive } from '@jupyterlab/services';
 import { ISettingRegistry } from '@jupyterlab/settingregistry';
 
 import { JSONObject } from '@lumino/coreutils';
-import { JudgeTools } from './widgets/JudgeTools';
 import { JudgeModel } from './model';
 import {
   IJudgePanelFactoryRegistry,
@@ -110,7 +108,6 @@ const plugin: JupyterFrontEndPlugin<void> = {
     IRenderMimeRegistry,
     IDocumentManager,
     IFileBrowserFactory,
-    IPropertyInspectorProvider,
     IMainMenu
   ],
   optional: [ISettingRegistry, ILayoutRestorer],
@@ -121,7 +118,6 @@ const plugin: JupyterFrontEndPlugin<void> = {
     rendermime: IRenderMimeRegistry,
     docManager: IDocumentManager,
     browserFactory: IFileBrowserFactory,
-    inspectorProvider: IPropertyInspectorProvider,
     menu: IMainMenu,
     settingRegistry: ISettingRegistry | null,
     restorer: ILayoutRestorer | null
@@ -165,24 +161,12 @@ const plugin: JupyterFrontEndPlugin<void> = {
       }
     });
 
-    const judgeTools = new JudgeTools({
-      tracker: tracker,
-      translator: translator
-    });
-
-    // Create the HandRaiser widget sidebar
-    judgeTools.id = `${PLUGIN_ID}-judge-tools`;
-    judgeTools.title.caption = '제출 기록';
-
     widgetFactory.widgetCreated.connect((sender, widget) => {
       // Notify the widget tracker if restore data needs to update.
       widget.context.pathChanged.connect(() => {
         void tracker.save(widget);
       });
       void tracker.add(widget);
-      const inspector = inspectorProvider.register(widget);
-      inspector.render(judgeTools);
-      widget.content.propertyInspector = inspector;
     });
     app.docRegistry.addWidgetFactory(widgetFactory);
 
