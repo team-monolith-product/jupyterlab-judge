@@ -86,6 +86,9 @@
     "Save the judge contents and create checkpoint": [
         "\ubb38\uc81c \ud480\uc774 \uc800\uc7a5"
     ],
+    "Stop": [
+        "\uc911\uc9c0"
+    ],
     "The cell has not been executed to avoid kernel deadlock as there is another pending input! Submit your pending input and try again.": [
         "\uc785\ub825\uc744 \uae30\ub2e4\ub9ac\uace0 \uc788\uc5b4 \uad50\ucc29 \uc0c1\ud0dc\ub97c \ubc29\uc9c0\ud558\uae30 \uc704\ud574 \ucf54\ub4dc\ub97c \uc2e4\ud589\ud558\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4. \uc785\ub825\uc744 \uc644\ub8cc\ud558\uace0 \ub2e4\uc2dc \uc2dc\ub3c4\ud574\uc8fc\uc138\uc694."
     ],

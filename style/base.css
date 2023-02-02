@@ -28,5 +28,56 @@
 }
 
 .jp-JudgePanel .jp-OutputArea-output ~ .jp-OutputArea-placeholder {
-    display: none;
+  display: none;
+}
+
+.jp-JudgePanel .jp-JudgeTerminal-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  height: 28px;
+
+  /* Grey50
+  Secondary Background
+  */
+  background: #F5F5F5;
+}
+
+.jp-JudgePanel .jp-JudgeTerminal-toolbar button {
+  padding: 0px 8px;
+
+  border: none;
+  font-family: 'Noto Sans KR';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 10px;
+  line-height: 16px;
+  cursor: pointer;
+  /* Grey10 */
+  color: #424242;
+  /* Grey50
+  Secondary Background
+  */
+  background: #F5F5F5;
+
+  display: flex;
+  align-items: center;
+}
+
+
+.jp-JudgePanel .jp-JudgeTerminal-toolbar button svg {
+  width: 14px;
+  height: 14px;
+
+  padding-right: 2px;
+}
+
+.jp-JudgePanel .jp-JudgeTerminal-seperator {
+  width: 0px;
+  height: 14px;
+  
+  /* Grey30
+  Default Disabled
+  */
+  border: 1px solid #C7C7C7;
 }

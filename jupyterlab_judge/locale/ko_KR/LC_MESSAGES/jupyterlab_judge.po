@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: jupyterlab_judge 0.8.1\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-02-02 14:21+0900\n"
+"POT-Creation-Date: 2023-02-02 15:38+0900\n"
 "PO-Revision-Date: 2023-02-01 12:47+0900\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: ko_KR <LL@li.org>\n"
@@ -38,7 +38,7 @@ msgstr "문제 열기"
 msgid "Open or Create Judge From Id"
 msgstr "ID로부터 문제 열기"
 
-#: src/commands.ts:59
+#: src/commands.ts:59 src/widgets/JudgeTerminal.ts:33
 msgid "Execute"
 msgstr "실행"
 
@@ -144,3 +144,7 @@ msgid ""
 "The cell has not been executed to avoid kernel deadlock as there is "
 "another pending input! Submit your pending input and try again."
 msgstr "입력을 기다리고 있어 교착 상태를 방지하기 위해 코드를 실행하지 않았습니다. 입력을 완료하고 다시 시도해주세요."
+
+#: src/widgets/JudgeTerminal.ts:41
+msgid "Stop"
+msgstr "중지"

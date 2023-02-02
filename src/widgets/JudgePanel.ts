@@ -33,11 +33,11 @@ import { IKernelConnection } from '@jupyterlab/services/lib/kernel/kernel';
 import { JudgeModel } from '../model';
 import { ProblemProvider } from '../problemProvider/problemProvider';
 import { IPropertyInspector } from '@jupyterlab/property-inspector';
-import { JudgeOutputArea } from './JudgeOutputArea';
 import { ToolbarItems } from '../toolbar';
 import { TRANSLATOR_DOMAIN } from '../constants';
 import { Signal } from '@lumino/signaling';
 import { SplitPanel } from '@lumino/widgets';
+import { JudgeTerminal } from './JudgeTerminal';
 
 /**
  * The class name added to the panels.
@@ -93,7 +93,8 @@ export class JudgePanel extends SplitPanel {
       this.renderProblem();
     });
 
-    this._outputArea = new JudgeOutputArea({
+    this._terminal = new JudgeTerminal({
+      panel: this,
       model: this.model.outputAreaModel,
       rendermime: options.rendermime,
       translator: this._translator
@@ -104,7 +105,7 @@ export class JudgePanel extends SplitPanel {
     const rightPanel = new SplitPanel();
     rightPanel.orientation = 'vertical';
     rightPanel.addWidget(this._editorWidget);
-    rightPanel.addWidget(this._outputArea);
+    rightPanel.addWidget(this._terminal);
 
     this.addWidget(rightPanel);
 
@@ -222,7 +223,7 @@ export class JudgePanel extends SplitPanel {
     const code = this.model.source;
     const reply = await OutputArea.execute(
       code,
-      this._outputArea,
+      this._terminal.outputArea,
       this.session,
       {}
     );
@@ -451,7 +452,7 @@ export class JudgePanel extends SplitPanel {
 
   private _editorWidget: CodeEditorWrapper;
   private _markdownRenderer: IRenderMime.IRenderer;
-  private _outputArea: OutputArea;
+  private _terminal: JudgeTerminal;
   public propertyInspector: IPropertyInspector | null = null;
 
   private _translator: ITranslator;

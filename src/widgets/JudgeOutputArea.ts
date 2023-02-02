@@ -9,7 +9,7 @@ import { TRANSLATOR_DOMAIN } from "../constants";
  */
 const OUTPUT_AREA_OUTPUT_CLASS = 'jp-OutputArea-output';
 
-namespace JudgeOutputArea {
+export namespace JudgeOutputArea {
   export interface IOptions extends OutputArea.IOptions {
     translator: ITranslator;
   }
@@ -22,12 +22,14 @@ export class JudgeOutputArea extends OutputArea {
   constructor(options: JudgeOutputArea.IOptions) {
     super(options);
 
+    const trans = options.translator.load(TRANSLATOR_DOMAIN);
+
     // Default Placeholder Message
     // <div class="jp-OutputArea-placeholder">No output yet</div>
     const placeholder = document.createElement('div');
     placeholder.className = 'jp-OutputArea-placeholder';
-    const trans = options.translator.load(TRANSLATOR_DOMAIN);
     placeholder.textContent = trans.__('Execution result will be shown here');
+ 
     this.node.appendChild(placeholder);
   }
 
