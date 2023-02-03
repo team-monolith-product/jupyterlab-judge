@@ -68,7 +68,7 @@ const ItemLoad = styled.button`
   font-weight: 700;
   font-size: 12px;
   line-height: 16px;
-  color: #4398f1;
+  color: var(--jp-brand-color1);
 `;
 
 const ItemTime = styled.span`
@@ -84,6 +84,5 @@ const ItemTime = styled.span`
   font-size: 12px;
   line-height: 16px;
 
-  /* grey070 */
-  color: #a8abb4;
+  color: var(--jp-ui-font-color3);
 `;

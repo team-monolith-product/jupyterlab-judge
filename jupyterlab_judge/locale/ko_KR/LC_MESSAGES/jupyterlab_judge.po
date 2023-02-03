@@ -58,12 +58,12 @@ msgstr "불러오기"
 #: src/components/SubmissionItem.tsx:51
 #: src/components/SubmissionItemStatus.tsx:18
 msgid "Accepted"
-msgstr "정답입니다"
+msgstr "정답입니다."
 
 #: src/components/SubmissionItem.tsx:54
 #: src/components/SubmissionItemStatus.tsx:21
 msgid "Wrong"
-msgstr "틀렸습니다"
+msgstr "틀렸습니다."
 
 #: src/components/SubmissionItem.tsx:59
 #: src/components/SubmissionItemStatus.tsx:26
@@ -83,7 +83,7 @@ msgstr "출력 초과"
 #: src/components/SubmissionItem.tsx:68
 #: src/components/SubmissionItemStatus.tsx:35
 msgid "Please Try Again"
-msgstr "다시 시도해주세요"
+msgstr "다시 시도해주세요."
 
 #: src/components/SubmissionList.tsx:63 src/components/SubmissionList.tsx:67
 #: src/components/SubmissionList.tsx:83 src/components/SubmissionList.tsx:87

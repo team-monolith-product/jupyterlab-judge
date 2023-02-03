@@ -102,6 +102,7 @@ export class JudgePanel extends BoxPanel {
     this._terminal.addClass('jp-JudgePanel-terminal');
 
     const submissionPanel = new JudgeTools({
+      panel: this,
       model: this.model,
       translator: this._translator
     });

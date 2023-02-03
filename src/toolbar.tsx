@@ -8,13 +8,12 @@ import {
   ReactWidget,
   showDialog,
   Toolbar,
-  ToolbarButton,
   ToolbarButtonComponent,
   UseSignal
 } from '@jupyterlab/apputils';
 import { DocumentRegistry } from '@jupyterlab/docregistry';
 import { ITranslator } from '@jupyterlab/translation';
-import { saveIcon, fileUploadIcon } from '@jupyterlab/ui-components';
+import { saveIcon } from '@jupyterlab/ui-components';
 import { Widget } from '@lumino/widgets';
 import * as React from 'react';
 import { TRANSLATOR_DOMAIN } from './constants';
@@ -71,24 +70,6 @@ export namespace ToolbarItems {
     );
   }
 
-
-  /**
-   * Create a judge toolbar item.
-   */
-  export function createJudgeButton(
-    panel: JudgePanel,
-    translator: ITranslator
-  ): Widget {
-    const trans = translator.load(TRANSLATOR_DOMAIN);
-    return new ToolbarButton({
-      icon: fileUploadIcon,
-      onClick: () => {
-        void panel.judge();
-      },
-      tooltip: trans.__('Judge the code')
-    });
-  }
-
   /**
    * Get the default toolbar items for panel
    */
@@ -106,8 +87,7 @@ export namespace ToolbarItems {
           sessionDialogs,
           translator
         )
-      },
-      { name: 'judge', widget: createJudgeButton(panel, translator) }
+      }
     ];
   }
 }

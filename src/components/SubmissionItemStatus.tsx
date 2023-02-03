@@ -12,15 +12,15 @@ export function SubmissionItemStatus(props: {
   const trans = useContext(transContext);
 
   let content = '';
+  let title = '';
 
   switch (props.status) {
     case 'AC':
       content = `👍 ${trans.__('Accepted')}`;
       break;
     case 'WA':
-      content = `❌ ${trans.__('Wrong')} (${props.acceptedCount}/${
-        props.totalCount
-      })`;
+      content = `❌ ${trans.__('Wrong')}`;
+      title = `(${props.acceptedCount}/${props.totalCount})`;
       break;
     case 'RE':
       content = `🚫 ${trans.__('Error')}`;
@@ -37,7 +37,7 @@ export function SubmissionItemStatus(props: {
   }
 
   return (
-    <SubmissionItemStatusContainer className={props.className}>
+    <SubmissionItemStatusContainer className={props.className} title={title}>
       {content}
     </SubmissionItemStatusContainer>
   );

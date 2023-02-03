@@ -1,11 +1,13 @@
 import styled from '@emotion/styled';
 import React, { useContext } from 'react';
 import { JudgeModel } from '../model';
+import { JudgePanel } from '../widgets/JudgePanel';
 import { transContext } from '../widgets/JudgeTools';
 import { SubmissionControl } from './SubmissionControl';
 import { SubmissionListSignalWrapper } from './SubmissionList';
 
 export function SubmissionArea(props: {
+  panel: JudgePanel;
   model: JudgeModel | null;
 }): JSX.Element {
   const trans = useContext(transContext);
@@ -17,7 +19,7 @@ export function SubmissionArea(props: {
   return (
     <SubmissionAreaContainer>
       <SubmissionAreaList model={props.model} />
-      <SubmissionAreaControl />
+      <SubmissionAreaControl panel={props.panel} />
     </SubmissionAreaContainer>
   );
 }
