@@ -36,7 +36,7 @@ import { IPropertyInspector } from '@jupyterlab/property-inspector';
 import { ToolbarItems } from '../toolbar';
 import { TRANSLATOR_DOMAIN } from '../constants';
 import { Signal } from '@lumino/signaling';
-import { SplitPanel } from '@lumino/widgets';
+import { BoxPanel, SplitPanel } from '@lumino/widgets';
 import { JudgeTerminal } from './JudgeTerminal';
 import { JudgeTools } from './JudgeTools';
 
@@ -69,9 +69,10 @@ export namespace JudgePanel {
   }
 }
 
-export class JudgePanel extends SplitPanel {
+export class JudgePanel extends BoxPanel {
   constructor(options: JudgePanel.IOptions) {
     super();
+    
     this._context = options.context;
     this._translator = options.translator;
     this._trans = this._translator.load(TRANSLATOR_DOMAIN);
@@ -81,6 +82,8 @@ export class JudgePanel extends SplitPanel {
     this.id = 'jce-judge-panel';
     this.title.label = this._trans.__('Judge');
     this.title.closable = true;
+
+    const splitPanel = new SplitPanel();
 
     const editorOptions = {
       model: this.model.codeModel,
@@ -107,7 +110,7 @@ export class JudgePanel extends SplitPanel {
       translator: this._translator,
     })
 
-    this.addWidget(this._markdownRenderer);
+    splitPanel.addWidget(this._markdownRenderer);
 
     const rightPanel = new SplitPanel();
     rightPanel.orientation = 'vertical';
@@ -115,7 +118,9 @@ export class JudgePanel extends SplitPanel {
     rightPanel.addWidget(this._terminal);
     rightPanel.addWidget(submissionPanel);
 
-    this.addWidget(rightPanel);
+    splitPanel.addWidget(rightPanel);
+
+    this.addWidget(splitPanel);
 
     if (!this.session.isReady) {
       void this.session.initialize();
