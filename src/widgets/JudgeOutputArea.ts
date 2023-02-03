@@ -32,13 +32,14 @@ export namespace JudgeOutputArea {
 export class JudgeOutputArea extends OutputArea {
   constructor(options: JudgeOutputArea.IOptions) {
     super(options);
+    this.addClass('jp-JudgeOutputArea')
 
     const trans = options.translator.load(TRANSLATOR_DOMAIN);
 
     // Default Placeholder Message
     // <div class="jp-OutputArea-placeholder">No output yet</div>
     const placeholder = document.createElement('div');
-    placeholder.className = 'jp-OutputArea-placeholder';
+    placeholder.className = 'jp-JudgeOutputArea-placeholder';
     placeholder.textContent = trans.__('Execution result will be shown here');
  
     this.node.appendChild(placeholder);

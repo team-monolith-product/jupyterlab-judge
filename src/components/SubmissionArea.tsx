@@ -1,9 +1,9 @@
-import { UseSignal } from '@jupyterlab/apputils';
+import styled from '@emotion/styled';
 import React, { useContext } from 'react';
 import { JudgeModel } from '../model';
 import { transContext } from '../widgets/JudgeTools';
+import { SubmissionControl } from './SubmissionControl';
 import { SubmissionListSignalWrapper } from './SubmissionList';
-import { SubmissionStatus } from './SubmissionStatus';
 
 export function SubmissionArea(props: {
   model: JudgeModel | null;
@@ -15,17 +15,30 @@ export function SubmissionArea(props: {
   }
 
   return (
-    <div className="jce-judge-submission-area">
-      <UseSignal
-        signal={props.model.submissionStatusChanged}
-        initialSender={props.model}
-        initialArgs={props.model.submissionStatus}
-      >
-        {(model, submissionStatus) => {
-          return <SubmissionStatus status={submissionStatus ?? null} />;
-        }}
-      </UseSignal>
-      <SubmissionListSignalWrapper model={props.model} />
-    </div>
+    <SubmissionAreaContainer>
+      <SubmissionAreaList model={props.model} />
+      <SubmissionAreaControl />
+    </SubmissionAreaContainer>
   );
 }
+
+const SubmissionAreaContainer = styled.div`
+  display: flex;
+  border-top: 4px solid #c7c7c7;
+  font-size: var(--jp-ui-font-size1);
+
+  height: 100%;
+`;
+
+const SubmissionAreaList = styled(SubmissionListSignalWrapper)`
+  flex-grow: 1;
+  flex-shrink: 1;
+
+  margin-right: 2px;
+`;
+
+const SubmissionAreaControl = styled(SubmissionControl)`
+  flex-grow: 0;
+  flex-shrink: 0;
+  flex-basis: 133px;
+`;

@@ -1,0 +1,41 @@
+/*
+    See the JupyterLab Developer Guide for useful CSS Patterns:
+
+    https://jupyterlab.readthedocs.io/en/stable/developer/css.html
+*/
+
+.jp-JudgePanel-markdown {
+  padding: 20px;
+  box-shadow: none;
+  border-top: 0 none;
+  border-bottom: 0 none;
+  border-left: 0 none;
+  border-right: 1px solid #c7c7c7;
+  min-width: 200px;
+}
+
+/*
+min-width has no effect on the right panel, so we need to set it on the children.
+.jp-JudgePanel-rightPanel {
+  min-width: 500px;
+}
+*/
+
+.jp-JudgePanel-rightPanel .CodeMirror-gutters {
+  border-right: 1px solid #c7c7c7;
+}
+
+.jp-JudgePanel-editor {
+  min-height: 100px;
+  min-width: 500px;
+}
+
+.jp-JudgePanel-terminal {
+  min-height: 100px;
+  min-width: 500px;
+}
+
+.jp-JudgePanel-submissionPanel {
+  min-height: 100px;
+  min-width: 500px;
+}

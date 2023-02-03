@@ -18,11 +18,11 @@ export class JudgeTerminal extends Panel {
 
   constructor(options: JudgeTerminal.IOptions) {
     super();
+    this.addClass('jp-JudgeTerminal');
 
     const translator = options.translator;
     const trans = translator.load(TRANSLATOR_DOMAIN);
 
-    this.addClass('jp-JudgeTerminal');
 
     // Create toolbar
     const toolbar = new Widget();
