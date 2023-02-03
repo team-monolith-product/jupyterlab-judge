@@ -4,7 +4,7 @@
   font-weight: 700;
   font-size: 12px;
   line-height: 16px;
-  color: #c7c7c7;
+  color: var(--jp-ui-font-color3);
 }
 
 .jp-OutputArea-output ~ .jp-JudgeOutputArea-placeholder {

@@ -10,7 +10,7 @@
   border-top: 0 none;
   border-bottom: 0 none;
   border-left: 0 none;
-  border-right: 1px solid #c7c7c7;
+  border-right: 1px solid var(--jp-border-color0);
   min-width: 200px;
 }
 
@@ -22,7 +22,7 @@ min-width has no effect on the right panel, so we need to set it on the children
 */
 
 .jp-JudgePanel-rightPanel .CodeMirror-gutters {
-  border-right: 1px solid #c7c7c7;
+  border-right: 1px solid var(--jp-border-color0);
 }
 
 .jp-JudgePanel-editor {

@@ -144,8 +144,7 @@ const ListContainer = styled.ul`
 
   /* Handle */
   ::-webkit-scrollbar-thumb {
-    /* Grey30 */
-    background: #c7c7c7;
+    background: var(--jp-border-color0);
     border-radius: 12px;
   }
 `;
@@ -164,5 +163,5 @@ const NoSubmission = styled.div`
   font-weight: 700;
   font-size: 12px;
   line-height: 16px;
-  color: #c7c7c7;
+  color: var(--jp-ui-font-color3);
 `;

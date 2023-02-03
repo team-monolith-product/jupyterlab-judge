@@ -26,7 +26,7 @@ export function SubmissionArea(props: {
 
 const SubmissionAreaContainer = styled.div`
   display: flex;
-  border-top: 4px solid #c7c7c7;
+  border-top: 4px solid var(--jp-border-color0);
   font-size: var(--jp-ui-font-size1);
 
   height: 100%;

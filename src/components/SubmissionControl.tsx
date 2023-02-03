@@ -27,11 +27,6 @@ export function SubmissionControl(props: {
 }
 
 const ControlContainer = styled.div`
-  /* Grey50
-    Secondary Background
-    #f5f5f5
-    -> --jp-layout-color2: var(--md-grey-200);
-  */
   background: var(--jp-layout-color2);
 `;
 
@@ -60,7 +55,14 @@ const ControlButton = styled.button`
   line-height: 22px;
   /* identical to box height, or 138% */
 
-  /* Neutral-Variant100 */
+  color: var(--jp-ui-inverse-font-color0);
 
-  color: #ffffff;
+  :disabled {
+    background: var(--jp-layout-color3);
+    cursor: not-allowed;
+  }
+
+  :hover {
+    background: var(--jp-brand-color0);
+  }
 `;
