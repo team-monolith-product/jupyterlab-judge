@@ -118,7 +118,7 @@ function SubmissionList(props: {
       {props.submissionStatus && props.submissionStatus.inProgress && (
         <ListSubmissionItemWait status={props.submissionStatus} />
       )}
-      {data.reverse().map(submission => {
+      {data.map(submission => {
         return (
           <ListSubmissionItem
             submission={submission}
