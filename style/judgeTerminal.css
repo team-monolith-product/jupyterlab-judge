@@ -33,12 +33,19 @@
   align-items: center;
 }
 
+.jp-JudgeTerminal-toolbar button:disabled {
+  color: var(--jp-ui-font-color3);
+  cursor: not-allowed;
+}
+
 .jp-JudgeTerminal-toolbar button svg {
   width: 14px;
   height: 14px;
 
   padding-right: 2px;
 }
+
+
 
 .jp-JudgeTerminal-seperator {
   width: 0px;

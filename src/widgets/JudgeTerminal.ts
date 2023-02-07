@@ -36,8 +36,10 @@ export class JudgeTerminal extends Panel {
     const excuteButtonLabel = document.createElement('span');
     excuteButtonLabel.className = 'jp-JudgeTerminal-executeButtonLabel';
     excuteButtonLabel.textContent = trans.__('Execute');
-    executeButton.addEventListener('click', () => {
-      options.panel.execute();
+    executeButton.addEventListener('click', async () => {
+      executeButton.disabled = true;
+      await options.panel.execute();
+      executeButton.disabled = false;
     });
     executeButton.appendChild(excuteButtonLabel);
 
