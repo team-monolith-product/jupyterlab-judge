@@ -6,7 +6,7 @@
         "version": "0.8.1"
     },
     "Accepted": [
-        "\uc815\ub2f5\uc785\ub2c8\ub2e4"
+        "\uc815\ub2f5\uc785\ub2c8\ub2e4."
     ],
     "Cannot Save": [
         "\uc800\uc7a5\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4"
@@ -72,7 +72,7 @@
         "\ucd9c\ub825 \ucd08\uacfc"
     ],
     "Please Try Again": [
-        "\ub2e4\uc2dc \uc2dc\ub3c4\ud574\uc8fc\uc138\uc694"
+        "\ub2e4\uc2dc \uc2dc\ub3c4\ud574\uc8fc\uc138\uc694."
     ],
     "Problem Not Available.": [
         "\ubb38\uc81c\ub97c \ubd88\ub7ec\uc624\uc9c0 \ubabb\ud588\uc2b5\ub2c8\ub2e4."
@@ -92,6 +92,9 @@
     "Stop": [
         "\uc911\uc9c0"
     ],
+    "Submit": [
+        "\uc81c\ucd9c\ud558\uae30"
+    ],
     "Submit your code to get results here.": [
         "\ub2f5\uc548\uc744 \uc81c\ucd9c\ud558\uba74 \ucc44\uc810 \uacb0\uacfc\uac00 \uc5ec\uae30 \ub098\ud0c0\ub0a9\ub2c8\ub2e4."
     ],
@@ -102,7 +105,7 @@
         "\uc2dc\uac04 \ucd08\uacfc"
     ],
     "Wrong": [
-        "\ud2c0\ub838\uc2b5\ub2c8\ub2e4"
+        "\ud2c0\ub838\uc2b5\ub2c8\ub2e4."
     ],
     "schema\u0004jupyterlab-judge": [
         "jupyterlab_judge"

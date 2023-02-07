@@ -7,7 +7,6 @@ import {
   ISessionContextDialogs,
   ReactWidget,
   showDialog,
-  Toolbar,
   ToolbarButtonComponent,
   UseSignal
 } from '@jupyterlab/apputils';
@@ -78,16 +77,6 @@ export namespace ToolbarItems {
     translator: ITranslator,
     sessionDialogs?: ISessionContextDialogs
   ): DocumentRegistry.IToolbarItem[] {
-    return [
-      { name: 'save', widget: createSaveButton(panel, translator) },
-      {
-        name: 'restart',
-        widget: Toolbar.createRestartButton(
-          panel.session,
-          sessionDialogs,
-          translator
-        )
-      }
-    ];
+    return [{ name: 'save', widget: createSaveButton(panel, translator) }];
   }
 }

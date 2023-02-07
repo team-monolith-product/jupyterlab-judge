@@ -20,7 +20,7 @@ export function SubmissionControl(props: {
         }}
         disabled={inProgress}
       >
-        {trans.__('Judge the code')}
+        {trans.__('Submit')}
       </ControlButton>
     </ControlContainer>
   );
@@ -33,8 +33,8 @@ const ControlContainer = styled.div`
 const ControlButton = styled.button`
   display: block;
   margin-top: 12px;
-  margin-left: auto;
-  margin-right: auto;
+  margin-left: 20px;
+  margin-right: 20px;
   padding: 11px 17px;
 
   cursor: pointer;

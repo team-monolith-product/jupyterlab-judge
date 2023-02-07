@@ -233,6 +233,8 @@ export class JudgePanel extends BoxPanel {
       return null;
     }
 
+    await this.session.restartKernel();
+
     const code = this.model.source;
     const reply = await OutputArea.execute(
       code,

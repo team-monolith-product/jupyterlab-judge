@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: jupyterlab_judge 0.8.1\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-02-03 21:24+0900\n"
+"POT-Creation-Date: 2023-02-07 09:55+0900\n"
 "PO-Revision-Date: 2023-02-01 12:47+0900\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: ko_KR <LL@li.org>\n"
@@ -43,9 +43,13 @@ msgstr "ID로부터 문제 열기"
 msgid "Execute"
 msgstr "실행"
 
-#: src/components/SubmissionArea.tsx:14
+#: src/components/SubmissionArea.tsx:14 src/components/SubmissionArea.tsx:16
 msgid "No Submission History Found."
 msgstr "제출 기록을 확인할 수 없습니다."
+
+#: src/components/SubmissionControl.tsx:23
+msgid "Submit"
+msgstr "제출하기"
 
 #: src/components/SubmissionItem.tsx:31
 msgid "Load this submission"
@@ -57,11 +61,13 @@ msgstr "불러오기"
 
 #: src/components/SubmissionItem.tsx:51
 #: src/components/SubmissionItemStatus.tsx:18
+#: src/components/SubmissionItemStatus.tsx:19
 msgid "Accepted"
 msgstr "정답입니다."
 
 #: src/components/SubmissionItem.tsx:54
 #: src/components/SubmissionItemStatus.tsx:21
+#: src/components/SubmissionItemStatus.tsx:22
 msgid "Wrong"
 msgstr "틀렸습니다."
 
@@ -85,27 +91,31 @@ msgstr "출력 초과"
 msgid "Please Try Again"
 msgstr "다시 시도해주세요."
 
+#: src/components/SubmissionItemWaitStatus.tsx:20
+#: src/components/SubmissionStatus.tsx:19
+#: src/components/SubmissionStatus.tsx:20
+msgid "In Progress"
+msgstr "채점중"
+
 #: src/components/SubmissionList.tsx:63 src/components/SubmissionList.tsx:67
 #: src/components/SubmissionList.tsx:83 src/components/SubmissionList.tsx:87
+#: src/components/SubmissionList.tsx:101
 msgid "History Not Available"
 msgstr "확인할 수 없습니다."
 
+#: src/components/SubmissionList.tsx:95
+#: src/components/SubmissionList.tsx:111
+msgid "Submit your code to get results here."
+msgstr "답안을 제출하면 채점 결과가 여기 나타납니다."
+
 #: src/components/SubmissionList.tsx:75 src/components/SubmissionList.tsx:79
+#: src/components/SubmissionList.tsx:81 src/components/SubmissionList.tsx:93
 msgid "Loading History"
 msgstr "불러오는 중입니다."
 
 #: src/components/SubmissionList.tsx:91
 msgid "No History"
 msgstr "제출 기록이 없습니다."
-
-#: src/components/SubmissionList.tsx:95
-msgid "Submit your code to get results here."
-msgstr "답안을 제출하면 채점 결과가 여기 나타납니다."
-
-#: src/components/SubmissionStatus.tsx:19
-#: src/components/SubmissionStatus.tsx:20
-msgid "In Progress"
-msgstr "채점중"
 
 #: src/components/SubmissionStatus.tsx:22
 #: src/components/SubmissionStatus.tsx:23
@@ -125,20 +135,21 @@ msgstr "문제 파일"
 msgid "Judge the code"
 msgstr "코드 제출"
 
-#: src/toolbar.tsx:38
+#: src/toolbar.tsx:36 src/toolbar.tsx:38
 msgid "Cannot Save"
 msgstr "저장할 수 없습니다"
 
-#: src/toolbar.tsx:39
+#: src/toolbar.tsx:37 src/toolbar.tsx:39
 msgid "Document is read-only"
 msgstr "읽기 전용 문서입니다"
 
-#: src/toolbar.tsx:40 src/widgets/JudgePanel.ts:213
+#: src/toolbar.tsx:38 src/toolbar.tsx:40 src/widgets/JudgePanel.ts:213
 #: src/widgets/JudgePanel.ts:217 src/widgets/JudgePanel.ts:229
+#: src/widgets/JudgePanel.ts:231
 msgid "Ok"
 msgstr "확인"
 
-#: src/toolbar.tsx:56
+#: src/toolbar.tsx:54 src/toolbar.tsx:56
 msgid "Save the judge contents and create checkpoint"
 msgstr "문제 풀이 저장"
 
@@ -152,17 +163,17 @@ msgid "Execution result will be shown here"
 msgstr "여기에 실행 결과가 나타납니다."
 
 #: src/widgets/JudgePanel.ts:135 src/widgets/JudgePanel.ts:139
-#: src/widgets/JudgePanel.ts:151
+#: src/widgets/JudgePanel.ts:151 src/widgets/JudgePanel.ts:153
 msgid "Problem Not Available."
 msgstr "문제를 불러오지 못했습니다."
 
 #: src/widgets/JudgePanel.ts:209 src/widgets/JudgePanel.ts:213
-#: src/widgets/JudgePanel.ts:225
+#: src/widgets/JudgePanel.ts:225 src/widgets/JudgePanel.ts:227
 msgid "Cell not executed due to pending input"
 msgstr "입력을 기다리고 있어 실행하지 못했습니다"
 
 #: src/widgets/JudgePanel.ts:210 src/widgets/JudgePanel.ts:214
-#: src/widgets/JudgePanel.ts:226
+#: src/widgets/JudgePanel.ts:226 src/widgets/JudgePanel.ts:228
 msgid ""
 "The cell has not been executed to avoid kernel deadlock as there is "
 "another pending input! Submit your pending input and try again."
