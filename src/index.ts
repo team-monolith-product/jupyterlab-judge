@@ -62,7 +62,6 @@ const signal: JupyterFrontEndPlugin<IJudgeSignal> = {
   autoStart: true
 };
 
-
 let problemProvider: IProblemProvider = new HardCodedProblemProvider();
 const problemProviderRegistry: JupyterFrontEndPlugin<IProblemProviderRegistry> =
   {
@@ -93,8 +92,6 @@ const judgePanelFactoryRegistry: JupyterFrontEndPlugin<IJudgePanelFactoryRegistr
     },
     autoStart: true
   };
-
-
 
 /**
  * Initialization data for the jupyterlab_judge extension.
@@ -219,3 +216,5 @@ const plugins: JupyterFrontEndPlugin<any>[] = [
 export default plugins;
 
 export * from './tokens';
+
+export { openOrCreateFromId } from './commands';
