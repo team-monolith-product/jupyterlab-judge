@@ -1,0 +1,55 @@
+.jp-JudgeTerminal {
+  display: flex;
+  flex-direction: column;
+}
+
+.jp-JudgeTerminal-toolbar {
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  height: 28px;
+
+  background: var(--jp-layout-color2);
+  border-top: 1px solid var(--jp-border-color0);
+  border-bottom: 1px solid var(--jp-border-color0);
+}
+
+.jp-JudgeTerminal-toolbar button {
+  padding: 0px 8px;
+
+  border: none;
+  font-family: 'Noto Sans KR';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 10px;
+  line-height: 16px;
+  cursor: pointer;
+  color: var(--jp-ui-font-color1);
+  background: var(--jp-layout-color2);
+
+  display: flex;
+  align-items: center;
+}
+
+.jp-JudgeTerminal-toolbar button:disabled {
+  color: var(--jp-ui-font-color3);
+  cursor: not-allowed;
+}
+
+.jp-JudgeTerminal-toolbar button svg {
+  width: 14px;
+  height: 14px;
+
+  padding-right: 2px;
+}
+
+
+
+.jp-JudgeTerminal-seperator {
+  width: 0px;
+  height: 14px;
+
+  border: 1px solid var(--jp-border-color0);
+}

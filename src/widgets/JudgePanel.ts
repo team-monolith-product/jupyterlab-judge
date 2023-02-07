@@ -7,7 +7,6 @@ import {
 } from '@jupyterlab/apputils';
 import { Message } from '@lumino/messaging';
 import { ITranslator, TranslationBundle } from '@jupyterlab/translation';
-import { Panel } from '@lumino/widgets';
 import { textEditorIcon } from '@jupyterlab/ui-components';
 import {
   CodeEditor,
@@ -33,16 +32,12 @@ import { IHeader, IStreamMsg } from '@jupyterlab/services/lib/kernel/messages';
 import { IKernelConnection } from '@jupyterlab/services/lib/kernel/kernel';
 import { JudgeModel } from '../model';
 import { ProblemProvider } from '../problemProvider/problemProvider';
-import { IPropertyInspector } from '@jupyterlab/property-inspector';
-import { NoPromptOutputArea } from './NoPromptOutputArea';
 import { ToolbarItems } from '../toolbar';
 import { TRANSLATOR_DOMAIN } from '../constants';
 import { Signal } from '@lumino/signaling';
-
-/**
- * The class name added to the panels.
- */
-const PANEL_CLASS = 'jp-JudgePanel';
+import { BoxPanel, SplitPanel } from '@lumino/widgets';
+import { JudgeTerminal } from './JudgeTerminal';
+import { JudgeTools } from './JudgeTools';
 
 interface RunResult {
   status: 'OK' | 'TLE' | 'OLE' | 'RE';
@@ -67,42 +62,65 @@ export namespace JudgePanel {
   }
 }
 
-export class JudgePanel extends Panel {
+export class JudgePanel extends BoxPanel {
   constructor(options: JudgePanel.IOptions) {
     super();
+    this.addClass('jp-JudgePanel');
+
     this._context = options.context;
     this._translator = options.translator;
     this._trans = this._translator.load(TRANSLATOR_DOMAIN);
     this._submitted = options.submitted;
 
-    this.addClass(PANEL_CLASS);
     this.id = 'jce-judge-panel';
-    this.title.label = this._trans.__('Judge');
     this.title.closable = true;
 
-    const editorOptions = {
+    const splitPanel = new SplitPanel({ spacing: 0 });
+    splitPanel.addClass('jp-JudgePanel-splitPanel');
+
+    this._editorWidget = new CodeEditorWrapper({
       model: this.model.codeModel,
-      factory: new CodeMirrorEditorFactory({
-        scrollbarStyle: 'null'
-      }).newInlineEditor,
+      factory: new CodeMirrorEditorFactory().newInlineEditor,
       config: { ...options.editorConfig, lineNumbers: true }
-    };
-    this._editorWidget = new CodeEditorWrapper(editorOptions);
+    });
+    this._editorWidget.addClass('jp-JudgePanel-editor');
 
     this._markdownRenderer = options.rendermime.createRenderer('text/markdown');
+    this._markdownRenderer.addClass('jp-JudgePanel-markdown');
     this.renderProblem();
-    this.model.problemChanged.connect((sender, _) => {
+    this.model.problemChanged.connect((sender, problem) => {
       this.renderProblem();
+      if (problem?.title) {
+        this.title.label = `${problem?.title}.judge`
+      }
     });
 
-    this._outputArea = new NoPromptOutputArea({
+    this._terminal = new JudgeTerminal({
+      panel: this,
       model: this.model.outputAreaModel,
-      rendermime: options.rendermime
+      rendermime: options.rendermime,
+      translator: this._translator
     });
+    this._terminal.addClass('jp-JudgePanel-terminal');
 
-    this.addWidget(this._markdownRenderer);
-    this.addWidget(this._editorWidget);
-    this.addWidget(this._outputArea);
+    const submissionPanel = new JudgeTools({
+      panel: this,
+      model: this.model,
+      translator: this._translator
+    });
+    submissionPanel.addClass('jp-JudgePanel-submissionPanel');
+
+    splitPanel.addWidget(this._markdownRenderer);
+
+    const rightPanel = new SplitPanel({ orientation: 'vertical', spacing: 0 });
+    rightPanel.addClass('jp-JudgePanel-rightPanel');
+    rightPanel.addWidget(this._editorWidget);
+    rightPanel.addWidget(this._terminal);
+    rightPanel.addWidget(submissionPanel);
+
+    splitPanel.addWidget(rightPanel);
+
+    this.addWidget(splitPanel);
 
     if (!this.session.isReady) {
       void this.session.initialize();
@@ -215,10 +233,12 @@ export class JudgePanel extends Panel {
       return null;
     }
 
+    await this.session.restartKernel();
+
     const code = this.model.source;
     const reply = await OutputArea.execute(
       code,
-      this._outputArea,
+      this._terminal.outputArea,
       this.session,
       {}
     );
@@ -263,8 +283,6 @@ export class JudgePanel extends Panel {
       runCount: 0,
       totalCount: testCases.length
     };
-
-    this.showPropertyInspectorPanel();
 
     for (let testCase of testCases) {
       const result = await this.runWithInput(kernel, problem, testCase);
@@ -320,12 +338,6 @@ export class JudgePanel extends Panel {
       submission,
       problem
     });
-  }
-
-  public showPropertyInspectorPanel() {
-    if (this.propertyInspector) {
-      this.propertyInspector.showPanel();
-    }
   }
 
   private async runWithInput(
@@ -447,8 +459,7 @@ export class JudgePanel extends Panel {
 
   private _editorWidget: CodeEditorWrapper;
   private _markdownRenderer: IRenderMime.IRenderer;
-  private _outputArea: OutputArea;
-  public propertyInspector: IPropertyInspector | null = null;
+  private _terminal: JudgeTerminal;
 
   private _translator: ITranslator;
   private _trans: TranslationBundle;

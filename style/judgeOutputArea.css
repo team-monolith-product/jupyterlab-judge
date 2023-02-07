@@ -1,0 +1,18 @@
+/* Will be hidden when there are jp-OutputArea-output */
+.jp-JudgeOutputArea-placeholder {
+  padding: 12px;
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--jp-ui-font-color3);
+}
+
+.jp-OutputArea-output ~ .jp-JudgeOutputArea-placeholder {
+  display: none;
+}
+
+.jp-OutputArea-stdin-item ~ .jp-JudgeOutputArea-placeholder {
+  display: none;
+}
+
+

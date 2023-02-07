@@ -1,4 +1,4 @@
-import { IWidgetTracker, ReactWidget, UseSignal } from '@jupyterlab/apputils';
+import { ReactWidget } from '@jupyterlab/apputils';
 import {
   ITranslator,
   nullTranslator,
@@ -8,21 +8,33 @@ import React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { SubmissionArea } from '../components/SubmissionArea';
 import { TRANSLATOR_DOMAIN } from '../constants';
-import { JudgeDocument } from './JudgePanel';
+import { JudgeModel } from '../model';
+import { JudgePanel } from './JudgePanel';
 
 export const transContext = React.createContext<TranslationBundle>(
   nullTranslator.load(TRANSLATOR_DOMAIN)
 );
 
+export namespace JudgeTools {
+  export interface IOptions {
+    panel: JudgePanel;
+    model: JudgeModel;
+    translator: ITranslator;
+  }
+}
+
 export class JudgeTools extends ReactWidget {
-  private _tracker: IWidgetTracker<JudgeDocument>;
   queryClient = new QueryClient();
+
+  private _panel: JudgePanel;
+  private _model: JudgeModel;
   private _translator: ITranslator;
 
   constructor(options: JudgeTools.IOptions) {
     super();
 
-    this._tracker = options.tracker;
+    this._panel = options.panel;
+    this._model = options.model;
     this._translator = options.translator;
   }
 
@@ -30,36 +42,13 @@ export class JudgeTools extends ReactWidget {
     return (
       <transContext.Provider value={this._translator.load(TRANSLATOR_DOMAIN)}>
         <QueryClientProvider client={this.queryClient}>
-          <UseSignal
-            signal={this._tracker.currentChanged}
-            initialSender={this._tracker}
-            initialArgs={this._tracker.currentWidget}
-          >
-            {(tracker, document) => {
-              return (
-                <SubmissionArea
-                  key={document?.id}
-                  model={document?.content.model ?? null}
-                />
-              );
-            }}
-          </UseSignal>
+          <SubmissionArea
+            key={this._model.problem?.id ?? ''}
+            panel={this._panel}
+            model={this._model}
+          />
         </QueryClientProvider>
       </transContext.Provider>
     );
-  }
-}
-
-export namespace JudgeTools {
-  export interface IOptions {
-    /**
-     * The judge tracker used by the judge tools.
-     */
-    tracker: IWidgetTracker<JudgeDocument>;
-
-    /**
-     * Language translator.
-     */
-    translator: ITranslator;
   }
 }

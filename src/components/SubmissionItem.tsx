@@ -1,10 +1,12 @@
 import { Time } from '@jupyterlab/coreutils';
 import React, { useContext } from 'react';
 import { ProblemProvider } from '../problemProvider/problemProvider';
-import { ToolbarButtonComponent } from '@jupyterlab/apputils';
 import { transContext } from '../widgets/JudgeTools';
+import styled from '@emotion/styled';
+import { SubmissionItemStatus } from './SubmissionItemStatus';
 
 export function SubmissionItem(props: {
+  className?: string;
   submission: ProblemProvider.ISubmission;
   setCode: (code: string) => void;
 }): JSX.Element {
@@ -14,60 +16,73 @@ export function SubmissionItem(props: {
   let createdAtTitle = Time.format(new Date(props.submission.createdAt), 'lll');
 
   return (
-    <div className="jce-judge-submission-item">
-      <SubmissionItemStatus
+    <SubmissionItemContainer className={props.className}>
+      <ItemStatus
         status={props.submission.status}
         acceptedCount={props.submission.acceptedCount}
         totalCount={props.submission.totalCount}
       />
-      <div
-        className="jce-judge-submission-item-created-at"
-        title={createdAtTitle}
-      >
-        {createdAtText}
-      </div>
-      <ToolbarButtonComponent
+      <ItemLoad
         onClick={() => {
           props.setCode(props.submission.code);
         }}
-        label={trans.__('Load')}
-        tooltip={props.submission.code.substring(0, 1000)}
-      />
-    </div>
+        title={props.submission.code.substring(0, 1000)}
+      >
+        {trans.__('Load this submission')}
+      </ItemLoad>
+      <ItemTime title={createdAtTitle}>{createdAtText}</ItemTime>
+    </SubmissionItemContainer>
   );
 }
 
-function SubmissionItemStatus(props: {
-  status: ProblemProvider.SubmissionStatus;
-  acceptedCount: number;
-  totalCount: number;
-}): JSX.Element {
-  const trans = useContext(transContext);
+const SubmissionItemContainer = styled.li`
+  display: flex;
+  padding: 5px 12px;
+  height: 16px;
 
-  let content = '';
+  font-family: 'Noto Sans KR';
+  font-style: normal;
+  font-size: 12px;
+  line-height: 16px;
+`;
 
-  switch (props.status) {
-    case 'AC':
-      content = `👍 ${trans.__('Accepted')}`;
-      break;
-    case 'WA':
-      content = `❌ ${trans.__('Wrong')} (${props.acceptedCount}/${
-        props.totalCount
-      })`;
-      break;
-    case 'RE':
-      content = `🚫 ${trans.__('Error')}`;
-      break;
-    case 'TLE':
-      content = `🕓 ${trans.__('Time Limit')}`;
-      break;
-    case 'OLE':
-      content = `👀 ${trans.__('Output Limit')}`;
-      break;
-    case 'IE':
-      content = `☠ ${trans.__('Please Try Again')}`;
-      break;
-  }
+const ItemStatus = styled(SubmissionItemStatus)`
+  height: 16px;
+  flex-grow: 0;
+  flex-shrink: 0;
 
-  return <div className="jce-judge-submission-item-status">{content}</div>;
-}
+  width: 101px;
+  margin-right: 8px;
+`;
+
+const ItemLoad = styled.button`
+  height: 16px;
+  flex-grow: 0;
+  flex-shrink: 0;
+
+  all: unset;
+  cursor: pointer;
+
+  font-family: 'Noto Sans KR';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--jp-brand-color1);
+`;
+
+const ItemTime = styled.span`
+  height: 16px;
+  flex-grow: 1;
+  flex-shrink: 1;
+
+  text-align: right;
+
+  font-family: 'Noto Sans KR';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+
+  color: var(--jp-ui-font-color3);
+`;
