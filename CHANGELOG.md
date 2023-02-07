@@ -2,6 +2,22 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.10.0
+
+([Full Changelog](https://github.com/team-monolith-product/jupyterlab-judge/compare/v0.9.2...683b774a592b8ea507f91d234469ff22a09922de))
+
+### Merged PRs
+
+- feat: Export openOrCreateFromId [#4](https://github.com/team-monolith-product/jupyterlab-judge/pull/4) ([@a3626a](https://github.com/a3626a))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/team-monolith-product/jupyterlab-judge/graphs/contributors?from=2023-02-07&to=2023-02-07&type=c))
+
+[@a3626a](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3Aa3626a+updated%3A2023-02-07..2023-02-07&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.9.2
 
 ([Full Changelog](https://github.com/team-monolith-product/jupyterlab-judge/compare/v0.9.1...4050ac6665da57aeb2acc4b2cb40ed86f416cecc))
@@ -15,8 +31,6 @@
 ([GitHub contributors page for this release](https://github.com/team-monolith-product/jupyterlab-judge/graphs/contributors?from=2023-02-07&to=2023-02-07&type=c))
 
 [@a3626a](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3Aa3626a+updated%3A2023-02-07..2023-02-07&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.9.1
 
