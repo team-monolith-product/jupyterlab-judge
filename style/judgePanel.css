@@ -12,6 +12,8 @@
   border-left: 0 none;
   border-right: 1px solid var(--jp-border-color0);
   min-width: 200px;
+
+  overflow-y: auto;
 }
 
 /*
