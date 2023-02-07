@@ -68,7 +68,7 @@ async function openOrCreateFromId(
   const problem = await problemProvider.getProblem(problemId);
   if (problem) {
     const title = problem.title;
-    const path = `${DRIVE_NAME}:${JUDGE_HIDDEN_FOLDER_NAME}/[${problemId}]${title}.judge`;
+    const path = `${DRIVE_NAME}:${JUDGE_HIDDEN_FOLDER_NAME}/${title}.judge`;
 
     const directory = `${DRIVE_NAME}:${JUDGE_HIDDEN_FOLDER_NAME}`;
     await docManager.services.contents.save(directory, {

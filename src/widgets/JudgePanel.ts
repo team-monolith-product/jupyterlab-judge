@@ -73,7 +73,6 @@ export class JudgePanel extends BoxPanel {
     this._submitted = options.submitted;
 
     this.id = 'jce-judge-panel';
-    this.title.label = this._trans.__('Judge');
     this.title.closable = true;
 
     const splitPanel = new SplitPanel({ spacing: 0 });
@@ -89,8 +88,11 @@ export class JudgePanel extends BoxPanel {
     this._markdownRenderer = options.rendermime.createRenderer('text/markdown');
     this._markdownRenderer.addClass('jp-JudgePanel-markdown');
     this.renderProblem();
-    this.model.problemChanged.connect((sender, _) => {
+    this.model.problemChanged.connect((sender, problem) => {
       this.renderProblem();
+      if (problem?.title) {
+        this.title.label = `${problem?.title}.judge`
+      }
     });
 
     this._terminal = new JudgeTerminal({
