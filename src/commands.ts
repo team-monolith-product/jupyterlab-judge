@@ -10,6 +10,7 @@ import { Widget } from '@lumino/widgets';
 import { JudgeModel } from './model';
 import { DRIVE_NAME, JUDGE_HIDDEN_FOLDER_NAME, PLUGIN_ID } from './constants';
 import { IProblemProvider } from './tokens';
+import { IDocumentWidget } from '@jupyterlab/docregistry';
 
 /**
  * The command IDs used by the fileeditor plugin.
@@ -60,11 +61,11 @@ export function addCommands(
   });
 }
 
-async function openOrCreateFromId(
+export async function openOrCreateFromId(
   problemProvider: IProblemProvider,
   docManager: IDocumentManager,
   problemId: string
-) {
+): Promise<IDocumentWidget | undefined> {
   const problem = await problemProvider.getProblem(problemId);
   if (problem) {
     const title = problem.title;
@@ -75,7 +76,7 @@ async function openOrCreateFromId(
       name: directory,
       type: 'directory'
     });
-    await openOrCreate(problemProvider, docManager, path, problemId);
+    return await openOrCreate(problemProvider, docManager, path, problemId);
   }
 }
 
@@ -84,7 +85,7 @@ async function openOrCreate(
   docManager: IDocumentManager,
   path: string,
   problemId: string
-) {
+): Promise<IDocumentWidget | undefined> {
   try {
     await docManager.services.contents.get(path);
   } catch (e: any) {
@@ -101,7 +102,7 @@ async function openOrCreate(
     }
     throw e;
   } finally {
-    docManager.openOrReveal(path);
+    return docManager.openOrReveal(path);
   }
 }
 
@@ -120,7 +121,7 @@ export function addMenuItems(
 /**
  * Add Judge undo and redo widgets to the Edit menu
  */
-export function addUndoRedoToEditMenu(
+function addUndoRedoToEditMenu(
   menu: IMainMenu,
   tracker: WidgetTracker<JudgeDocument>
 ): void {
@@ -141,7 +142,7 @@ export function addUndoRedoToEditMenu(
 /**
  * Add Judge run widgets to the Run menu
  */
-export function addCodeRunnerToRunMenu(
+function addCodeRunnerToRunMenu(
   menu: IMainMenu,
   tracker: WidgetTracker<JudgeDocument>,
   trans: TranslationBundle
