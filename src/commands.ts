@@ -76,6 +76,11 @@ export async function openOrCreateFromId(
       name: directory,
       type: 'directory'
     });
+    const directoryId = `${DRIVE_NAME}:${JUDGE_HIDDEN_FOLDER_NAME}/${problemId}`;
+    await docManager.services.contents.save(directoryId, {
+      name: directoryId,
+      type: 'directory'
+    });
     return await openOrCreate(problemProvider, docManager, path, problemId);
   }
 }
