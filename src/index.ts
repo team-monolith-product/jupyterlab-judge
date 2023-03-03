@@ -3,7 +3,7 @@ import {
   JupyterFrontEnd,
   JupyterFrontEndPlugin
 } from '@jupyterlab/application';
-import { WidgetTracker } from '@jupyterlab/apputils';
+import { ICommandPalette, WidgetTracker } from '@jupyterlab/apputils';
 import { ITranslator } from '@jupyterlab/translation';
 import {
   JudgeDocument,
@@ -105,7 +105,8 @@ const plugin: JupyterFrontEndPlugin<void> = {
     IRenderMimeRegistry,
     IDocumentManager,
     IFileBrowserFactory,
-    IMainMenu
+    IMainMenu,
+    ICommandPalette
   ],
   optional: [ISettingRegistry, ILayoutRestorer],
   activate: async (
@@ -116,6 +117,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
     docManager: IDocumentManager,
     browserFactory: IFileBrowserFactory,
     menu: IMainMenu,
+    palette: ICommandPalette,
     settingRegistry: ISettingRegistry | null,
     restorer: ILayoutRestorer | null
   ) => {
@@ -183,6 +185,12 @@ const plugin: JupyterFrontEndPlugin<void> = {
 
     addCommands(app.commands, trans, docManager, tracker, problemProvider);
     addMenuItems(menu, tracker, trans);
+
+    palette.addItem({
+      command: CommandIDs.openOrCreateFromId,
+      category: 'Judge',
+      args: { problemId: '1' }
+    });
 
     if (restorer) {
       void restorer.restore(tracker, {
