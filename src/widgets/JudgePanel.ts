@@ -233,8 +233,6 @@ export class JudgePanel extends BoxPanel {
       return null;
     }
 
-    await this.session.restartKernel();
-
     const code = this.model.source;
     const reply = await OutputArea.execute(
       code,
@@ -242,6 +240,10 @@ export class JudgePanel extends BoxPanel {
       this.session,
       {}
     );
+
+    // Restarts after the execution, cleaning up the kernel state.
+    // It offers better ux, because users don't have to wait for the kernel to be ready.
+    await this.session.restartKernel();
 
     return reply || null;
   }
