@@ -2,6 +2,22 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.11.0
+
+([Full Changelog](https://github.com/team-monolith-product/jupyterlab-judge/compare/v0.10.2...2f01efcda7fbe2bc378e689b371c4ac3cf912912))
+
+### Merged PRs
+
+- Feature/kernel restart trick [#7](https://github.com/team-monolith-product/jupyterlab-judge/pull/7) ([@a3626a](https://github.com/a3626a))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/team-monolith-product/jupyterlab-judge/graphs/contributors?from=2023-02-08&to=2023-03-03&type=c))
+
+[@a3626a](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3Aa3626a+updated%3A2023-02-08..2023-03-03&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.10.2
 
 ([Full Changelog](https://github.com/team-monolith-product/jupyterlab-judge/compare/v0.10.1...cf2d496d615daf29d68843b90c9cd5f727e2aadd))
@@ -15,8 +31,6 @@
 ([GitHub contributors page for this release](https://github.com/team-monolith-product/jupyterlab-judge/graphs/contributors?from=2023-02-08&to=2023-02-08&type=c))
 
 [@a3626a](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3Aa3626a+updated%3A2023-02-08..2023-02-08&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.10.1
 
