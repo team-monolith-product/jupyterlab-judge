@@ -2,6 +2,22 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.12.0
+
+([Full Changelog](https://github.com/team-monolith-product/jupyterlab-judge/compare/v0.11.0...b56f1d716ed9d3cb77ed5223521abedb9e3d113d))
+
+### Merged PRs
+
+- Feature/change submission UI font [#8](https://github.com/team-monolith-product/jupyterlab-judge/pull/8) ([@paulkim3151](https://github.com/paulkim3151))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/team-monolith-product/jupyterlab-judge/graphs/contributors?from=2023-03-03&to=2023-03-06&type=c))
+
+[@paulkim3151](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3Apaulkim3151+updated%3A2023-03-03..2023-03-06&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.11.0
 
 ([Full Changelog](https://github.com/team-monolith-product/jupyterlab-judge/compare/v0.10.2...2f01efcda7fbe2bc378e689b371c4ac3cf912912))
@@ -15,8 +31,6 @@
 ([GitHub contributors page for this release](https://github.com/team-monolith-product/jupyterlab-judge/graphs/contributors?from=2023-02-08&to=2023-03-03&type=c))
 
 [@a3626a](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3Aa3626a+updated%3A2023-02-08..2023-03-03&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.10.2
 
