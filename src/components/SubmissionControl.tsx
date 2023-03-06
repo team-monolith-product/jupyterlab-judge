@@ -62,7 +62,7 @@ const ControlButton = styled.button`
     cursor: not-allowed;
   }
 
-  :hover {
+  :not(:disabled):hover {
     background: var(--jp-brand-color0);
   }
 `;
