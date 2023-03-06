@@ -20,7 +20,7 @@
   padding: 0px 8px;
 
   border: none;
-  font-family: 'Noto Sans KR';
+  font-family: var(--jp-ui-font-family);
   font-style: normal;
   font-weight: 700;
   font-size: 10px;

@@ -48,7 +48,7 @@ const ControlButton = styled.button`
     0px 0.8px 1.8px rgba(0, 0, 0, 0.13);
   border-radius: 8px;
 
-  font-family: 'Noto Sans KR';
+  font-family: var(--jp-ui-font-family);
   font-style: normal;
   font-weight: 700;
   font-size: 16px;
@@ -62,7 +62,7 @@ const ControlButton = styled.button`
     cursor: not-allowed;
   }
 
-  :hover {
+  :not(:disabled):hover {
     background: var(--jp-brand-color0);
   }
 `;
