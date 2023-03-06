@@ -21,7 +21,7 @@ const SubmissionItemContainer = styled.li`
   padding: 5px 12px;
   height: 16px;
 
-  font-family: 'Noto Sans KR';
+  font-family: var(--jp-ui-font-family);
   font-style: normal;
   font-size: 12px;
   line-height: 16px;
