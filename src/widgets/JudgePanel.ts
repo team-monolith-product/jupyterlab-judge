@@ -91,7 +91,7 @@ export class JudgePanel extends BoxPanel {
     this.model.problemChanged.connect((sender, problem) => {
       this.renderProblem();
       if (problem?.title) {
-        this.title.label = `${problem?.title}.judge`
+        this.title.label = `${problem?.title}.judge`;
       }
     });
 
@@ -234,12 +234,20 @@ export class JudgePanel extends BoxPanel {
     }
 
     const code = this.model.source;
-    const reply = await OutputArea.execute(
-      code,
-      this._terminal.outputArea,
-      this.session,
-      {}
-    );
+    let reply: KernelMessage.IExecuteReplyMsg | undefined = undefined;
+    try {
+      reply = await OutputArea.execute(
+        code,
+        this._terminal.outputArea,
+        this.session,
+        {}
+      );
+    } catch (e: any) {
+      if (e.message === 'Session has no kernel.') {
+        return null;
+      }
+      throw e;
+    }
 
     // Restarts after the execution, cleaning up the kernel state.
     // It offers better ux, because users don't have to wait for the kernel to be ready.
