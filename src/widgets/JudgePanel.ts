@@ -221,7 +221,7 @@ export class JudgePanel extends BoxPanel {
       await sessionContextDialogs.selectKernel(this.session);
       if (this.session.hasNoKernel) {
         void showDialog({
-          title: this._trans.__('Cell not executed due missing kernel'),
+          title: this._trans.__('Cell not executed due to missing kernel'),
           body: this._trans.__(
             'The cell has not been executed because no kernel selected. Please select a kernel to execute the cell.'
           ),

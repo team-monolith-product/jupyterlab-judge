@@ -1,9 +1,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: jupyterlab_judge 0.8.1\n"
+"Project-Id-Version: jupyterlab_judge 0.13.0\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-02-07 09:55+0900\n"
+"POT-Creation-Date: 2023-03-24 18:42+0900\n"
 "PO-Revision-Date: 2023-02-01 12:47+0900\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: ko_KR <LL@li.org>\n"
@@ -22,24 +22,24 @@ msgctxt "schema"
 msgid "jupyterlab-judge"
 msgstr "jupyterlab_judge"
 
-#: src/commands.ts:152
+#: src/commands.ts:152 src/commands.ts:158
 msgid "Run Code"
 msgstr "실행"
 
-#: src/commands.ts:156
+#: src/commands.ts:156 src/commands.ts:162
 msgid "Run All Code"
 msgstr "실행"
 
-#: src/commands.ts:37
+#: src/commands.ts:37 src/commands.ts:38
 msgid "Open Judge"
 msgstr "문제 열기"
 
-#: src/commands.ts:50
+#: src/commands.ts:50 src/commands.ts:51
 msgid "Open or Create Judge From Id"
 msgstr "ID로부터 문제 열기"
 
-#: src/commands.ts:59 src/widgets/JudgeTerminal.ts:33
-#: src/widgets/JudgeTerminal.ts:38
+#: src/commands.ts:59 src/commands.ts:60 src/widgets/JudgeTerminal.ts:33
+#: src/widgets/JudgeTerminal.ts:35 src/widgets/JudgeTerminal.ts:38
 msgid "Execute"
 msgstr "실행"
 
@@ -122,7 +122,7 @@ msgstr "제출 기록이 없습니다."
 msgid "No Submissions Judging"
 msgstr "진행중인 채점이 없습니다"
 
-#: src/index.ts:117 src/index.ts:130 src/index.ts:134
+#: src/index.ts:117 src/index.ts:129 src/index.ts:130 src/index.ts:134
 #: src/widgets/JudgePanel.ts:77 src/widgets/JudgePanel.ts:80
 msgid "Judge"
 msgstr "문제"
@@ -144,8 +144,9 @@ msgid "Document is read-only"
 msgstr "읽기 전용 문서입니다"
 
 #: src/toolbar.tsx:38 src/toolbar.tsx:40 src/widgets/JudgePanel.ts:213
-#: src/widgets/JudgePanel.ts:217 src/widgets/JudgePanel.ts:229
-#: src/widgets/JudgePanel.ts:231
+#: src/widgets/JudgePanel.ts:217 src/widgets/JudgePanel.ts:228
+#: src/widgets/JudgePanel.ts:229 src/widgets/JudgePanel.ts:231
+#: src/widgets/JudgePanel.ts:240
 msgid "Ok"
 msgstr "확인"
 
@@ -169,16 +170,30 @@ msgstr "문제를 불러오지 못했습니다."
 
 #: src/widgets/JudgePanel.ts:209 src/widgets/JudgePanel.ts:213
 #: src/widgets/JudgePanel.ts:225 src/widgets/JudgePanel.ts:227
+#: src/widgets/JudgePanel.ts:236
 msgid "Cell not executed due to pending input"
 msgstr "입력을 기다리고 있어 실행하지 못했습니다"
 
 #: src/widgets/JudgePanel.ts:210 src/widgets/JudgePanel.ts:214
 #: src/widgets/JudgePanel.ts:226 src/widgets/JudgePanel.ts:228
+#: src/widgets/JudgePanel.ts:237
 msgid ""
 "The cell has not been executed to avoid kernel deadlock as there is "
 "another pending input! Submit your pending input and try again."
 msgstr "입력을 기다리고 있어 교착 상태를 방지하기 위해 코드를 실행하지 않았습니다. 입력을 완료하고 다시 시도해주세요."
 
+#: src/widgets/JudgePanel.ts:224
+#, fuzzy
+msgid "Cell not executed due missing kernel"
+msgstr "커널이 선택되지 않아 실행하지 못했습니다"
+
+#: src/widgets/JudgePanel.ts:225
+msgid ""
+"The cell has not been executed because no kernel selected. Please select a"
+" kernel to execute the cell."
+msgstr "커널이 선택되지 않아 코드를 실행할 수 없습니다. 커널을 선택하고 다시 시도해주세요."
+
 #: src/widgets/JudgeTerminal.ts:41 src/widgets/JudgeTerminal.ts:54
+#: src/widgets/JudgeTerminal.ts:58
 msgid "Stop"
 msgstr "중지"
