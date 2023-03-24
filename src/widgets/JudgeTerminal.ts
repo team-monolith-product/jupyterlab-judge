@@ -4,7 +4,6 @@ import { runIcon, stopIcon } from '@jupyterlab/ui-components';
 import { TRANSLATOR_DOMAIN } from '../constants';
 import { JudgePanel } from './JudgePanel';
 
-
 export namespace JudgeTerminal {
   export interface IOptions extends JudgeOutputArea.IOptions {
     panel: JudgePanel;
@@ -23,10 +22,8 @@ export class JudgeTerminal extends Panel {
     const translator = options.translator;
     const trans = translator.load(TRANSLATOR_DOMAIN);
 
-
     // Create toolbar
     const toolbar = new Widget();
-
 
     // Execute Button
     toolbar.addClass('jp-JudgeTerminal-toolbar');
@@ -38,7 +35,12 @@ export class JudgeTerminal extends Panel {
     excuteButtonLabel.textContent = trans.__('Execute');
     executeButton.addEventListener('click', async () => {
       executeButton.disabled = true;
-      await options.panel.execute();
+      try {
+        await options.panel.execute();
+      } catch (e) {
+        executeButton.disabled = false;
+        throw e;
+      }
       executeButton.disabled = false;
     });
     executeButton.appendChild(excuteButtonLabel);
@@ -47,7 +49,7 @@ export class JudgeTerminal extends Panel {
     const seperator = document.createElement('div');
     seperator.className = 'jp-JudgeTerminal-seperator';
 
-    // Stop Button    
+    // Stop Button
     const stopButton = document.createElement('button');
     stopButton.className = 'jp-JudgeTerminal-stopButton';
     stopIcon.element({ container: stopButton });
@@ -58,7 +60,7 @@ export class JudgeTerminal extends Panel {
       options.panel.session.shutdown();
     });
     stopButton.appendChild(stopButtonLabel);
-    
+
     toolbar.node.appendChild(executeButton);
     toolbar.node.appendChild(seperator);
     toolbar.node.appendChild(stopButton);
