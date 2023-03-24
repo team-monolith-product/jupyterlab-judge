@@ -143,7 +143,7 @@ export class JudgePanel extends BoxPanel {
     return this._context;
   }
 
-  renderProblem() {
+  renderProblem(): void {
     this._markdownRenderer.renderModel(
       new MimeModel({
         data: {
@@ -218,8 +218,17 @@ export class JudgePanel extends BoxPanel {
 
   public async execute(): Promise<KernelMessage.IExecuteReplyMsg | null> {
     if (this.session.hasNoKernel) {
-      void sessionContextDialogs.selectKernel(this.session);
-      return null;
+      await sessionContextDialogs.selectKernel(this.session);
+      if (this.session.hasNoKernel) {
+        void showDialog({
+          title: this._trans.__('Cell not executed due to missing kernel'),
+          body: this._trans.__(
+            'The cell has not been executed because no kernel selected. Please select a kernel to execute the cell.'
+          ),
+          buttons: [Dialog.okButton({ label: this._trans.__('Ok') })]
+        });
+        return null;
+      }
     }
 
     if (this.session.pendingInput) {
@@ -233,20 +242,25 @@ export class JudgePanel extends BoxPanel {
       return null;
     }
 
-    const code = this.model.source;
     let reply: KernelMessage.IExecuteReplyMsg | undefined = undefined;
     try {
+      const code = this.model.source;
       reply = await OutputArea.execute(
         code,
         this._terminal.outputArea,
         this.session,
         {}
       );
-    } catch (e: any) {
-      if (e.message === 'Session has no kernel.') {
-        return null;
+    } catch (e) {
+      if (
+        e instanceof Error &&
+        e.message ===
+          'Canceled future for execute_request message before replies were done'
+      ) {
+        // User canceled the execution. Do nothing.
+      } else {
+        throw e;
       }
-      throw e;
     }
 
     // Restarts after the execution, cleaning up the kernel state.
@@ -294,7 +308,7 @@ export class JudgePanel extends BoxPanel {
       totalCount: testCases.length
     };
 
-    for (let testCase of testCases) {
+    for (const testCase of testCases) {
       const result = await this.runWithInput(kernel, problem, testCase);
       results.push(result);
       this.model.submissionStatus = {
@@ -310,11 +324,11 @@ export class JudgePanel extends BoxPanel {
     );
     if (validateResult.acceptedCount === validateResult.totalCount) {
       status = 'AC';
-    } else if (results.some(result => result.status == 'RE')) {
+    } else if (results.some(result => result.status === 'RE')) {
       status = 'RE';
-    } else if (results.some(result => result.status == 'OLE')) {
+    } else if (results.some(result => result.status === 'OLE')) {
       status = 'OLE';
-    } else if (results.some(result => result.status == 'TLE')) {
+    } else if (results.some(result => result.status === 'TLE')) {
       status = 'TLE';
     } else {
       status = 'WA';
@@ -354,7 +368,7 @@ export class JudgePanel extends BoxPanel {
     kernel: IKernelConnection,
     problem: ProblemProvider.IProblem,
     input: string,
-    restartKernel: boolean = false
+    restartKernel = false
   ): Promise<RunResult> {
     const code = this.model.source;
 
@@ -399,7 +413,7 @@ export class JudgePanel extends BoxPanel {
     future.onStdin = (
       msg: KernelMessage.IStdinMessage<KernelMessage.StdinMessageType>
     ) => {
-      if (msg.header.msg_type == 'input_request') {
+      if (msg.header.msg_type === 'input_request') {
         const currentInputLine = inputLinesLeft.shift();
         future.sendInputReply(
           {
