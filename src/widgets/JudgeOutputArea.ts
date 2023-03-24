@@ -1,9 +1,9 @@
-import { OutputArea } from "@jupyterlab/outputarea";
-import { IOutputModel } from "@jupyterlab/rendermime";
-import { KernelMessage, Kernel } from "@jupyterlab/services";
-import { ITranslator } from "@jupyterlab/translation";
+import { OutputArea } from '@jupyterlab/outputarea';
+import { IOutputModel } from '@jupyterlab/rendermime';
+import { KernelMessage, Kernel } from '@jupyterlab/services';
+import { ITranslator } from '@jupyterlab/translation';
 import { Widget, Panel, PanelLayout } from '@lumino/widgets';
-import { TRANSLATOR_DOMAIN } from "../constants";
+import { TRANSLATOR_DOMAIN } from '../constants';
 
 /**
  * The class name added to actual outputs
@@ -32,7 +32,7 @@ export namespace JudgeOutputArea {
 export class JudgeOutputArea extends OutputArea {
   constructor(options: JudgeOutputArea.IOptions) {
     super(options);
-    this.addClass('jp-JudgeOutputArea')
+    this.addClass('jp-JudgeOutputArea');
 
     const trans = options.translator.load(TRANSLATOR_DOMAIN);
 
@@ -41,7 +41,7 @@ export class JudgeOutputArea extends OutputArea {
     const placeholder = document.createElement('div');
     placeholder.className = 'jp-JudgeOutputArea-placeholder';
     placeholder.textContent = trans.__('Execution result will be shown here');
- 
+
     this.node.appendChild(placeholder);
   }
 

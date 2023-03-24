@@ -218,8 +218,7 @@ export class JudgePanel extends BoxPanel {
 
   public async execute(): Promise<KernelMessage.IExecuteReplyMsg | null> {
     if (this.session.hasNoKernel) {
-      void sessionContextDialogs.selectKernel(this.session);
-      return null;
+      await sessionContextDialogs.selectKernel(this.session);
     }
 
     if (this.session.pendingInput) {
