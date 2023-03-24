@@ -219,6 +219,16 @@ export class JudgePanel extends BoxPanel {
   public async execute(): Promise<KernelMessage.IExecuteReplyMsg | null> {
     if (this.session.hasNoKernel) {
       await sessionContextDialogs.selectKernel(this.session);
+      if (this.session.hasNoKernel) {
+        void showDialog({
+          title: this._trans.__('Cell not executed due missing kernel'),
+          body: this._trans.__(
+            'The cell has not been executed because no kernel selected. Please select a kernel to execute the cell.'
+          ),
+          buttons: [Dialog.okButton({ label: this._trans.__('Ok') })]
+        });
+        return null;
+      }
     }
 
     if (this.session.pendingInput) {
@@ -232,13 +242,26 @@ export class JudgePanel extends BoxPanel {
       return null;
     }
 
-    const code = this.model.source;
-    const reply = await OutputArea.execute(
-      code,
-      this._terminal.outputArea,
-      this.session,
-      {}
-    );
+    let reply: KernelMessage.IExecuteReplyMsg | undefined = undefined;
+    try {
+      const code = this.model.source;
+      reply = await OutputArea.execute(
+        code,
+        this._terminal.outputArea,
+        this.session,
+        {}
+      );
+    } catch (e) {
+      if (
+        e instanceof Error &&
+        e.message ===
+          'Canceled future for execute_request message before replies were done'
+      ) {
+        // User canceled the execution. Do nothing.
+      } else {
+        throw e;
+      }
+    }
 
     // Restarts after the execution, cleaning up the kernel state.
     // It offers better ux, because users don't have to wait for the kernel to be ready.
