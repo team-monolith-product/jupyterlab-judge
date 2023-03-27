@@ -56,8 +56,8 @@ export class JudgeTerminal extends Panel {
     const stopButtonLabel = document.createElement('span');
     stopButtonLabel.className = 'jp-JudgeTerminal-stopButtonLabel';
     stopButtonLabel.textContent = trans.__('Stop');
-    stopButton.addEventListener('click', () => {
-      options.panel.session.shutdown();
+    stopButton.addEventListener('click', async () => {
+      await options.panel.session.session?.kernel?.interrupt();
     });
     stopButton.appendChild(stopButtonLabel);
 
