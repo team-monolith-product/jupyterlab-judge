@@ -1,9 +1,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: jupyterlab_judge 0.13.0\n"
+"Project-Id-Version: jupyterlab_judge 0.13.1\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-03-24 18:42+0900\n"
+"POT-Creation-Date: 2023-03-27 16:02+0900\n"
 "PO-Revision-Date: 2023-02-01 12:47+0900\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: ko_KR <LL@li.org>\n"
@@ -184,7 +184,7 @@ msgstr "입력을 기다리고 있어 교착 상태를 방지하기 위해 코�
 
 #: src/widgets/JudgePanel.ts:224
 #, fuzzy
-msgid "Cell not executed due missing kernel"
+msgid "Cell not executed due to missing kernel"
 msgstr "커널이 선택되지 않아 실행하지 못했습니다"
 
 #: src/widgets/JudgePanel.ts:225
