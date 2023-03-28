@@ -1,8 +1,11 @@
 import { Token } from '@lumino/coreutils';
 import { ISignal } from '@lumino/signaling';
+import { Widget } from '@lumino/widgets';
 import { PLUGIN_ID } from './constants';
 import { ProblemProvider } from './problemProvider/problemProvider';
 import { JudgePanel } from './widgets/JudgePanel';
+import { JudgeSubmissionArea } from './widgets/JudgeSubmissionArea';
+import { JudgeTerminal } from './widgets/JudgeTerminal';
 
 /**
  * The Problem Provider token.
@@ -34,6 +37,26 @@ export const IJudgePanelFactoryRegistry = new Token<IJudgePanelFactoryRegistry>(
 
 export interface IJudgePanelFactoryRegistry {
   register(factory: (options: JudgePanel.IOptions) => JudgePanel): void;
+}
+
+export const IJudgeSubmissionAreaFactoryRegistry =
+  new Token<IJudgeSubmissionAreaFactoryRegistry>(
+    `${PLUGIN_ID}:IJudgeSubmissionAreaFactoryRegistry`
+  );
+
+export interface IJudgeSubmissionAreaFactoryRegistry {
+  register(factory: (options: JudgeSubmissionArea.IOptions) => Widget): void;
+}
+
+export const IJudgeTerminalFactoryRegistry =
+  new Token<IJudgeTerminalFactoryRegistry>(
+    `${PLUGIN_ID}:IJudgeTerminalFactoryRegistry`
+  );
+
+export interface IJudgeTerminalFactoryRegistry {
+  register(
+    factory: (options: JudgeTerminal.IOptions) => JudgeTerminal.IJudgeTerminal
+  ): void;
 }
 
 export const IJudgeSignal = new Token<IJudgeSignal>(

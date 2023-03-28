@@ -8,6 +8,9 @@ export namespace JudgeTerminal {
   export interface IOptions extends JudgeOutputArea.IOptions {
     panel: JudgePanel;
   }
+  export interface IJudgeTerminal extends Widget {
+    outputArea: JudgeOutputArea;
+  }
 }
 
 // This is terminal look-like widget for judge output.

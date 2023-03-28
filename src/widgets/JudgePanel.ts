@@ -35,7 +35,7 @@ import { ProblemProvider } from '../problemProvider/problemProvider';
 import { ToolbarItems } from '../toolbar';
 import { TRANSLATOR_DOMAIN } from '../constants';
 import { Signal } from '@lumino/signaling';
-import { BoxPanel, SplitPanel } from '@lumino/widgets';
+import { BoxPanel, SplitPanel, Widget } from '@lumino/widgets';
 import { JudgeTerminal } from './JudgeTerminal';
 import { JudgeSubmissionArea } from './JudgeSubmissionArea';
 
@@ -59,6 +59,13 @@ export namespace JudgePanel {
         submission: ProblemProvider.ISubmission;
       }
     >;
+
+    judgeSubmissionAreaFactory: (
+      options: JudgeSubmissionArea.IOptions
+    ) => Widget;
+    judgeTerminalFactory: (
+      options: JudgeTerminal.IOptions
+    ) => JudgeTerminal.IJudgeTerminal;
   }
 }
 
@@ -95,7 +102,7 @@ export class JudgePanel extends BoxPanel {
       }
     });
 
-    this._terminal = new JudgeTerminal({
+    this._terminal = options.judgeTerminalFactory({
       panel: this,
       model: this.model.outputAreaModel,
       rendermime: options.rendermime,
@@ -103,7 +110,7 @@ export class JudgePanel extends BoxPanel {
     });
     this._terminal.addClass('jp-JudgePanel-terminal');
 
-    const submissionPanel = new JudgeSubmissionArea({
+    const submissionPanel: Widget = options.judgeSubmissionAreaFactory({
       panel: this,
       model: this.model,
       translator: this._translator
@@ -484,7 +491,7 @@ export class JudgePanel extends BoxPanel {
 
   private _editorWidget: CodeEditorWrapper;
   private _markdownRenderer: IRenderMime.IRenderer;
-  private _terminal: JudgeTerminal;
+  private _terminal: JudgeTerminal.IJudgeTerminal;
 
   private _translator: ITranslator;
   private _trans: TranslationBundle;
@@ -531,6 +538,8 @@ export class JudgeDocumentFactory extends ABCWidgetFactory<
     this._commands = options.commands;
     this._editorConfig = options.editorConfig;
     this._judgePanelFactory = options.judgePanelFactory;
+    this._judgeSubmissionAreaFactory = options.judgeSubmissionAreaFactory;
+    this._judgeTerminalFactory = options.judgeTerminalFactory;
     this._submitted = options.submitted;
   }
 
@@ -545,7 +554,9 @@ export class JudgeDocumentFactory extends ABCWidgetFactory<
       editorConfig: this._editorConfig,
       context,
       translator: this.translator,
-      submitted: this._submitted
+      submitted: this._submitted,
+      judgeSubmissionAreaFactory: this._judgeSubmissionAreaFactory,
+      judgeTerminalFactory: this._judgeTerminalFactory
     });
 
     judgePanel.title.icon = textEditorIcon;
@@ -562,6 +573,12 @@ export class JudgeDocumentFactory extends ABCWidgetFactory<
   private _commands: CommandRegistry;
   private _editorConfig: Partial<CodeEditor.IConfig>;
   private _judgePanelFactory: (options: JudgePanel.IOptions) => JudgePanel;
+  private _judgeSubmissionAreaFactory: (
+    options: JudgeSubmissionArea.IOptions
+  ) => Widget;
+  private _judgeTerminalFactory: (
+    options: JudgeTerminal.IOptions
+  ) => JudgeTerminal.IJudgeTerminal;
   private _submitted: Signal<
     any,
     {
@@ -592,6 +609,12 @@ export namespace JudgeDocumentFactory {
     >;
 
     judgePanelFactory: (options: JudgePanel.IOptions) => JudgePanel;
+    judgeSubmissionAreaFactory: (
+      options: JudgeSubmissionArea.IOptions
+    ) => Widget;
+    judgeTerminalFactory: (
+      options: JudgeTerminal.IOptions
+    ) => JudgeTerminal.IJudgeTerminal;
     submitted: Signal<
       any,
       {
