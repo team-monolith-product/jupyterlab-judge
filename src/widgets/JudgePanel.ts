@@ -39,7 +39,7 @@ import { BoxPanel, SplitPanel } from '@lumino/widgets';
 import { JudgeTerminal } from './JudgeTerminal';
 import { JudgeSubmissionArea } from './JudgeSubmissionArea';
 
-interface RunResult {
+interface IRunResult {
   status: 'OK' | 'TLE' | 'OLE' | 'RE';
   output: string;
   cpuTime: number;
@@ -300,7 +300,7 @@ export class JudgePanel extends BoxPanel {
     }
 
     const testCases = await this.model.getTestCases();
-    const results: RunResult[] = [];
+    const results: IRunResult[] = [];
 
     this.model.submissionStatus = {
       inProgress: true,
@@ -369,7 +369,7 @@ export class JudgePanel extends BoxPanel {
     problem: ProblemProvider.IProblem,
     input: string,
     restartKernel = false
-  ): Promise<RunResult> {
+  ): Promise<IRunResult> {
     const code = this.model.source;
 
     const content: KernelMessage.IExecuteRequestMsg['content'] = {
@@ -425,17 +425,18 @@ export class JudgePanel extends BoxPanel {
       }
     };
 
-    let result: RunResult = { output: '', status: 'OK', cpuTime: 0 };
+    const result: IRunResult = { output: '', status: 'OK', cpuTime: 0 };
     future.onIOPub = (msg: KernelMessage.IIOPubMessage) => {
       const msgType = msg.header.msg_type;
 
       switch (msgType) {
-        case 'stream':
+        case 'stream': {
           const msgStream = msg as IStreamMsg;
           if (msgStream.content.name === 'stdout') {
             result.output = result.output.concat(msgStream.content.text);
           }
           break;
+        }
         case 'error':
           result.status = 'RE';
           break;
