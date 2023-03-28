@@ -4,7 +4,7 @@ import React, { useContext } from 'react';
 import { useQuery, useQueryClient } from 'react-query';
 import { JudgeModel } from '../model';
 import { ProblemProvider } from '../problemProvider/problemProvider';
-import { transContext } from '../widgets/JudgeTools';
+import { transContext } from '../widgets/JudgeSubmissionArea';
 import { SubmissionItem } from './SubmissionItem';
 import { SubmissionItemWait } from './SubmissionItemWait';
 

@@ -1,7 +1,7 @@
 import { Time } from '@jupyterlab/coreutils';
 import React, { useContext } from 'react';
 import { ProblemProvider } from '../problemProvider/problemProvider';
-import { transContext } from '../widgets/JudgeTools';
+import { transContext } from '../widgets/JudgeSubmissionArea';
 import styled from '@emotion/styled';
 import { SubmissionItemStatus } from './SubmissionItemStatus';
 

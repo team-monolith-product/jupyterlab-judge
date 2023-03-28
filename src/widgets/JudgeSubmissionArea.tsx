@@ -15,7 +15,7 @@ export const transContext = React.createContext<TranslationBundle>(
   nullTranslator.load(TRANSLATOR_DOMAIN)
 );
 
-export namespace JudgeTools {
+export namespace JudgeSubmissionArea {
   export interface IOptions {
     panel: JudgePanel;
     model: JudgeModel;
@@ -23,14 +23,14 @@ export namespace JudgeTools {
   }
 }
 
-export class JudgeTools extends ReactWidget {
+export class JudgeSubmissionArea extends ReactWidget {
   queryClient = new QueryClient();
 
   private _panel: JudgePanel;
   private _model: JudgeModel;
   private _translator: ITranslator;
 
-  constructor(options: JudgeTools.IOptions) {
+  constructor(options: JudgeSubmissionArea.IOptions) {
     super();
 
     this._panel = options.panel;

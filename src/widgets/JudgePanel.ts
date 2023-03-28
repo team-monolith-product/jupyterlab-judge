@@ -37,7 +37,7 @@ import { TRANSLATOR_DOMAIN } from '../constants';
 import { Signal } from '@lumino/signaling';
 import { BoxPanel, SplitPanel } from '@lumino/widgets';
 import { JudgeTerminal } from './JudgeTerminal';
-import { JudgeTools } from './JudgeTools';
+import { JudgeSubmissionArea } from './JudgeSubmissionArea';
 
 interface RunResult {
   status: 'OK' | 'TLE' | 'OLE' | 'RE';
@@ -103,7 +103,7 @@ export class JudgePanel extends BoxPanel {
     });
     this._terminal.addClass('jp-JudgePanel-terminal');
 
-    const submissionPanel = new JudgeTools({
+    const submissionPanel = new JudgeSubmissionArea({
       panel: this,
       model: this.model,
       translator: this._translator
