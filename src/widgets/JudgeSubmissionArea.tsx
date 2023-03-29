@@ -7,7 +7,10 @@ import {
 import React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { SubmissionArea } from '../components/SubmissionArea';
-import { SubmissionList } from '../components/SubmissionList';
+import {
+  SubmissionList,
+  SubmissionListImpl
+} from '../components/SubmissionList';
 import { TRANSLATOR_DOMAIN } from '../constants';
 import { JudgeModel } from '../model';
 import { JudgePanel } from './JudgePanel';
@@ -17,9 +20,9 @@ export const transContext = React.createContext<TranslationBundle>(
 );
 
 export const factoryContext = React.createContext<{
-  submissionList: (props: SubmissionList.IOptions) => JSX.Element;
+  submissionListFactory: (props: SubmissionList.IOptions) => JSX.Element;
 }>({
-  submissionList: SubmissionList
+  submissionListFactory: SubmissionListImpl
 });
 
 export namespace JudgeSubmissionArea {
@@ -53,7 +56,7 @@ export class JudgeSubmissionArea extends ReactWidget {
   render(): JSX.Element {
     return (
       <factoryContext.Provider
-        value={{ submissionList: this._submissionListFactory }}
+        value={{ submissionListFactory: this._submissionListFactory }}
       >
         <transContext.Provider value={this._translator.load(TRANSLATOR_DOMAIN)}>
           <QueryClientProvider client={this.queryClient}>
