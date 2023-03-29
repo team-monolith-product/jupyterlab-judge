@@ -4,7 +4,7 @@ import React, { useContext } from 'react';
 import { useQuery, useQueryClient } from 'react-query';
 import { JudgeModel } from '../model';
 import { ProblemProvider } from '../problemProvider/problemProvider';
-import { transContext } from '../widgets/JudgeSubmissionArea';
+import { factoryContext, transContext } from '../widgets/JudgeSubmissionArea';
 import { SubmissionItem } from './SubmissionItem';
 import { SubmissionItemWait } from './SubmissionItemWait';
 
@@ -13,6 +13,7 @@ export function SubmissionListSignalWrapper(props: {
   model: JudgeModel;
 }): JSX.Element {
   const queryClient = useQueryClient();
+  const { submissionList } = useContext(factoryContext);
 
   return (
     <UseSignal
@@ -38,22 +39,20 @@ export function SubmissionListSignalWrapper(props: {
                   initialArgs={props.model.submissionStatus}
                 >
                   {(_model, submissionStatus) => {
-                    return (
-                      <SubmissionList
-                        className={props.className}
-                        problemId={problemId}
-                        getSubmissions={async (): Promise<
-                          ProblemProvider.ISubmission[]
-                        > => {
-                          const submissions = await props.model.submissions();
-                          return submissions ?? [];
-                        }}
-                        setCode={(code: string) => {
-                          props.model.source = code;
-                        }}
-                        submissionStatus={submissionStatus ?? null}
-                      />
-                    );
+                    return submissionList({
+                      className: props.className,
+                      problemId: problemId,
+                      getSubmissions: async (): Promise<
+                        ProblemProvider.ISubmission[]
+                      > => {
+                        const submissions = await props.model.submissions();
+                        return submissions ?? [];
+                      },
+                      setCode: (code: string) => {
+                        props.model.source = code;
+                      },
+                      submissionStatus: submissionStatus ?? null
+                    });
                   }}
                 </UseSignal>
               );
@@ -64,20 +63,22 @@ export function SubmissionListSignalWrapper(props: {
     </UseSignal>
   );
 }
+export namespace SubmissionList {
+  export interface IOptions {
+    className?: string;
+    problemId: string | null;
+    getSubmissions: () => Promise<ProblemProvider.ISubmission[]>;
+    setCode: (code: string) => void;
+    submissionStatus: JudgeModel.SubmissionStatus | null;
+  }
+}
 
-function SubmissionList(props: {
-  className?: string;
-  problemId: string | null;
-  getSubmissions: () => Promise<ProblemProvider.ISubmission[]>;
-  setCode: (code: string) => void;
-  submissionStatus: JudgeModel.SubmissionStatus | null;
-}): JSX.Element {
+export function SubmissionList(props: SubmissionList.IOptions): JSX.Element {
   const trans = useContext(transContext);
 
   if (props.problemId === null) {
     return (
       <SubmissionListError className={props.className}>
-        {/* 🚫 {trans.__('History Not Available')} */}
         ⌛ {trans.__('Loading History')}
       </SubmissionListError>
     );
@@ -103,7 +104,8 @@ function SubmissionList(props: {
     );
   }
 
-  const isSubmissionInProgress = props.submissionStatus && props.submissionStatus.inProgress;
+  const isSubmissionInProgress =
+    props.submissionStatus && props.submissionStatus.inProgress;
 
   if (data.length === 0 && !isSubmissionInProgress) {
     return (

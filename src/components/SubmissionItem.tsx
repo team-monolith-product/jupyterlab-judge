@@ -12,8 +12,11 @@ export function SubmissionItem(props: {
 }): JSX.Element {
   const trans = useContext(transContext);
 
-  let createdAtText = Time.formatHuman(new Date(props.submission.createdAt));
-  let createdAtTitle = Time.format(new Date(props.submission.createdAt), 'lll');
+  const createdAtText = Time.formatHuman(new Date(props.submission.createdAt));
+  const createdAtTitle = Time.format(
+    new Date(props.submission.createdAt),
+    'lll'
+  );
 
   return (
     <SubmissionItemContainer className={props.className}>

@@ -38,6 +38,7 @@ import { Signal } from '@lumino/signaling';
 import { BoxPanel, SplitPanel, Widget } from '@lumino/widgets';
 import { JudgeTerminal } from './JudgeTerminal';
 import { JudgeSubmissionArea } from './JudgeSubmissionArea';
+import { SubmissionList } from '../components/SubmissionList';
 
 interface IRunResult {
   status: 'OK' | 'TLE' | 'OLE' | 'RE';
@@ -66,6 +67,7 @@ export namespace JudgePanel {
     judgeTerminalFactory: (
       options: JudgeTerminal.IOptions
     ) => JudgeTerminal.IJudgeTerminal;
+    submissionListFactory: (options: SubmissionList.IOptions) => JSX.Element;
   }
 }
 
@@ -113,7 +115,8 @@ export class JudgePanel extends BoxPanel {
     const submissionPanel: Widget = options.judgeSubmissionAreaFactory({
       panel: this,
       model: this.model,
-      translator: this._translator
+      translator: this._translator,
+      submissionListFactory: options.submissionListFactory
     });
     submissionPanel.addClass('jp-JudgePanel-submissionPanel');
 
@@ -540,6 +543,7 @@ export class JudgeDocumentFactory extends ABCWidgetFactory<
     this._judgePanelFactory = options.judgePanelFactory;
     this._judgeSubmissionAreaFactory = options.judgeSubmissionAreaFactory;
     this._judgeTerminalFactory = options.judgeTerminalFactory;
+    this._submissionListFactory = options.submissionListFactory;
     this._submitted = options.submitted;
   }
 
@@ -556,7 +560,8 @@ export class JudgeDocumentFactory extends ABCWidgetFactory<
       translator: this.translator,
       submitted: this._submitted,
       judgeSubmissionAreaFactory: this._judgeSubmissionAreaFactory,
-      judgeTerminalFactory: this._judgeTerminalFactory
+      judgeTerminalFactory: this._judgeTerminalFactory,
+      submissionListFactory: this._submissionListFactory
     });
 
     judgePanel.title.icon = textEditorIcon;
@@ -579,6 +584,9 @@ export class JudgeDocumentFactory extends ABCWidgetFactory<
   private _judgeTerminalFactory: (
     options: JudgeTerminal.IOptions
   ) => JudgeTerminal.IJudgeTerminal;
+  private _submissionListFactory: (
+    options: SubmissionList.IOptions
+  ) => JSX.Element;
   private _submitted: Signal<
     any,
     {
@@ -615,6 +623,7 @@ export namespace JudgeDocumentFactory {
     judgeTerminalFactory: (
       options: JudgeTerminal.IOptions
     ) => JudgeTerminal.IJudgeTerminal;
+    submissionListFactory: (options: SubmissionList.IOptions) => JSX.Element;
     submitted: Signal<
       any,
       {
