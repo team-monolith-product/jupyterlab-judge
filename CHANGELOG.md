@@ -2,6 +2,22 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.14.0
+
+([Full Changelog](https://github.com/team-monolith-product/jupyterlab-judge/compare/v0.13.2...829167f22422c140f148c39deb08d0bb6ff7f4a5))
+
+### Merged PRs
+
+- Feature/replacable submission area [#12](https://github.com/team-monolith-product/jupyterlab-judge/pull/12) ([@a3626a](https://github.com/a3626a))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/team-monolith-product/jupyterlab-judge/graphs/contributors?from=2023-03-27&to=2023-03-29&type=c))
+
+[@a3626a](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3Aa3626a+updated%3A2023-03-27..2023-03-29&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.13.2
 
 ([Full Changelog](https://github.com/team-monolith-product/jupyterlab-judge/compare/v0.13.1...e273c541b8d068804711c22d64edf20437ffe814))
@@ -15,8 +31,6 @@
 ([GitHub contributors page for this release](https://github.com/team-monolith-product/jupyterlab-judge/graphs/contributors?from=2023-03-24&to=2023-03-27&type=c))
 
 [@a3626a](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3Aa3626a+updated%3A2023-03-24..2023-03-27&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.13.1
 
