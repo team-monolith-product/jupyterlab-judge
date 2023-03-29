@@ -30,12 +30,19 @@ import { JudgeModel } from './model';
 import {
   IJudgePanelFactoryRegistry,
   IJudgeSignal,
+  IJudgeSubmissionAreaFactoryRegistry,
+  IJudgeTerminalFactoryRegistry,
   IProblemProvider,
-  IProblemProviderRegistry
+  IProblemProviderRegistry,
+  ISubmissionListFactoryRegistry
 } from './tokens';
 import { HardCodedProblemProvider } from './problemProvider/HardCodedProblemProvider';
 import { ProblemProvider } from './problemProvider/problemProvider';
 import { Signal } from '@lumino/signaling';
+import { JudgeSubmissionArea } from './widgets/JudgeSubmissionArea';
+import { Widget } from '@lumino/widgets';
+import { JudgeTerminal } from './widgets/JudgeTerminal';
+import { SubmissionList } from './components/SubmissionList';
 
 /**
  * A signal that emits whenever a submission is submitted.
@@ -87,6 +94,66 @@ const judgePanelFactoryRegistry: JupyterFrontEndPlugin<IJudgePanelFactoryRegistr
       return {
         register: (factory: (options: JudgePanel.IOptions) => JudgePanel) => {
           judgePanelFactory = factory;
+        }
+      };
+    },
+    autoStart: true
+  };
+
+let judgeSubmissionAreaFactory: (
+  options: JudgeSubmissionArea.IOptions
+) => Widget = (options: JudgeSubmissionArea.IOptions) =>
+  new JudgeSubmissionArea(options);
+const judgeSubmissionAreaFactoryRegistry: JupyterFrontEndPlugin<IJudgeSubmissionAreaFactoryRegistry> =
+  {
+    id: `${PLUGIN_ID}:IJudgeSubmissionAreaFactoryRegistry`,
+    provides: IJudgeSubmissionAreaFactoryRegistry,
+    activate: (_app: JupyterFrontEnd): IJudgeSubmissionAreaFactoryRegistry => {
+      return {
+        register: (
+          factory: (options: JudgeSubmissionArea.IOptions) => Widget
+        ) => {
+          judgeSubmissionAreaFactory = factory;
+        }
+      };
+    },
+    autoStart: true
+  };
+
+let judgeTerminalFactory: (
+  options: JudgeTerminal.IOptions
+) => JudgeTerminal.IJudgeTerminal = (options: JudgeTerminal.IOptions) =>
+  new JudgeTerminal(options);
+const judgeTerminalFactoryRegistry: JupyterFrontEndPlugin<IJudgeTerminalFactoryRegistry> =
+  {
+    id: `${PLUGIN_ID}:IJudgeTerminalFactoryRegistry`,
+    provides: IJudgeTerminalFactoryRegistry,
+    activate: (_app: JupyterFrontEnd): IJudgeTerminalFactoryRegistry => {
+      return {
+        register: (
+          factory: (
+            options: JudgeTerminal.IOptions
+          ) => JudgeTerminal.IJudgeTerminal
+        ) => {
+          judgeTerminalFactory = factory;
+        }
+      };
+    },
+    autoStart: true
+  };
+
+let submissionListFactory: (options: SubmissionList.IOptions) => JSX.Element =
+  SubmissionList;
+const submissionListFactoryRegistry: JupyterFrontEndPlugin<ISubmissionListFactoryRegistry> =
+  {
+    id: `${PLUGIN_ID}:ISubmissionListFactoryRegistry`,
+    provides: ISubmissionListFactoryRegistry,
+    activate: (_app: JupyterFrontEnd): ISubmissionListFactoryRegistry => {
+      return {
+        register: (
+          factory: (options: SubmissionList.IOptions) => JSX.Element
+        ) => {
+          submissionListFactory = factory;
         }
       };
     },
@@ -145,8 +212,10 @@ const plugin: JupyterFrontEndPlugin<void> = {
       rendermime: rendermime,
       commands: app.commands,
       editorConfig: editorConfig,
-      judgePanelFactory: (options: JudgePanel.IOptions) =>
-        judgePanelFactory(options),
+      judgePanelFactory,
+      judgeSubmissionAreaFactory,
+      judgeTerminalFactory,
+      submissionListFactory,
       submitted,
       factoryOptions: {
         name: judgeDocumentFactoryName,
@@ -218,6 +287,9 @@ const plugins: JupyterFrontEndPlugin<any>[] = [
   plugin,
   problemProviderRegistry,
   judgePanelFactoryRegistry,
+  judgeSubmissionAreaFactoryRegistry,
+  judgeTerminalFactoryRegistry,
+  submissionListFactoryRegistry,
   signal
 ];
 

@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import React, { useState, useContext } from 'react';
 import { JudgePanel } from '../widgets/JudgePanel';
-import { transContext } from '../widgets/JudgeTools';
+import { transContext } from '../widgets/JudgeSubmissionArea';
 
 export function SubmissionControl(props: {
   className?: string;

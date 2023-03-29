@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import React, { useContext } from 'react';
 import { JudgeModel } from '../model';
 import { JudgePanel } from '../widgets/JudgePanel';
-import { transContext } from '../widgets/JudgeTools';
+import { transContext } from '../widgets/JudgeSubmissionArea';
 import { SubmissionControl } from './SubmissionControl';
 import { SubmissionListSignalWrapper } from './SubmissionList';
 

@@ -1,6 +1,6 @@
 import { ProblemProvider } from '../problemProvider/problemProvider';
 import React, { useContext } from 'react';
-import { transContext } from '../widgets/JudgeTools';
+import { transContext } from '../widgets/JudgeSubmissionArea';
 import styled from '@emotion/styled';
 
 export function SubmissionItemStatus(props: {

@@ -8,6 +8,9 @@ export namespace JudgeTerminal {
   export interface IOptions extends JudgeOutputArea.IOptions {
     panel: JudgePanel;
   }
+  export interface IJudgeTerminal extends Widget {
+    outputArea: JudgeOutputArea;
+  }
 }
 
 // This is terminal look-like widget for judge output.
@@ -57,7 +60,7 @@ export class JudgeTerminal extends Panel {
     stopButtonLabel.className = 'jp-JudgeTerminal-stopButtonLabel';
     stopButtonLabel.textContent = trans.__('Stop');
     stopButton.addEventListener('click', async () => {
-      await options.panel.session.session?.kernel?.interrupt();
+      await options.panel.session.shutdown();
     });
     stopButton.appendChild(stopButtonLabel);
 
