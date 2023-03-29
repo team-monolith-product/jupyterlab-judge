@@ -13,7 +13,7 @@ export function SubmissionListSignalWrapper(props: {
   model: JudgeModel;
 }): JSX.Element {
   const queryClient = useQueryClient();
-  const { submissionList } = useContext(factoryContext);
+  const { submissionListFactory: SubmissionList } = useContext(factoryContext);
 
   return (
     <UseSignal
@@ -39,20 +39,22 @@ export function SubmissionListSignalWrapper(props: {
                   initialArgs={props.model.submissionStatus}
                 >
                   {(_model, submissionStatus) => {
-                    return submissionList({
-                      className: props.className,
-                      problemId: problemId,
-                      getSubmissions: async (): Promise<
-                        ProblemProvider.ISubmission[]
-                      > => {
-                        const submissions = await props.model.submissions();
-                        return submissions ?? [];
-                      },
-                      setCode: (code: string) => {
-                        props.model.source = code;
-                      },
-                      submissionStatus: submissionStatus ?? null
-                    });
+                    return (
+                      <SubmissionList
+                        className={props.className}
+                        problemId={problemId}
+                        getSubmissions={async (): Promise<
+                          ProblemProvider.ISubmission[]
+                        > => {
+                          const submissions = await props.model.submissions();
+                          return submissions ?? [];
+                        }}
+                        setCode={(code: string) => {
+                          props.model.source = code;
+                        }}
+                        submissionStatus={submissionStatus ?? null}
+                      />
+                    );
                   }}
                 </UseSignal>
               );
@@ -73,7 +75,9 @@ export namespace SubmissionList {
   }
 }
 
-export function SubmissionList(props: SubmissionList.IOptions): JSX.Element {
+export function SubmissionListImpl(
+  props: SubmissionList.IOptions
+): JSX.Element {
   const trans = useContext(transContext);
 
   if (props.problemId === null) {

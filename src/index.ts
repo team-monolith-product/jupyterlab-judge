@@ -42,7 +42,10 @@ import { Signal } from '@lumino/signaling';
 import { JudgeSubmissionArea } from './widgets/JudgeSubmissionArea';
 import { Widget } from '@lumino/widgets';
 import { JudgeTerminal } from './widgets/JudgeTerminal';
-import { SubmissionList } from './components/SubmissionList';
+import {
+  SubmissionList,
+  SubmissionListImpl
+} from './components/SubmissionList';
 
 /**
  * A signal that emits whenever a submission is submitted.
@@ -143,7 +146,7 @@ const judgeTerminalFactoryRegistry: JupyterFrontEndPlugin<IJudgeTerminalFactoryR
   };
 
 let submissionListFactory: (options: SubmissionList.IOptions) => JSX.Element =
-  SubmissionList;
+  SubmissionListImpl;
 const submissionListFactoryRegistry: JupyterFrontEndPlugin<ISubmissionListFactoryRegistry> =
   {
     id: `${PLUGIN_ID}:ISubmissionListFactoryRegistry`,
