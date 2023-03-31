@@ -301,3 +301,7 @@ export default plugins;
 export * from './tokens';
 
 export { openOrCreateFromId } from './commands';
+
+export * from './widgets';
+export * from './components';
+export * from './problemProvider';

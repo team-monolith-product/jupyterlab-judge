@@ -39,7 +39,7 @@ export class JudgeSubmissionArea extends ReactWidget {
 
   private _panel: JudgePanel;
   private _model: JudgeModel;
-  private _translator: ITranslator;
+  private _trans: TranslationBundle;
   private _submissionListFactory: (
     props: SubmissionList.IOptions
   ) => JSX.Element;
@@ -49,7 +49,7 @@ export class JudgeSubmissionArea extends ReactWidget {
 
     this._panel = options.panel;
     this._model = options.model;
-    this._translator = options.translator;
+    this._trans = options.translator.load(TRANSLATOR_DOMAIN);
     this._submissionListFactory = options.submissionListFactory;
   }
 
@@ -58,7 +58,7 @@ export class JudgeSubmissionArea extends ReactWidget {
       <factoryContext.Provider
         value={{ submissionListFactory: this._submissionListFactory }}
       >
-        <transContext.Provider value={this._translator.load(TRANSLATOR_DOMAIN)}>
+        <transContext.Provider value={this._trans}>
           <QueryClientProvider client={this.queryClient}>
             <SubmissionArea
               key={this._model.problem?.id ?? ''}
