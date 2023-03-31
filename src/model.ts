@@ -233,10 +233,9 @@ export class JudgeModel implements DocumentRegistry.IModel {
   );
   private _problemProvider: IProblemProvider;
 
-  private _submissionsChanged = new Signal<
-    this,
-    ProblemProvider.ISubmission[]
-  >(this);
+  private _submissionsChanged = new Signal<this, ProblemProvider.ISubmission[]>(
+    this
+  );
 
   private _submissionStatus: JudgeModel.SubmissionStatus = {
     inProgress: false,
@@ -383,6 +382,9 @@ export namespace JudgeModel {
     private _switchCodeCell(value: Y.Map<any>) {
       const ycodeCellPrev = this._ycodeCell;
       this._ycodeCell = new YCodeCell(value, this);
+      this.undoManager = new Y.UndoManager([this._cell()], {
+        trackedOrigins: new Set([this._ycodeCell])
+      });
       this._ycodeCell.undoManager = this.undoManager;
       this.undoManager.clear();
       this._ycodeCellChanged.emit(this._ycodeCell);
@@ -436,9 +438,7 @@ export namespace JudgeModel {
 
     // YDocument에서는 source에 대해서 undoManager 가 정의되어 있어
     // 수정합니다.
-    public undoManager = new Y.UndoManager([this._cell()], {
-      trackedOrigins: new Set([this])
-    });
+    public undoManager = new Y.UndoManager([this._cell()]);
 
     private _ycodeCell: models.YCodeCell | null;
     private _yproblemId = this.ydoc.getText('problemId');
