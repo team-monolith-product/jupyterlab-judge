@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: jupyterlab_judge 0.14.3\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-04-03 17:19+0900\n"
-"PO-Revision-Date: 2023-04-03 17:08+0900\n"
+"POT-Creation-Date: 2023-04-03 17:44+0900\n"
+"PO-Revision-Date: 2023-04-03 17:43+0900\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: ko_KR <LL@li.org>\n"
 "Language: ko_KR\n"
@@ -46,6 +46,11 @@ msgstr "실행"
 msgid "No Submission History Found."
 msgstr "제출 기록을 확인할 수 없습니다."
 
+#: src/components/SubmissionControl.tsx:23
+msgid "An error occurred during submission."
+msgstr "제출 중 오류가 발생했습니다."
+
+#: src/components/SubmissionControl.tsx:32
 #: src/components/SubmissionControl.tsx:33
 msgid "Submit"
 msgstr "제출하기"
@@ -79,6 +84,8 @@ msgstr "출력 초과"
 msgid "Please Try Again"
 msgstr "다시 시도해주세요."
 
+#: src/components/SubmissionItemWaitStatus.tsx:29
+#: src/components/SubmissionItemWaitStatus.tsx:30
 #: src/components/SubmissionItemWaitStatus.tsx:31
 #: src/components/SubmissionItemWaitStatus.tsx:32
 msgid "In Progress"
@@ -149,7 +156,7 @@ msgid ""
 "another pending input! Submit your pending input and try again."
 msgstr "입력을 기다리고 있어 교착 상태를 방지하기 위해 코드를 실행하지 않았습니다. 입력을 완료하고 다시 시도해주세요."
 
-#: src/widgets/JudgePanel.ts:328
+#: src/widgets/JudgePanel.ts:324 src/widgets/JudgePanel.ts:328
 msgid "Problem has no test cases."
 msgstr "테스트 케이스가 등록되지 않은 문제입니다."
 
