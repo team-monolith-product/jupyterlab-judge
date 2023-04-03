@@ -191,7 +191,7 @@ export class JudgeModel implements DocumentRegistry.IModel {
     };
   }
 
-  fromJSON(value: JudgeModel.IJudgeContent) {
+  fromJSON(value: JudgeModel.IJudgeContent): void {
     this.sharedModel.createCellModelFromSource(
       value.code ??
         '# 파일이 손상되었습니다. 파일을 삭제하고 새로 생성해주세요.'
@@ -238,7 +238,7 @@ export class JudgeModel implements DocumentRegistry.IModel {
   );
 
   private _submissionStatus: JudgeModel.SubmissionStatus = {
-    inProgress: false,
+    type: 'idle',
     runCount: 0,
     totalCount: 0
   };
@@ -250,7 +250,7 @@ export class JudgeModel implements DocumentRegistry.IModel {
 
 export namespace JudgeModel {
   export type SubmissionStatus = {
-    inProgress: boolean;
+    type: 'idle' | 'progress' | 'error';
     runCount: number;
     totalCount: number;
   };
@@ -408,7 +408,9 @@ export namespace JudgeModel {
     /**
      * Dispose of the resources.
      */
-    dispose(): void {}
+    dispose(): void {
+      /* no-op */
+    }
 
     get yCodeCell(): models.YCodeCell | null {
       return this._ycodeCell;

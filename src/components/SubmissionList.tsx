@@ -109,7 +109,7 @@ export function SubmissionListImpl(
   }
 
   const isSubmissionInProgress =
-    props.submissionStatus && props.submissionStatus.inProgress;
+    props.submissionStatus && props.submissionStatus.type === 'progress';
 
   if (data.length === 0 && !isSubmissionInProgress) {
     return (
@@ -121,7 +121,7 @@ export function SubmissionListImpl(
 
   return (
     <ListContainer className={props.className}>
-      {props.submissionStatus && props.submissionStatus.inProgress && (
+      {props.submissionStatus && props.submissionStatus.type === 'progress' && (
         <ListSubmissionItemWait status={props.submissionStatus} />
       )}
       {data.map(submission => {

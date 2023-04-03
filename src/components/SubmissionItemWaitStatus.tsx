@@ -11,7 +11,7 @@ export function SubmissionItemWaitStatus(props: {
 
   const trans = useContext(transContext);
 
-  if (!status.inProgress) {
+  if (status.type !== 'progress') {
     return <></>;
   }
 

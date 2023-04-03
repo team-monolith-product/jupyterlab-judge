@@ -313,7 +313,7 @@ export class JudgePanel extends BoxPanel {
     const results: IRunResult[] = [];
 
     this.model.submissionStatus = {
-      inProgress: true,
+      type: 'progress',
       runCount: 0,
       totalCount: testCases.length
     };
@@ -322,7 +322,7 @@ export class JudgePanel extends BoxPanel {
       const result = await this.runWithInput(kernel, problem, testCase);
       results.push(result);
       this.model.submissionStatus = {
-        inProgress: true,
+        type: 'progress',
         runCount: results.length,
         totalCount: testCases.length
       };
@@ -362,7 +362,7 @@ export class JudgePanel extends BoxPanel {
     });
 
     this.model.submissionStatus = {
-      inProgress: false,
+      type: 'idle',
       runCount: 0,
       totalCount: 0
     };
