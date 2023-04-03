@@ -10,7 +10,6 @@ export function SubmissionItemWaitStatus(props: {
   const { status } = props;
 
   const trans = useContext(transContext);
-  console.log(status.type);
 
   if (status.type === 'idle') {
     return <></>;
