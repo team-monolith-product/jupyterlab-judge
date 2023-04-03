@@ -319,7 +319,15 @@ export class JudgePanel extends BoxPanel {
     const results: IRunResult[] = [];
 
     if (testCases.length === 0) {
-      throw new Error('Problem has no test cases.');
+      await kernel.shutdown();
+      kernel.dispose();
+      this.model.submissionStatus = {
+        type: 'error',
+        runCount: 0,
+        totalCount: 0,
+        errorDetails: this._trans.__('Problem has no test cases.')
+      };
+      return;
     }
 
     this.model.submissionStatus = {

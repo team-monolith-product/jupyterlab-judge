@@ -253,6 +253,7 @@ export namespace JudgeModel {
     type: 'idle' | 'progress' | 'error';
     runCount: number;
     totalCount: number;
+    errorDetails?: string;
   };
 
   export interface IJudgeContent extends PartialJSONObject {
