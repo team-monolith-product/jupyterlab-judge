@@ -288,9 +288,27 @@ export class JudgePanel extends BoxPanel {
       throw new Error('Problem cannot be found.');
     }
 
+    this.model.submissionStatus = {
+      type: 'progress',
+      runCount: 0,
+      totalCount: 0
+    };
+
+    const testCases = await this.model.getTestCases();
+    const results: IRunResult[] = [];
+
+    if (testCases.length === 0) {
+      this.model.submissionStatus = {
+        type: 'error',
+        errorDetails: this._trans.__('Problem has no test cases.')
+      };
+      return;
+    }
+
     const oldKernel = this.session.session?.kernel;
     if (!oldKernel) {
       void sessionContextDialogs.selectKernel(this.session);
+      this.model.submissionStatus = { type: 'idle' };
       return;
     }
 
@@ -306,25 +324,7 @@ export class JudgePanel extends BoxPanel {
     const kernel = sessionContext.session?.kernel;
     if (!kernel) {
       void sessionContextDialogs.selectKernel(sessionContext);
-      return;
-    }
-
-    this.model.submissionStatus = {
-      type: 'progress',
-      runCount: 0,
-      totalCount: 0
-    };
-
-    const testCases = await this.model.getTestCases();
-    const results: IRunResult[] = [];
-
-    if (testCases.length === 0) {
-      await kernel.shutdown();
-      kernel.dispose();
-      this.model.submissionStatus = {
-        type: 'error',
-        errorDetails: this._trans.__('Problem has no test cases.')
-      };
+      this.model.submissionStatus = { type: 'idle' };
       return;
     }
 
