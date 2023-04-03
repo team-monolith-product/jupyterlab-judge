@@ -2,6 +2,16 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.14.4
+
+([Full Changelog](https://github.com/team-monolith-product/jupyterlab-judge/compare/v0.14.3))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/team-monolith-product/jupyterlab-judge/graphs/contributors?from=2023-03-31&to=2023-04-03&type=c))
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.14.3
 
 ([Full Changelog](https://github.com/team-monolith-product/jupyterlab-judge/compare/v0.14.2...7fbb6c648672cac10771a85fb05a1501c4c18cd6))
@@ -15,8 +25,6 @@
 ([GitHub contributors page for this release](https://github.com/team-monolith-product/jupyterlab-judge/graphs/contributors?from=2023-03-31&to=2023-03-31&type=c))
 
 [@a3626a](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3Aa3626a+updated%3A2023-03-31..2023-03-31&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.14.2
 
