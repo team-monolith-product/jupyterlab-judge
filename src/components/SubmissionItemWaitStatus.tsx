@@ -18,7 +18,7 @@ export function SubmissionItemWaitStatus(props: {
   if (status.type === 'error') {
     return (
       <SubmissionItemStatusContainer className={props.className}>
-        `🚫 ${status.errorDetails}`
+        {`🚫 ${status.errorDetails}`}
       </SubmissionItemStatusContainer>
     );
   }
