@@ -295,8 +295,6 @@ export class JudgePanel extends BoxPanel {
     };
 
     const testCases = await this.model.getTestCases();
-    const results: IRunResult[] = [];
-
     if (testCases.length === 0) {
       this.model.submissionStatus = {
         type: 'error',
@@ -334,6 +332,7 @@ export class JudgePanel extends BoxPanel {
       totalCount: testCases.length
     };
 
+    const results: IRunResult[] = [];
     for (const testCase of testCases) {
       const result = await this.runWithInput(kernel, problem, testCase);
       results.push(result);
