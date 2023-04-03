@@ -309,8 +309,18 @@ export class JudgePanel extends BoxPanel {
       return;
     }
 
+    this.model.submissionStatus = {
+      type: 'progress',
+      runCount: 0,
+      totalCount: 0
+    };
+
     const testCases = await this.model.getTestCases();
     const results: IRunResult[] = [];
+
+    if (testCases.length === 0) {
+      throw new Error('Problem has no test cases.');
+    }
 
     this.model.submissionStatus = {
       type: 'progress',
