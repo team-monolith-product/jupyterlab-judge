@@ -20,8 +20,7 @@ export function SubmissionControl(props: {
           } catch (e) {
             props.panel.model.submissionStatus = {
               type: 'error',
-              runCount: 0,
-              totalCount: 0
+              errorDetails: trans.__('An error occurred during submission.')
             };
             setInProgress(false);
             throw e;

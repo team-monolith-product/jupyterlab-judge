@@ -237,11 +237,7 @@ export class JudgeModel implements DocumentRegistry.IModel {
     this
   );
 
-  private _submissionStatus: JudgeModel.SubmissionStatus = {
-    type: 'idle',
-    runCount: 0,
-    totalCount: 0
-  };
+  private _submissionStatus: JudgeModel.SubmissionStatus = { type: 'idle' };
   private _submissionStatusChanged = new Signal<
     this,
     JudgeModel.SubmissionStatus
@@ -249,12 +245,19 @@ export class JudgeModel implements DocumentRegistry.IModel {
 }
 
 export namespace JudgeModel {
-  export type SubmissionStatus = {
-    type: 'idle' | 'progress' | 'error';
-    runCount: number;
-    totalCount: number;
-    errorDetails?: string;
-  };
+  export type SubmissionStatus =
+    | {
+        type: 'idle';
+      }
+    | {
+        type: 'progress';
+        runCount: number;
+        totalCount: number;
+      }
+    | {
+        type: 'error';
+        errorDetails: string;
+      };
 
   export interface IJudgeContent extends PartialJSONObject {
     // Json 에 대해서는 underscore를 사용한다.

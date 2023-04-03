@@ -323,8 +323,6 @@ export class JudgePanel extends BoxPanel {
       kernel.dispose();
       this.model.submissionStatus = {
         type: 'error',
-        runCount: 0,
-        totalCount: 0,
         errorDetails: this._trans.__('Problem has no test cases.')
       };
       return;
@@ -379,11 +377,7 @@ export class JudgePanel extends BoxPanel {
       memory: 0
     });
 
-    this.model.submissionStatus = {
-      type: 'idle',
-      runCount: 0,
-      totalCount: 0
-    };
+    this.model.submissionStatus = { type: 'idle' };
 
     this._submitted.emit({
       widget: this,
