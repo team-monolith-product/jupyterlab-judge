@@ -121,7 +121,7 @@ export function SubmissionListImpl(
 
   return (
     <ListContainer className={props.className}>
-      {props.submissionStatus && props.submissionStatus.type === 'progress' && (
+      {props.submissionStatus && props.submissionStatus.type !== 'idle' && (
         <ListSubmissionItemWait status={props.submissionStatus} />
       )}
       {data.map(submission => {

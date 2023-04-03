@@ -9,9 +9,7 @@ export function SubmissionItemWait(props: {
 }): JSX.Element {
   return (
     <SubmissionItemContainer className={props.className}>
-      <ItemStatus
-        status={props.status}
-      />
+      <ItemStatus status={props.status} />
     </SubmissionItemContainer>
   );
 }
@@ -26,7 +24,6 @@ const SubmissionItemContainer = styled.li`
   font-size: 12px;
   line-height: 16px;
 `;
-
 
 const ItemStatus = styled(SubmissionItemWaitStatus)`
   height: 16px;

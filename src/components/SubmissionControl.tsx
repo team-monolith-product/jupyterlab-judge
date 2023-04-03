@@ -15,7 +15,17 @@ export function SubmissionControl(props: {
       <ControlButton
         onClick={async () => {
           setInProgress(true);
-          await props.panel.judge();
+          try {
+            await props.panel.judge();
+          } catch (e) {
+            props.panel.model.submissionStatus = {
+              type: 'error',
+              runCount: 0,
+              totalCount: 0
+            };
+            setInProgress(false);
+            throw e;
+          }
           setInProgress(false);
         }}
         disabled={inProgress}
