@@ -25,9 +25,11 @@ export function SubmissionItemWaitStatus(props: {
 
   return (
     <SubmissionItemStatusContainer className={props.className}>
-      {`⌛ ${trans.__('In Progress')} (${status.runCount}/${
-        status.totalCount
-      })`}
+      {status.totalCount === 0
+        ? `⌛ ${trans.__('In Progress')}`
+        : `⌛ ${trans.__('In Progress')} (${status.runCount}/${
+            status.totalCount
+          })`}
     </SubmissionItemStatusContainer>
   );
 }
