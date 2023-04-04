@@ -11,13 +11,9 @@ import { JudgeTerminal } from './widgets/JudgeTerminal';
 /**
  * The Problem Provider token.
  */
-export const IProblemProviderRegistry = new Token<IProblemProviderRegistry>(
-  `${PLUGIN_ID}:IProblemProviderRegistry`
+export const IProblemProvider = new Token<IProblemProvider>(
+  `${PLUGIN_ID}:IProblemProvider`
 );
-
-export interface IProblemProviderRegistry {
-  register(provider: IProblemProvider): void;
-}
 
 export interface IProblemProvider {
   getProblem(id: string): Promise<ProblemProvider.IProblem | null>;
@@ -32,42 +28,36 @@ export interface IProblemProvider {
   ): Promise<ProblemProvider.ISubmission>;
 }
 
-export const IJudgePanelFactoryRegistry = new Token<IJudgePanelFactoryRegistry>(
-  `${PLUGIN_ID}:IJudgePanelFactoryRegistry`
+export const IJudgePanelFactory = new Token<IJudgePanelFactory>(
+  `${PLUGIN_ID}:IJudgePanelFactory`
 );
 
-export interface IJudgePanelFactoryRegistry {
-  register(factory: (options: JudgePanel.IOptions) => JudgePanel): void;
-}
+export type IJudgePanelFactory = (options: JudgePanel.IOptions) => JudgePanel;
 
-export const IJudgeSubmissionAreaFactoryRegistry =
-  new Token<IJudgeSubmissionAreaFactoryRegistry>(
-    `${PLUGIN_ID}:IJudgeSubmissionAreaFactoryRegistry`
+export const IJudgeSubmissionAreaFactory =
+  new Token<IJudgeSubmissionAreaFactory>(
+    `${PLUGIN_ID}:IJudgeSubmissionAreaFactory`
   );
 
-export interface IJudgeSubmissionAreaFactoryRegistry {
-  register(factory: (options: JudgeSubmissionArea.IOptions) => Widget): void;
-}
+export type IJudgeSubmissionAreaFactory = (
+  options: JudgeSubmissionArea.IOptions
+) => Widget;
 
-export const IJudgeTerminalFactoryRegistry =
-  new Token<IJudgeTerminalFactoryRegistry>(
-    `${PLUGIN_ID}:IJudgeTerminalFactoryRegistry`
-  );
+export const IJudgeTerminalFactory = new Token<IJudgeTerminalFactory>(
+  `${PLUGIN_ID}:IJudgeTerminalFactory`
+);
 
-export interface IJudgeTerminalFactoryRegistry {
-  register(
-    factory: (options: JudgeTerminal.IOptions) => JudgeTerminal.IJudgeTerminal
-  ): void;
-}
+export type IJudgeTerminalFactory = (
+  options: JudgeTerminal.IOptions
+) => JudgeTerminal.IJudgeTerminal;
 
-export const ISubmissionListFactoryRegistry =
-  new Token<ISubmissionListFactoryRegistry>(
-    `${PLUGIN_ID}:ISubmissionListFactoryRegistry`
-  );
+export const ISubmissionListFactory = new Token<ISubmissionListFactory>(
+  `${PLUGIN_ID}:ISubmissionListFactory`
+);
 
-export interface ISubmissionListFactoryRegistry {
-  register(factory: (options: SubmissionList.IOptions) => JSX.Element): void;
-}
+export type ISubmissionListFactory = (
+  options: SubmissionList.IOptions
+) => JSX.Element;
 
 export const IJudgeSignal = new Token<IJudgeSignal>(
   `${PLUGIN_ID}:IJudgeSignal`
