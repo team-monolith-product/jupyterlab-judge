@@ -2,6 +2,22 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.15.1
+
+([Full Changelog](https://github.com/team-monolith-product/jupyterlab-judge/compare/v0.15.0...c4a1abd6581f87085617bc654ed997833a625cc0))
+
+### Merged PRs
+
+- fix: Remove default token [#18](https://github.com/team-monolith-product/jupyterlab-judge/pull/18) ([@a3626a](https://github.com/a3626a))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/team-monolith-product/jupyterlab-judge/graphs/contributors?from=2023-04-04&to=2023-04-04&type=c))
+
+[@a3626a](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3Aa3626a+updated%3A2023-04-04..2023-04-04&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.15.0
 
 ([Full Changelog](https://github.com/team-monolith-product/jupyterlab-judge/compare/v0.14.5...40d653df0e3bd536789233355a9fffa06b8c68d6))
@@ -15,8 +31,6 @@
 ([GitHub contributors page for this release](https://github.com/team-monolith-product/jupyterlab-judge/graphs/contributors?from=2023-04-04&to=2023-04-04&type=c))
 
 [@a3626a](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3Aa3626a+updated%3A2023-04-04..2023-04-04&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.14.5
 
