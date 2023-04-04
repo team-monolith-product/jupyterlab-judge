@@ -67,53 +67,6 @@ const signal: JupyterFrontEndPlugin<IJudgeSignal> = {
   autoStart: true
 };
 
-const problemProvider: JupyterFrontEndPlugin<IProblemProvider> = {
-  id: `${PLUGIN_ID}:IProblemProvider`,
-  provides: IProblemProvider,
-  activate: (_app: JupyterFrontEnd): IProblemProvider => {
-    return new HardCodedProblemProvider();
-  },
-  autoStart: true
-};
-
-const judgePanelFactory: JupyterFrontEndPlugin<IJudgePanelFactory> = {
-  id: `${PLUGIN_ID}:IJudgePanelFactory`,
-  provides: IJudgePanelFactory,
-  activate: (_app: JupyterFrontEnd): IJudgePanelFactory => {
-    return (options: JudgePanel.IOptions) => new JudgePanel(options);
-  },
-  autoStart: true
-};
-
-const judgeSubmissionAreaFactory: JupyterFrontEndPlugin<IJudgeSubmissionAreaFactory> =
-  {
-    id: `${PLUGIN_ID}:IJudgeSubmissionAreaFactory`,
-    provides: IJudgeSubmissionAreaFactory,
-    activate: (_app: JupyterFrontEnd): IJudgeSubmissionAreaFactory => {
-      return (options: JudgeSubmissionArea.IOptions) =>
-        new JudgeSubmissionArea(options);
-    },
-    autoStart: true
-  };
-
-const judgeTerminalFactory: JupyterFrontEndPlugin<IJudgeTerminalFactory> = {
-  id: `${PLUGIN_ID}:IJudgeTerminalFactory`,
-  provides: IJudgeTerminalFactory,
-  activate: (_app: JupyterFrontEnd): IJudgeTerminalFactory => {
-    return (options: JudgeTerminal.IOptions) => new JudgeTerminal(options);
-  },
-  autoStart: true
-};
-
-const submissionListFactory: JupyterFrontEndPlugin<ISubmissionListFactory> = {
-  id: `${PLUGIN_ID}:ISubmissionListFactory`,
-  provides: ISubmissionListFactory,
-  activate: (_app: JupyterFrontEnd): ISubmissionListFactory => {
-    return SubmissionListImpl;
-  },
-  autoStart: true
-};
-
 /**
  * Initialization data for the jupyterlab_judge extension.
  */
@@ -121,11 +74,6 @@ const plugin: JupyterFrontEndPlugin<void> = {
   id: `${PLUGIN_ID}:plugin`,
   autoStart: true,
   requires: [
-    IJudgePanelFactory,
-    IJudgeSubmissionAreaFactory,
-    IJudgeTerminalFactory,
-    ISubmissionListFactory,
-    IProblemProvider,
     ITranslator,
     IEditorServices,
     IRenderMimeRegistry,
@@ -134,14 +82,17 @@ const plugin: JupyterFrontEndPlugin<void> = {
     IMainMenu,
     ICommandPalette
   ],
-  optional: [ISettingRegistry, ILayoutRestorer],
+  optional: [
+    IJudgePanelFactory,
+    IJudgeSubmissionAreaFactory,
+    IJudgeTerminalFactory,
+    ISubmissionListFactory,
+    IProblemProvider,
+    ISettingRegistry,
+    ILayoutRestorer
+  ],
   activate: async (
     app: JupyterFrontEnd,
-    judgePanelFactory: IJudgePanelFactory,
-    judgeSubmissionAreaFactory: IJudgeSubmissionAreaFactory,
-    judgeTerminalFactory: IJudgeTerminalFactory,
-    submissionListFactory: ISubmissionListFactory,
-    problemProvider: IProblemProvider,
     translator: ITranslator,
     editorService: IEditorServices,
     rendermime: IRenderMimeRegistry,
@@ -149,6 +100,11 @@ const plugin: JupyterFrontEndPlugin<void> = {
     browserFactory: IFileBrowserFactory,
     menu: IMainMenu,
     palette: ICommandPalette,
+    judgePanelFactory: IJudgePanelFactory | null,
+    judgeSubmissionAreaFactory: IJudgeSubmissionAreaFactory | null,
+    judgeTerminalFactory: IJudgeTerminalFactory | null,
+    submissionListFactory: ISubmissionListFactory | null,
+    problemProvider: IProblemProvider | null,
     settingRegistry: ISettingRegistry | null,
     restorer: ILayoutRestorer | null
   ) => {
@@ -176,10 +132,17 @@ const plugin: JupyterFrontEndPlugin<void> = {
       rendermime: rendermime,
       commands: app.commands,
       editorConfig: editorConfig,
-      judgePanelFactory,
-      judgeSubmissionAreaFactory,
-      judgeTerminalFactory,
-      submissionListFactory,
+      judgePanelFactory:
+        judgePanelFactory ??
+        ((options: JudgePanel.IOptions) => new JudgePanel(options)),
+      judgeSubmissionAreaFactory:
+        judgeSubmissionAreaFactory ??
+        ((options: JudgeSubmissionArea.IOptions) =>
+          new JudgeSubmissionArea(options)),
+      judgeTerminalFactory:
+        judgeTerminalFactory ??
+        ((options: JudgeTerminal.IOptions) => new JudgeTerminal(options)),
+      submissionListFactory: submissionListFactory ?? SubmissionListImpl,
       submitted,
       factoryOptions: {
         name: judgeDocumentFactoryName,
@@ -202,9 +165,11 @@ const plugin: JupyterFrontEndPlugin<void> = {
     });
     app.docRegistry.addWidgetFactory(widgetFactory);
 
+    const problemProviderWithDefault =
+      problemProvider ?? new HardCodedProblemProvider();
     app.docRegistry.addModelFactory(
       new JudgeModel.JudgeModelFactory({
-        problemProviderFactory: () => problemProvider
+        problemProviderFactory: () => problemProviderWithDefault
       })
     );
     app.docRegistry.addFileType({
@@ -216,7 +181,13 @@ const plugin: JupyterFrontEndPlugin<void> = {
       mimeTypes: ['text/json', 'application/json']
     });
 
-    addCommands(app.commands, trans, docManager, tracker, problemProvider);
+    addCommands(
+      app.commands,
+      trans,
+      docManager,
+      tracker,
+      problemProviderWithDefault
+    );
     addMenuItems(menu, tracker, trans);
 
     palette.addItem({
@@ -247,15 +218,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
 /**
  * Export the plugins as default.
  */
-const plugins: JupyterFrontEndPlugin<any>[] = [
-  plugin,
-  problemProvider,
-  judgePanelFactory,
-  judgeSubmissionAreaFactory,
-  judgeTerminalFactory,
-  submissionListFactory,
-  signal
-];
+const plugins: JupyterFrontEndPlugin<any>[] = [plugin, signal];
 
 export default plugins;
 
