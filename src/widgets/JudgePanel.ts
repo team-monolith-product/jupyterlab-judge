@@ -288,9 +288,25 @@ export class JudgePanel extends BoxPanel {
       throw new Error('Problem cannot be found.');
     }
 
+    this.model.submissionStatus = {
+      type: 'progress',
+      runCount: 0,
+      totalCount: 0
+    };
+
+    const testCases = await this.model.getTestCases();
+    if (testCases.length === 0) {
+      this.model.submissionStatus = {
+        type: 'error',
+        errorDetails: this._trans.__('Problem has no test cases.')
+      };
+      return;
+    }
+
     const oldKernel = this.session.session?.kernel;
     if (!oldKernel) {
       void sessionContextDialogs.selectKernel(this.session);
+      this.model.submissionStatus = { type: 'idle' };
       return;
     }
 
@@ -306,23 +322,22 @@ export class JudgePanel extends BoxPanel {
     const kernel = sessionContext.session?.kernel;
     if (!kernel) {
       void sessionContextDialogs.selectKernel(sessionContext);
+      this.model.submissionStatus = { type: 'idle' };
       return;
     }
 
-    const testCases = await this.model.getTestCases();
-    const results: IRunResult[] = [];
-
     this.model.submissionStatus = {
-      inProgress: true,
+      type: 'progress',
       runCount: 0,
       totalCount: testCases.length
     };
 
+    const results: IRunResult[] = [];
     for (const testCase of testCases) {
       const result = await this.runWithInput(kernel, problem, testCase);
       results.push(result);
       this.model.submissionStatus = {
-        inProgress: true,
+        type: 'progress',
         runCount: results.length,
         totalCount: testCases.length
       };
@@ -361,11 +376,7 @@ export class JudgePanel extends BoxPanel {
       memory: 0
     });
 
-    this.model.submissionStatus = {
-      inProgress: false,
-      runCount: 0,
-      totalCount: 0
-    };
+    this.model.submissionStatus = { type: 'idle' };
 
     this._submitted.emit({
       widget: this,

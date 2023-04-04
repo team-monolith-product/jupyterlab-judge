@@ -3,10 +3,13 @@
         "domain": "jupyterlab_judge",
         "language": "ko-KR",
         "plural_forms": "nplurals=1; plural=0;",
-        "version": "0.13.1"
+        "version": "0.14.3"
     },
     "Accepted": [
         "\uc815\ub2f5\uc785\ub2c8\ub2e4."
+    ],
+    "An error occurred during submission.": [
+        "\uc81c\ucd9c \uc911 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4."
     ],
     "Cannot Save": [
         "\uc800\uc7a5\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4"
@@ -82,6 +85,9 @@
     ],
     "Problem Not Available.": [
         "\ubb38\uc81c\ub97c \ubd88\ub7ec\uc624\uc9c0 \ubabb\ud588\uc2b5\ub2c8\ub2e4."
+    ],
+    "Problem has no test cases.": [
+        "\ud14c\uc2a4\ud2b8 \ucf00\uc774\uc2a4\uac00 \ub4f1\ub85d\ub418\uc9c0 \uc54a\uc740 \ubb38\uc81c\uc785\ub2c8\ub2e4."
     ],
     "Run All Code": [
         "\uc2e4\ud589"

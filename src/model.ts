@@ -191,7 +191,7 @@ export class JudgeModel implements DocumentRegistry.IModel {
     };
   }
 
-  fromJSON(value: JudgeModel.IJudgeContent) {
+  fromJSON(value: JudgeModel.IJudgeContent): void {
     this.sharedModel.createCellModelFromSource(
       value.code ??
         '# 파일이 손상되었습니다. 파일을 삭제하고 새로 생성해주세요.'
@@ -237,11 +237,7 @@ export class JudgeModel implements DocumentRegistry.IModel {
     this
   );
 
-  private _submissionStatus: JudgeModel.SubmissionStatus = {
-    inProgress: false,
-    runCount: 0,
-    totalCount: 0
-  };
+  private _submissionStatus: JudgeModel.SubmissionStatus = { type: 'idle' };
   private _submissionStatusChanged = new Signal<
     this,
     JudgeModel.SubmissionStatus
@@ -249,11 +245,19 @@ export class JudgeModel implements DocumentRegistry.IModel {
 }
 
 export namespace JudgeModel {
-  export type SubmissionStatus = {
-    inProgress: boolean;
-    runCount: number;
-    totalCount: number;
-  };
+  export type SubmissionStatus =
+    | {
+        type: 'idle';
+      }
+    | {
+        type: 'progress';
+        runCount: number;
+        totalCount: number;
+      }
+    | {
+        type: 'error';
+        errorDetails: string;
+      };
 
   export interface IJudgeContent extends PartialJSONObject {
     // Json 에 대해서는 underscore를 사용한다.
@@ -408,7 +412,9 @@ export namespace JudgeModel {
     /**
      * Dispose of the resources.
      */
-    dispose(): void {}
+    dispose(): void {
+      /* no-op */
+    }
 
     get yCodeCell(): models.YCodeCell | null {
       return this._ycodeCell;

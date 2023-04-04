@@ -11,15 +11,25 @@ export function SubmissionItemWaitStatus(props: {
 
   const trans = useContext(transContext);
 
-  if (!status.inProgress) {
+  if (status.type === 'idle') {
     return <></>;
+  }
+
+  if (status.type === 'error') {
+    return (
+      <SubmissionItemStatusContainer className={props.className}>
+        {`🚫 ${status.errorDetails}`}
+      </SubmissionItemStatusContainer>
+    );
   }
 
   return (
     <SubmissionItemStatusContainer className={props.className}>
-      {`⌛ ${trans.__('In Progress')} (${status.runCount}/${
-        status.totalCount
-      })`}
+      {status.totalCount === 0
+        ? `⌛ ${trans.__('In Progress')}`
+        : `⌛ ${trans.__('In Progress')} (${status.runCount}/${
+            status.totalCount
+          })`}
     </SubmissionItemStatusContainer>
   );
 }

@@ -108,10 +108,10 @@ export function SubmissionListImpl(
     );
   }
 
-  const isSubmissionInProgress =
-    props.submissionStatus && props.submissionStatus.inProgress;
+  const isSubmissionIdle =
+    props.submissionStatus && props.submissionStatus.type === 'idle';
 
-  if (data.length === 0 && !isSubmissionInProgress) {
+  if (data.length === 0 && isSubmissionIdle) {
     return (
       <NoSubmission className={props.className}>
         {trans.__('Submit your code to get results here.')}
@@ -121,7 +121,7 @@ export function SubmissionListImpl(
 
   return (
     <ListContainer className={props.className}>
-      {props.submissionStatus && props.submissionStatus.inProgress && (
+      {props.submissionStatus && props.submissionStatus.type !== 'idle' && (
         <ListSubmissionItemWait status={props.submissionStatus} />
       )}
       {data.map(submission => {
