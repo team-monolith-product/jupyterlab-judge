@@ -2,6 +2,22 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.14.5
+
+([Full Changelog](https://github.com/team-monolith-product/jupyterlab-judge/compare/v0.14.4...271ac3b574bc2bf9c092130e58d5b85aa647f68c))
+
+### Merged PRs
+
+- Fix/handle submission dead [#16](https://github.com/team-monolith-product/jupyterlab-judge/pull/16) ([@paulkim3151](https://github.com/paulkim3151))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/team-monolith-product/jupyterlab-judge/graphs/contributors?from=2023-04-03&to=2023-04-04&type=c))
+
+[@paulkim3151](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3Apaulkim3151+updated%3A2023-04-03..2023-04-04&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.14.4
 
 ([Full Changelog](https://github.com/team-monolith-product/jupyterlab-judge/compare/v0.14.3))
@@ -9,8 +25,6 @@
 ### Contributors to this release
 
 ([GitHub contributors page for this release](https://github.com/team-monolith-product/jupyterlab-judge/graphs/contributors?from=2023-03-31&to=2023-04-03&type=c))
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.14.3
 
