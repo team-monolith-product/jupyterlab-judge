@@ -403,7 +403,6 @@ export class JudgePanel extends BoxPanel {
       await kernel.restart();
     }
 
-    // TODO 최대 대기 시간 정의
     const waitIdleState = new Promise<void>((resolve, reject) => {
       const resolveOnIdleState = (
         sender: IKernelConnection,
@@ -420,7 +419,25 @@ export class JudgePanel extends BoxPanel {
         kernel.statusChanged.connect(resolveOnIdleState);
       }
     });
-    await waitIdleState;
+
+    // Wait up to 5000 ms for the state of the kernel.
+    const KERNEL_TIMEOUT_MS = 5000;
+    let timer: number | undefined;
+    await Promise.race([
+      waitIdleState,
+      new Promise((resolve, reject) => {
+        timer = setTimeout(
+          () =>
+            reject(
+              `Kernel is not responding after waiting ${KERNEL_TIMEOUT_MS}ms.`
+            ),
+          KERNEL_TIMEOUT_MS
+        );
+      })
+    ]);
+    if (timer) {
+      clearTimeout(timer);
+    }
 
     let inputLinesLeft: string[] = [];
     if (problem.inputTransferType === 'one_line') {
