@@ -46,6 +46,13 @@ interface IRunResult {
   cpuTime: number;
 }
 
+export class JudgeError extends Error {
+  constructor(message?: string) {
+    super(message);
+    this.name = this.constructor.name;
+  }
+}
+
 export namespace JudgePanel {
   export interface IOptions {
     editorConfig: Partial<CodeEditor.IConfig>;
@@ -358,7 +365,9 @@ export class JudgePanel extends BoxPanel {
         timer = setTimeout(
           () =>
             reject(
-              `Kernel is not responding after waiting ${KERNEL_TIMEOUT_MS}ms.`
+              new JudgeError(
+                this._trans.__('Kernel is not responding. Please try again.')
+              )
             ),
           KERNEL_TIMEOUT_MS
         );
