@@ -283,6 +283,7 @@ export class JudgePanel extends BoxPanel {
   // This is called by command
   public async judge(): Promise<void> {
     const problem = this.model.problem;
+    const code = this.model.source;
 
     if (problem === null) {
       throw new Error('Problem cannot be found.');
@@ -334,7 +335,7 @@ export class JudgePanel extends BoxPanel {
 
     const results: IRunResult[] = [];
     for (const testCase of testCases) {
-      const result = await this.runWithInput(kernel, problem, testCase);
+      const result = await this.runWithInput(kernel, code, problem, testCase);
       results.push(result);
       this.model.submissionStatus = {
         type: 'progress',
@@ -365,7 +366,7 @@ export class JudgePanel extends BoxPanel {
     const submission = await this.model.submit({
       problemId: problem.id,
       status: status,
-      code: this.model.source,
+      code,
       cpuTime:
         results.map(result => result.cpuTime).reduce((a, b) => a + b, 0) /
         results.length,
@@ -387,12 +388,11 @@ export class JudgePanel extends BoxPanel {
 
   private async runWithInput(
     kernel: IKernelConnection,
+    code: string,
     problem: ProblemProvider.IProblem,
     input: string,
     restartKernel = false
   ): Promise<IRunResult> {
-    const code = this.model.source;
-
     const content: KernelMessage.IExecuteRequestMsg['content'] = {
       code,
       stop_on_error: true,
