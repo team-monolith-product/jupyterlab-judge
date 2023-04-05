@@ -38,6 +38,7 @@ import { BoxPanel, SplitPanel, Widget } from '@lumino/widgets';
 import { JudgeTerminal } from './JudgeTerminal';
 import { JudgeSubmissionArea } from './JudgeSubmissionArea';
 import { SubmissionList } from '../components/SubmissionList';
+import { IKernelConnection } from '@jupyterlab/services/lib/kernel/kernel';
 
 interface IRunResult {
   status: 'OK' | 'TLE' | 'OLE' | 'RE';
@@ -331,9 +332,45 @@ export class JudgePanel extends BoxPanel {
       totalCount: testCases.length
     };
 
+    const waitIdleState = new Promise<void>((resolve, reject) => {
+      const resolveOnIdleState = (
+        sender: ISessionContext,
+        state: KernelMessage.Status
+      ) => {
+        if (state === 'idle') {
+          sessionContext.statusChanged.disconnect(resolveOnIdleState);
+          resolve();
+        }
+      };
+      if (sessionContext.kernelDisplayStatus === 'idle') {
+        resolve();
+      } else {
+        sessionContext.statusChanged.connect(resolveOnIdleState);
+      }
+    });
+
+    // Wait up to 5000 ms for the status of the kernel.
+    const KERNEL_TIMEOUT_MS = 5000;
+    let timer: number | undefined;
+    await Promise.race([
+      waitIdleState,
+      new Promise((resolve, reject) => {
+        timer = setTimeout(
+          () =>
+            reject(
+              `Kernel is not responding after waiting ${KERNEL_TIMEOUT_MS}ms.`
+            ),
+          KERNEL_TIMEOUT_MS
+        );
+      })
+    ]);
+    if (timer) {
+      clearTimeout(timer);
+    }
+
     const results: IRunResult[] = [];
     for (const testCase of testCases) {
-      const result = await this.runWithInput(this.session, problem, testCase);
+      const result = await this.runWithInput(kernel, problem, testCase);
       results.push(result);
       this.model.submissionStatus = {
         type: 'progress',
@@ -385,10 +422,9 @@ export class JudgePanel extends BoxPanel {
   }
 
   private async runWithInput(
-    session: ISessionContext,
+    kernel: IKernelConnection,
     problem: ProblemProvider.IProblem,
-    input: string,
-    restartKernel = false
+    input: string
   ): Promise<IRunResult> {
     const code = this.model.source;
 
@@ -398,46 +434,6 @@ export class JudgePanel extends BoxPanel {
       allow_stdin: true
     };
 
-    if (restartKernel) {
-      await session.restartKernel();
-    }
-
-    const waitIdleState = new Promise<void>((resolve, reject) => {
-      const resolveOnIdleState = (
-        sender: ISessionContext,
-        state: KernelMessage.Status
-      ) => {
-        if (state === 'idle') {
-          session.statusChanged.disconnect(resolveOnIdleState);
-          resolve();
-        }
-      };
-      if (session.kernelDisplayStatus === 'idle') {
-        resolve();
-      } else {
-        session.statusChanged.connect(resolveOnIdleState);
-      }
-    });
-
-    // Wait up to 5000 ms for the status of the kernel.
-    const KERNEL_TIMEOUT_MS = 5000;
-    let timer: number | undefined;
-    await Promise.race([
-      waitIdleState,
-      new Promise((resolve, reject) => {
-        timer = setTimeout(
-          () =>
-            reject(
-              `Kernel is not responding after waiting ${KERNEL_TIMEOUT_MS}ms.`
-            ),
-          KERNEL_TIMEOUT_MS
-        );
-      })
-    ]);
-    if (timer) {
-      clearTimeout(timer);
-    }
-
     let inputLinesLeft: string[] = [];
     if (problem.inputTransferType === 'one_line') {
       inputLinesLeft = input.split(/\r?\n/);
@@ -446,11 +442,6 @@ export class JudgePanel extends BoxPanel {
     }
 
     const startTime = Date.now();
-    const kernel = session.session?.kernel;
-    if (!kernel) {
-      throw new Error('Kernel not found.');
-    }
-
     const future = kernel.requestExecute(content, true, {});
     future.onStdin = (
       msg: KernelMessage.IStdinMessage<KernelMessage.StdinMessageType>
@@ -502,7 +493,7 @@ export class JudgePanel extends BoxPanel {
     const a = await Promise.race([future.done, timeout]);
     if (a === 0) {
       future.dispose();
-      await session.session?.shutdown();
+      await kernel.interrupt();
 
       // 강제 종료는 당연히 TLE
       result.status = 'TLE';
