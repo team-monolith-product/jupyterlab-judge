@@ -1,10 +1,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: jupyterlab_judge 0.14.3\n"
+"Project-Id-Version: jupyterlab_judge 0.15.1\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-04-03 17:44+0900\n"
-"PO-Revision-Date: 2023-04-03 17:43+0900\n"
+"POT-Creation-Date: 2023-04-05 15:43+0900\n"
+"PO-Revision-Date: 2023-04-05 15:40+0900\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: ko_KR <LL@li.org>\n"
 "Language: ko_KR\n"
@@ -47,11 +47,13 @@ msgid "No Submission History Found."
 msgstr "제출 기록을 확인할 수 없습니다."
 
 #: src/components/SubmissionControl.tsx:23
+#: src/components/SubmissionControl.tsx:25
 msgid "An error occurred during submission."
 msgstr "제출 중 오류가 발생했습니다."
 
 #: src/components/SubmissionControl.tsx:32
 #: src/components/SubmissionControl.tsx:33
+#: src/components/SubmissionControl.tsx:39
 msgid "Submit"
 msgstr "제출하기"
 
@@ -103,11 +105,11 @@ msgstr "답안을 제출하면 채점 결과가 여기 나타납니다."
 msgid "Loading History"
 msgstr "불러오는 중입니다."
 
-#: src/index.ts:199
+#: src/index.ts:116 src/index.ts:199
 msgid "Judge"
 msgstr "문제"
 
-#: src/index.ts:253
+#: src/index.ts:179 src/index.ts:253
 msgid "Judge File"
 msgstr "문제 파일"
 
@@ -120,7 +122,8 @@ msgid "Document is read-only"
 msgstr "읽기 전용 문서입니다"
 
 #: src/toolbar.tsx:38 src/widgets/JudgePanel.ts:238
-#: src/widgets/JudgePanel.ts:250
+#: src/widgets/JudgePanel.ts:245 src/widgets/JudgePanel.ts:250
+#: src/widgets/JudgePanel.ts:257
 msgid "Ok"
 msgstr "확인"
 
@@ -132,33 +135,38 @@ msgstr "문제 풀이 저장"
 msgid "Execution result will be shown here"
 msgstr "여기에 실행 결과가 나타납니다."
 
-#: src/widgets/JudgePanel.ts:163
+#: src/widgets/JudgePanel.ts:163 src/widgets/JudgePanel.ts:170
 msgid "Problem Not Available."
 msgstr "문제를 불러오지 못했습니다."
 
-#: src/widgets/JudgePanel.ts:234
+#: src/widgets/JudgePanel.ts:234 src/widgets/JudgePanel.ts:241
 msgid "Cell not executed due to missing kernel"
 msgstr "커널이 선택되지 않아 실행하지 못했습니다"
 
-#: src/widgets/JudgePanel.ts:235
+#: src/widgets/JudgePanel.ts:235 src/widgets/JudgePanel.ts:242
 msgid ""
 "The cell has not been executed because no kernel selected. Please select a"
 " kernel to execute the cell."
 msgstr "커널이 선택되지 않아 코드를 실행할 수 없습니다. 커널을 선택하고 다시 시도해주세요."
 
-#: src/widgets/JudgePanel.ts:246
+#: src/widgets/JudgePanel.ts:246 src/widgets/JudgePanel.ts:253
 msgid "Cell not executed due to pending input"
 msgstr "입력을 기다리고 있어 실행하지 못했습니다"
 
-#: src/widgets/JudgePanel.ts:247
+#: src/widgets/JudgePanel.ts:247 src/widgets/JudgePanel.ts:254
 msgid ""
 "The cell has not been executed to avoid kernel deadlock as there is "
 "another pending input! Submit your pending input and try again."
 msgstr "입력을 기다리고 있어 교착 상태를 방지하기 위해 코드를 실행하지 않았습니다. 입력을 완료하고 다시 시도해주세요."
 
-#: src/widgets/JudgePanel.ts:324 src/widgets/JudgePanel.ts:328
+#: src/widgets/JudgePanel.ts:308 src/widgets/JudgePanel.ts:324
+#: src/widgets/JudgePanel.ts:328
 msgid "Problem has no test cases."
 msgstr "테스트 케이스가 등록되지 않은 문제입니다."
+
+#: src/widgets/JudgePanel.ts:369
+msgid "Kernel is not responding. Please try again."
+msgstr "커널이 응답하지 않습니다. 다시 시도해주세요."
 
 #: src/widgets/JudgeTerminal.ts:61
 msgid "Stop"
