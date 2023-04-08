@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import React, { useState, useContext } from 'react';
-import { JudgePanel } from '../widgets/JudgePanel';
+import { JudgeError, JudgePanel } from '../widgets/JudgePanel';
 import { transContext } from '../widgets/JudgeSubmissionArea';
 
 export function SubmissionControl(props: {
@@ -17,10 +17,17 @@ export function SubmissionControl(props: {
           setInProgress(true);
           try {
             await props.panel.judge();
-          } catch (e) {
+          } catch (e: any) {
+            let errorDetails = '';
+            if (e instanceof JudgeError) {
+              errorDetails = e.message;
+            } else {
+              errorDetails = trans.__('An error occurred during submission.');
+            }
+
             props.panel.model.submissionStatus = {
               type: 'error',
-              errorDetails: trans.__('An error occurred during submission.')
+              errorDetails
             };
             setInProgress(false);
             throw e;

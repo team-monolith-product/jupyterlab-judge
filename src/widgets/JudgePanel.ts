@@ -29,7 +29,6 @@ import { CommandRegistry } from '@lumino/commands';
 import { OutputArea } from '@jupyterlab/outputarea';
 import { KernelMessage } from '@jupyterlab/services';
 import { IHeader, IStreamMsg } from '@jupyterlab/services/lib/kernel/messages';
-import { IKernelConnection } from '@jupyterlab/services/lib/kernel/kernel';
 import { JudgeModel } from '../model';
 import { ProblemProvider } from '../problemProvider/problemProvider';
 import { ToolbarItems } from '../toolbar';
@@ -39,11 +38,19 @@ import { BoxPanel, SplitPanel, Widget } from '@lumino/widgets';
 import { JudgeTerminal } from './JudgeTerminal';
 import { JudgeSubmissionArea } from './JudgeSubmissionArea';
 import { SubmissionList } from '../components/SubmissionList';
+import { IKernelConnection } from '@jupyterlab/services/lib/kernel/kernel';
 
 interface IRunResult {
   status: 'OK' | 'TLE' | 'OLE' | 'RE';
   output: string;
   cpuTime: number;
+}
+
+export class JudgeError extends Error {
+  constructor(message?: string) {
+    super(message);
+    this.name = this.constructor.name;
+  }
 }
 
 export namespace JudgePanel {
@@ -332,6 +339,44 @@ export class JudgePanel extends BoxPanel {
       totalCount: testCases.length
     };
 
+    const waitIdleState = new Promise<void>((resolve, reject) => {
+      const resolveOnIdleState = (
+        sender: ISessionContext,
+        state: KernelMessage.Status
+      ) => {
+        if (state === 'idle') {
+          sessionContext.statusChanged.disconnect(resolveOnIdleState);
+          resolve();
+        }
+      };
+      if (sessionContext.kernelDisplayStatus === 'idle') {
+        resolve();
+      } else {
+        sessionContext.statusChanged.connect(resolveOnIdleState);
+      }
+    });
+
+    // Wait up to 5000 ms for the status of the kernel.
+    const KERNEL_TIMEOUT_MS = 5000;
+    let timer: number | undefined;
+    await Promise.race([
+      waitIdleState,
+      new Promise((resolve, reject) => {
+        timer = setTimeout(
+          () =>
+            reject(
+              new JudgeError(
+                this._trans.__('Kernel is not responding. Please try again.')
+              )
+            ),
+          KERNEL_TIMEOUT_MS
+        );
+      })
+    ]);
+    if (timer) {
+      clearTimeout(timer);
+    }
+
     const results: IRunResult[] = [];
     for (const testCase of testCases) {
       const result = await this.runWithInput(kernel, problem, testCase);
@@ -388,8 +433,7 @@ export class JudgePanel extends BoxPanel {
   private async runWithInput(
     kernel: IKernelConnection,
     problem: ProblemProvider.IProblem,
-    input: string,
-    restartKernel = false
+    input: string
   ): Promise<IRunResult> {
     const code = this.model.source;
 
@@ -398,29 +442,6 @@ export class JudgePanel extends BoxPanel {
       stop_on_error: true,
       allow_stdin: true
     };
-
-    if (restartKernel) {
-      await kernel.restart();
-    }
-
-    // TODO 최대 대기 시간 정의
-    const waitIdleState = new Promise<void>((resolve, reject) => {
-      const resolveOnIdleState = (
-        sender: IKernelConnection,
-        state: KernelMessage.Status
-      ) => {
-        if (state === 'idle') {
-          kernel.statusChanged.disconnect(resolveOnIdleState);
-          resolve();
-        }
-      };
-      if (kernel.status === 'idle') {
-        resolve();
-      } else {
-        kernel.statusChanged.connect(resolveOnIdleState);
-      }
-    });
-    await waitIdleState;
 
     let inputLinesLeft: string[] = [];
     if (problem.inputTransferType === 'one_line') {
