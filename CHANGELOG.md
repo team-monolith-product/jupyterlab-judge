@@ -2,6 +2,22 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.15.3
+
+([Full Changelog](https://github.com/team-monolith-product/jupyterlab-judge/compare/v0.15.2...2d489eef8526b770ec7f3f4d996dcf451b40d42b))
+
+### Merged PRs
+
+- feat: increase kernel timeout to 20s [#21](https://github.com/team-monolith-product/jupyterlab-judge/pull/21) ([@paulkim3151](https://github.com/paulkim3151))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/team-monolith-product/jupyterlab-judge/graphs/contributors?from=2023-04-08&to=2023-04-10&type=c))
+
+[@paulkim3151](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3Apaulkim3151+updated%3A2023-04-08..2023-04-10&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.15.2
 
 ([Full Changelog](https://github.com/team-monolith-product/jupyterlab-judge/compare/v0.15.1...3e1e62e51f585255f3919559c86a001560ff5d54))
@@ -16,8 +32,6 @@
 ([GitHub contributors page for this release](https://github.com/team-monolith-product/jupyterlab-judge/graphs/contributors?from=2023-04-04&to=2023-04-08&type=c))
 
 [@paulkim3151](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3Apaulkim3151+updated%3A2023-04-04..2023-04-08&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.15.1
 
