@@ -357,8 +357,8 @@ export class JudgePanel extends BoxPanel {
       }
     });
 
-    // Wait up to 5000 ms for the status of the kernel.
-    const KERNEL_TIMEOUT_MS = 5000;
+    // Wait up to 20s for the status of the kernel.
+    const KERNEL_TIMEOUT_MS = 20000;
     let timer: number | undefined;
     await Promise.race([
       waitIdleState,
