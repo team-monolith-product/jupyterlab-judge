@@ -61,7 +61,7 @@ export type ISubmissionListFactory = (
 ) => JSX.Element;
 
 export const IJudgeSignal = new Token<IJudgeSignal>(
-  `${PLUGIN_ID}:IJudgeSubmissionSignal`
+  `${PLUGIN_ID}:IJudgeSignal`
 );
 
 export interface IJudgeSignal {
