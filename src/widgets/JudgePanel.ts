@@ -266,8 +266,7 @@ export class JudgePanel extends BoxPanel {
       );
       this._executed.emit({
         widget: this,
-        cell: this.model.codeModel,
-        sucess: true
+        cell: this.model.codeModel
       });
     } catch (e) {
       if (
@@ -277,12 +276,6 @@ export class JudgePanel extends BoxPanel {
       ) {
         // User canceled the execution. Do nothing.
       } else {
-        this._executed.emit({
-          widget: this,
-          cell: this.model.codeModel,
-          sucess: false,
-          error: e
-        });
         throw e;
       }
     }

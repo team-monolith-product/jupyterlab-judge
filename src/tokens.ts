@@ -79,7 +79,5 @@ export namespace JudgeSignal {
   export interface IExecutionArgs {
     widget: JudgePanel;
     cell: CodeEditor.IModel;
-    sucess: boolean;
-    error?: any;
   }
 }
