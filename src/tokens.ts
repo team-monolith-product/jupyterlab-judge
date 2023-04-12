@@ -7,7 +7,7 @@ import { ProblemProvider } from './problemProvider/problemProvider';
 import { JudgePanel } from './widgets/JudgePanel';
 import { JudgeSubmissionArea } from './widgets/JudgeSubmissionArea';
 import { JudgeTerminal } from './widgets/JudgeTerminal';
-import { ICodeCellModel } from '@jupyterlab/cells';
+import { CodeEditor } from '@jupyterlab/codeeditor';
 
 /**
  * The Problem Provider token.
@@ -78,7 +78,7 @@ export namespace JudgeSignal {
 
   export interface IExecutionArgs {
     widget: JudgePanel;
-    cell: ICodeCellModel;
+    cell: CodeEditor.IModel;
     sucess: boolean;
     error?: any;
   }

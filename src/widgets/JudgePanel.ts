@@ -40,7 +40,6 @@ import { JudgeSubmissionArea } from './JudgeSubmissionArea';
 import { SubmissionList } from '../components/SubmissionList';
 import { IKernelConnection } from '@jupyterlab/services/lib/kernel/kernel';
 import { JudgeSignal } from '../tokens';
-import { ICodeCellModel } from '@jupyterlab/cells';
 
 interface IRunResult {
   status: 'OK' | 'TLE' | 'OLE' | 'RE';
@@ -267,7 +266,7 @@ export class JudgePanel extends BoxPanel {
       );
       this._executed.emit({
         widget: this,
-        cell: this.model.codeModel as ICodeCellModel,
+        cell: this.model.codeModel,
         sucess: true
       });
     } catch (e) {
@@ -280,7 +279,7 @@ export class JudgePanel extends BoxPanel {
       } else {
         this._executed.emit({
           widget: this,
-          cell: this.model.codeModel as ICodeCellModel,
+          cell: this.model.codeModel,
           sucess: false,
           error: e
         });
