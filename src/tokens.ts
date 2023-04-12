@@ -7,6 +7,7 @@ import { ProblemProvider } from './problemProvider/problemProvider';
 import { JudgePanel } from './widgets/JudgePanel';
 import { JudgeSubmissionArea } from './widgets/JudgeSubmissionArea';
 import { JudgeTerminal } from './widgets/JudgeTerminal';
+import { CodeEditor } from '@jupyterlab/codeeditor';
 
 /**
  * The Problem Provider token.
@@ -64,12 +65,19 @@ export const IJudgeSignal = new Token<IJudgeSignal>(
 );
 
 export interface IJudgeSignal {
-  readonly submitted: ISignal<
-    any,
-    {
-      widget: JudgePanel;
-      problem: ProblemProvider.IProblem;
-      submission: ProblemProvider.ISubmission;
-    }
-  >;
+  readonly submitted: ISignal<any, JudgeSignal.ISubmissionArgs>;
+  readonly executed: ISignal<any, JudgeSignal.IExecutionArgs>;
+}
+
+export namespace JudgeSignal {
+  export interface ISubmissionArgs {
+    widget: JudgePanel;
+    problem: ProblemProvider.IProblem;
+    submission: ProblemProvider.ISubmission;
+  }
+
+  export interface IExecutionArgs {
+    widget: JudgePanel;
+    cell: CodeEditor.IModel;
+  }
 }

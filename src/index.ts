@@ -33,10 +33,10 @@ import {
   IJudgeSubmissionAreaFactory,
   IJudgeTerminalFactory,
   IProblemProvider,
-  ISubmissionListFactory
+  ISubmissionListFactory,
+  JudgeSignal
 } from './tokens';
 import { HardCodedProblemProvider } from './problemProvider/HardCodedProblemProvider';
-import { ProblemProvider } from './problemProvider/problemProvider';
 import { Signal } from '@lumino/signaling';
 import { JudgeSubmissionArea } from './widgets/JudgeSubmissionArea';
 import { JudgeTerminal } from './widgets/JudgeTerminal';
@@ -45,14 +45,12 @@ import { SubmissionListImpl } from './components/SubmissionList';
 /**
  * A signal that emits whenever a submission is submitted.
  */
-const submitted = new Signal<
-  any,
-  {
-    widget: JudgePanel;
-    problem: ProblemProvider.IProblem;
-    submission: ProblemProvider.ISubmission;
-  }
->({});
+const submitted = new Signal<any, JudgeSignal.ISubmissionArgs>({});
+
+/**
+ * A signal that emits when code is executed.
+ */
+const executed = new Signal<any, JudgeSignal.IExecutionArgs>({});
 
 const signal: JupyterFrontEndPlugin<IJudgeSignal> = {
   id: `${PLUGIN_ID}:IJudgeSignal`,
@@ -61,6 +59,9 @@ const signal: JupyterFrontEndPlugin<IJudgeSignal> = {
     return {
       get submitted() {
         return submitted;
+      },
+      get executed() {
+        return executed;
       }
     };
   },
@@ -144,6 +145,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
         ((options: JudgeTerminal.IOptions) => new JudgeTerminal(options)),
       submissionListFactory: submissionListFactory ?? SubmissionListImpl,
       submitted,
+      executed,
       factoryOptions: {
         name: judgeDocumentFactoryName,
         modelName: 'judge-model',
