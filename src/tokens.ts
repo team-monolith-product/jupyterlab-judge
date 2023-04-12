@@ -7,6 +7,7 @@ import { ProblemProvider } from './problemProvider/problemProvider';
 import { JudgePanel } from './widgets/JudgePanel';
 import { JudgeSubmissionArea } from './widgets/JudgeSubmissionArea';
 import { JudgeTerminal } from './widgets/JudgeTerminal';
+import { ICodeCellModel } from '@jupyterlab/cells';
 
 /**
  * The Problem Provider token.
@@ -60,16 +61,25 @@ export type ISubmissionListFactory = (
 ) => JSX.Element;
 
 export const IJudgeSignal = new Token<IJudgeSignal>(
-  `${PLUGIN_ID}:IJudgeSignal`
+  `${PLUGIN_ID}:IJudgeSubmissionSignal`
 );
 
 export interface IJudgeSignal {
-  readonly submitted: ISignal<
-    any,
-    {
-      widget: JudgePanel;
-      problem: ProblemProvider.IProblem;
-      submission: ProblemProvider.ISubmission;
-    }
-  >;
+  readonly submitted: ISignal<any, JudgeSignal.ISubmissionArgs>;
+  readonly executed: ISignal<any, JudgeSignal.IExecutionArgs>;
+}
+
+export namespace JudgeSignal {
+  export interface ISubmissionArgs {
+    widget: JudgePanel;
+    problem: ProblemProvider.IProblem;
+    submission: ProblemProvider.ISubmission;
+  }
+
+  export interface IExecutionArgs {
+    widget: JudgePanel;
+    cell: ICodeCellModel;
+    sucess: boolean;
+    error?: any;
+  }
 }

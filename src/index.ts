@@ -41,6 +41,7 @@ import { Signal } from '@lumino/signaling';
 import { JudgeSubmissionArea } from './widgets/JudgeSubmissionArea';
 import { JudgeTerminal } from './widgets/JudgeTerminal';
 import { SubmissionListImpl } from './components/SubmissionList';
+import { ICodeCellModel } from '@jupyterlab/cells';
 
 /**
  * A signal that emits whenever a submission is submitted.
@@ -54,6 +55,16 @@ const submitted = new Signal<
   }
 >({});
 
+const executed = new Signal<
+  any,
+  {
+    widget: JudgePanel;
+    cell: ICodeCellModel;
+    sucess: boolean;
+    error?: any;
+  }
+>({});
+
 const signal: JupyterFrontEndPlugin<IJudgeSignal> = {
   id: `${PLUGIN_ID}:IJudgeSignal`,
   provides: IJudgeSignal,
@@ -61,6 +72,9 @@ const signal: JupyterFrontEndPlugin<IJudgeSignal> = {
     return {
       get submitted() {
         return submitted;
+      },
+      get executed() {
+        return executed;
       }
     };
   },
@@ -144,6 +158,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
         ((options: JudgeTerminal.IOptions) => new JudgeTerminal(options)),
       submissionListFactory: submissionListFactory ?? SubmissionListImpl,
       submitted,
+      executed,
       factoryOptions: {
         name: judgeDocumentFactoryName,
         modelName: 'judge-model',

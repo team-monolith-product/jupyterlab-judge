@@ -39,6 +39,8 @@ import { JudgeTerminal } from './JudgeTerminal';
 import { JudgeSubmissionArea } from './JudgeSubmissionArea';
 import { SubmissionList } from '../components/SubmissionList';
 import { IKernelConnection } from '@jupyterlab/services/lib/kernel/kernel';
+import { JudgeSignal } from '../tokens';
+import { ICodeCellModel } from '@jupyterlab/cells';
 
 interface IRunResult {
   status: 'OK' | 'TLE' | 'OLE' | 'RE';
@@ -59,14 +61,8 @@ export namespace JudgePanel {
     rendermime: IRenderMimeRegistry;
     context: DocumentRegistry.IContext<JudgeModel>;
     translator: ITranslator;
-    submitted: Signal<
-      any,
-      {
-        widget: JudgePanel;
-        problem: ProblemProvider.IProblem;
-        submission: ProblemProvider.ISubmission;
-      }
-    >;
+    submitted: Signal<any, JudgeSignal.ISubmissionArgs>;
+    executed: Signal<any, JudgeSignal.IExecutionArgs>;
 
     judgeSubmissionAreaFactory: (
       options: JudgeSubmissionArea.IOptions
@@ -87,6 +83,7 @@ export class JudgePanel extends BoxPanel {
     this._translator = options.translator;
     this._trans = this._translator.load(TRANSLATOR_DOMAIN);
     this._submitted = options.submitted;
+    this._executed = options.executed;
 
     this.id = 'jce-judge-panel';
     this.title.closable = true;
@@ -268,6 +265,11 @@ export class JudgePanel extends BoxPanel {
         this.session,
         {}
       );
+      this._executed.emit({
+        widget: this,
+        cell: this.model.codeModel as ICodeCellModel,
+        sucess: true
+      });
     } catch (e) {
       if (
         e instanceof Error &&
@@ -276,6 +278,12 @@ export class JudgePanel extends BoxPanel {
       ) {
         // User canceled the execution. Do nothing.
       } else {
+        this._executed.emit({
+          widget: this,
+          cell: this.model.codeModel as ICodeCellModel,
+          sucess: false,
+          error: e
+        });
         throw e;
       }
     }
@@ -530,14 +538,8 @@ export class JudgePanel extends BoxPanel {
 
   private _translator: ITranslator;
   private _trans: TranslationBundle;
-  private _submitted: Signal<
-    any,
-    {
-      widget: JudgePanel;
-      problem: ProblemProvider.IProblem;
-      submission: ProblemProvider.ISubmission;
-    }
-  >;
+  private _submitted: Signal<any, JudgeSignal.ISubmissionArgs>;
+  private _executed: Signal<any, JudgeSignal.IExecutionArgs>;
 }
 
 export class JudgeDocument extends DocumentWidget<JudgePanel, JudgeModel> {
@@ -577,6 +579,7 @@ export class JudgeDocumentFactory extends ABCWidgetFactory<
     this._judgeTerminalFactory = options.judgeTerminalFactory;
     this._submissionListFactory = options.submissionListFactory;
     this._submitted = options.submitted;
+    this._executed = options.executed;
   }
 
   /**
@@ -591,6 +594,7 @@ export class JudgeDocumentFactory extends ABCWidgetFactory<
       context,
       translator: this.translator,
       submitted: this._submitted,
+      executed: this._executed,
       judgeSubmissionAreaFactory: this._judgeSubmissionAreaFactory,
       judgeTerminalFactory: this._judgeTerminalFactory,
       submissionListFactory: this._submissionListFactory
@@ -619,14 +623,8 @@ export class JudgeDocumentFactory extends ABCWidgetFactory<
   private _submissionListFactory: (
     options: SubmissionList.IOptions
   ) => JSX.Element;
-  private _submitted: Signal<
-    any,
-    {
-      widget: JudgePanel;
-      problem: ProblemProvider.IProblem;
-      submission: ProblemProvider.ISubmission;
-    }
-  >;
+  private _submitted: Signal<any, JudgeSignal.ISubmissionArgs>;
+  private _executed: Signal<any, JudgeSignal.IExecutionArgs>;
 }
 
 /**
@@ -656,13 +654,7 @@ export namespace JudgeDocumentFactory {
       options: JudgeTerminal.IOptions
     ) => JudgeTerminal.IJudgeTerminal;
     submissionListFactory: (options: SubmissionList.IOptions) => JSX.Element;
-    submitted: Signal<
-      any,
-      {
-        widget: JudgePanel;
-        problem: ProblemProvider.IProblem;
-        submission: ProblemProvider.ISubmission;
-      }
-    >;
+    submitted: Signal<any, JudgeSignal.ISubmissionArgs>;
+    executed: Signal<any, JudgeSignal.IExecutionArgs>;
   }
 }
