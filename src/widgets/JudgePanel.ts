@@ -27,7 +27,7 @@ import {
 import { CodeMirrorEditorFactory } from '@jupyterlab/codemirror';
 import { CommandRegistry } from '@lumino/commands';
 import { OutputArea } from '@jupyterlab/outputarea';
-import { KernelMessage } from '@jupyterlab/services';
+import { Kernel, KernelMessage } from '@jupyterlab/services';
 import { IHeader, IStreamMsg } from '@jupyterlab/services/lib/kernel/messages';
 import { JudgeModel } from '../model';
 import { ProblemProvider } from '../problemProvider/problemProvider';
@@ -340,42 +340,20 @@ export class JudgePanel extends BoxPanel {
       totalCount: testCases.length
     };
 
-    const waitIdleState = new Promise<void>((resolve, reject) => {
-      const resolveOnIdleState = (
-        sender: ISessionContext,
-        state: KernelMessage.Status
-      ) => {
-        if (state === 'idle') {
-          sessionContext.statusChanged.disconnect(resolveOnIdleState);
-          resolve();
-        }
-      };
-      if (sessionContext.kernelDisplayStatus === 'idle') {
-        resolve();
-      } else {
-        sessionContext.statusChanged.connect(resolveOnIdleState);
+    // Wait until kernelDisplayStatus is idle
+    // Check every second up to 20s
+    // Just uses busy loop, no signal
+    for (let i = 0; i < 20; i++) {
+      if (this.session.kernelDisplayStatus === 'idle') {
+        break;
       }
-    });
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    }
 
-    // Wait up to 20s for the status of the kernel.
-    const KERNEL_TIMEOUT_MS = 20000;
-    let timer: number | undefined;
-    await Promise.race([
-      waitIdleState,
-      new Promise((resolve, reject) => {
-        timer = setTimeout(
-          () =>
-            reject(
-              new JudgeError(
-                this._trans.__('Kernel is not responding. Please try again.')
-              )
-            ),
-          KERNEL_TIMEOUT_MS
-        );
-      })
-    ]);
-    if (timer) {
-      clearTimeout(timer);
+    if (this.session.kernelDisplayStatus !== 'idle') {
+      throw new JudgeError(
+        this._trans.__('Kernel is not responding. Please try again.')
+      );
     }
 
     const results: IRunResult[] = [];
