@@ -2,6 +2,23 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.15.5
+
+([Full Changelog](https://github.com/team-monolith-product/jupyterlab-judge/compare/v0.15.4...e0861af63f552cdd1d5ef503547c4f4ef9b60fcc))
+
+### Merged PRs
+
+- fix: Fix build error [#24](https://github.com/team-monolith-product/jupyterlab-judge/pull/24) ([@a3626a](https://github.com/a3626a))
+- Make idle waiting more robust [#23](https://github.com/team-monolith-product/jupyterlab-judge/pull/23) ([@a3626a](https://github.com/a3626a))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/team-monolith-product/jupyterlab-judge/graphs/contributors?from=2023-04-12&to=2023-04-20&type=c))
+
+[@a3626a](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3Aa3626a+updated%3A2023-04-12..2023-04-20&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.15.4
 
 ([Full Changelog](https://github.com/team-monolith-product/jupyterlab-judge/compare/v0.15.3...a0c6ae8485af5e9f8c513a3b7cbeb95cc41a5d29))
@@ -15,8 +32,6 @@
 ([GitHub contributors page for this release](https://github.com/team-monolith-product/jupyterlab-judge/graphs/contributors?from=2023-04-10&to=2023-04-12&type=c))
 
 [@paulkim3151](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3Apaulkim3151+updated%3A2023-04-10..2023-04-12&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.15.3
 
