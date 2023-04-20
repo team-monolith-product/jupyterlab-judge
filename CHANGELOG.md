@@ -2,6 +2,22 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.15.6
+
+([Full Changelog](https://github.com/team-monolith-product/jupyterlab-judge/compare/v0.15.5...4dd3706b97df5bedf3af3a1045da4bbf32780361))
+
+### Merged PRs
+
+- fix: Fix wrong session context waiting [#25](https://github.com/team-monolith-product/jupyterlab-judge/pull/25) ([@a3626a](https://github.com/a3626a))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/team-monolith-product/jupyterlab-judge/graphs/contributors?from=2023-04-20&to=2023-04-20&type=c))
+
+[@a3626a](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3Aa3626a+updated%3A2023-04-20..2023-04-20&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.15.5
 
 ([Full Changelog](https://github.com/team-monolith-product/jupyterlab-judge/compare/v0.15.4...e0861af63f552cdd1d5ef503547c4f4ef9b60fcc))
@@ -16,8 +32,6 @@
 ([GitHub contributors page for this release](https://github.com/team-monolith-product/jupyterlab-judge/graphs/contributors?from=2023-04-12&to=2023-04-20&type=c))
 
 [@a3626a](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3Aa3626a+updated%3A2023-04-12..2023-04-20&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.15.4
 
