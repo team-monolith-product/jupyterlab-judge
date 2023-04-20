@@ -344,13 +344,13 @@ export class JudgePanel extends BoxPanel {
     // Check every second up to 20s
     // Just uses busy loop, no signal
     for (let i = 0; i < 20; i++) {
-      if (this.session.kernelDisplayStatus === 'idle') {
+      if (sessionContext.kernelDisplayStatus === 'idle') {
         break;
       }
       await new Promise(resolve => setTimeout(resolve, 1000));
     }
 
-    if (this.session.kernelDisplayStatus !== 'idle') {
+    if (sessionContext.kernelDisplayStatus !== 'idle') {
       throw new JudgeError(
         this._trans.__('Kernel is not responding. Please try again.')
       );
