@@ -27,7 +27,7 @@ import {
 import { CodeMirrorEditorFactory } from '@jupyterlab/codemirror';
 import { CommandRegistry } from '@lumino/commands';
 import { OutputArea } from '@jupyterlab/outputarea';
-import { Kernel, KernelMessage } from '@jupyterlab/services';
+import { KernelMessage } from '@jupyterlab/services';
 import { IHeader, IStreamMsg } from '@jupyterlab/services/lib/kernel/messages';
 import { JudgeModel } from '../model';
 import { ProblemProvider } from '../problemProvider/problemProvider';
