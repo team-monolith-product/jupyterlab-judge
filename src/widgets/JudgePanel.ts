@@ -351,6 +351,9 @@ export class JudgePanel extends BoxPanel {
     }
 
     if (sessionContext.kernelDisplayStatus !== 'idle') {
+      console.warn(
+        `Kernel is still ${sessionContext.kernelDisplayStatus} after 20s`
+      );
       throw new JudgeError(
         this._trans.__('Kernel is not responding. Please try again.')
       );
