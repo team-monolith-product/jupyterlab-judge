@@ -2,6 +2,22 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.15.8
+
+([Full Changelog](https://github.com/team-monolith-product/jupyterlab-judge/compare/v0.15.7...a222eb40f6152b9ad5c840cfe59236bbaaeabfb8))
+
+### Merged PRs
+
+- feat: add success property on execued signal [#27](https://github.com/team-monolith-product/jupyterlab-judge/pull/27) ([@paulkim3151](https://github.com/paulkim3151))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/team-monolith-product/jupyterlab-judge/graphs/contributors?from=2023-04-23&to=2023-04-24&type=c))
+
+[@paulkim3151](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3Apaulkim3151+updated%3A2023-04-23..2023-04-24&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.15.7
 
 ([Full Changelog](https://github.com/team-monolith-product/jupyterlab-judge/compare/v0.15.6...cb83751afc4552c92ff1d655a07fe2427ef19c36))
@@ -15,8 +31,6 @@
 ([GitHub contributors page for this release](https://github.com/team-monolith-product/jupyterlab-judge/graphs/contributors?from=2023-04-20&to=2023-04-23&type=c))
 
 [@a3626a](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3Aa3626a+updated%3A2023-04-20..2023-04-23&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.15.6
 
