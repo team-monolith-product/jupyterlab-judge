@@ -264,9 +264,15 @@ export class JudgePanel extends BoxPanel {
         this.session,
         {}
       );
+
+      let success = false;
+      if (!reply || reply.content.status === 'ok') {
+        success = true;
+      }
       this._executed.emit({
         widget: this,
-        cell: this.model.codeModel
+        cell: this.model.codeModel,
+        success
       });
     } catch (e) {
       if (
