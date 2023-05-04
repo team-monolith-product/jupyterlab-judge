@@ -4,7 +4,6 @@ import type * as nbformat from '@jupyterlab/nbformat';
 
 import { DocumentRegistry } from '@jupyterlab/docregistry';
 import { IModelDB, ModelDB } from '@jupyterlab/observables';
-import { Contents } from '@jupyterlab/services';
 import { ISignal, Signal } from '@lumino/signaling';
 import { PartialJSONObject } from '@lumino/coreutils';
 import { IChangedArgs } from '@jupyterlab/coreutils';
@@ -17,6 +16,7 @@ import { IOutput, IBaseCell } from '@jupyterlab/nbformat';
 import { IMapChange } from '@jupyter/ydoc';
 import type { PartialJSONValue } from '@lumino/coreutils';
 import { Awareness } from 'y-protocols/awareness';
+import { Contents } from '@jupyterlab/services';
 
 export class JudgeModel implements DocumentRegistry.IModel {
   constructor(problemProvider: IProblemProvider) {
@@ -48,6 +48,8 @@ export class JudgeModel implements DocumentRegistry.IModel {
     this._problem = null;
     this._problemProvider = problemProvider;
   }
+
+  readonly collaborative = true;
 
   /**
    * A signal emitted when the document content changes.
@@ -206,7 +208,6 @@ export class JudgeModel implements DocumentRegistry.IModel {
   }
 
   fromJSON(value: JudgeModel.IJudgeContent): void {
-    console.log('fromJSON(', value, ')');
     this.sharedModel.source =
       value.code ??
       '# 파일이 손상되었습니다. 파일을 삭제하고 새로 생성해주세요.';
@@ -284,32 +285,12 @@ export namespace JudgeModel {
       this._problemProviderFactory = options.problemProviderFactory;
     }
 
-    /**
-     * The name of the model.
-     *
-     * @returns The name
-     */
-    get name(): string {
-      return 'judge-model';
-    }
-
-    /**
-     * The content type of the file.
-     *
-     * @returns The content type
-     */
+    readonly collaborative = true;
+    readonly name = 'judge-model';
     get contentType(): Contents.ContentType {
-      return 'file';
+      return 'judge' as Contents.ContentType;
     }
-
-    /**
-     * The format of the file.
-     *
-     * @returns the file format
-     */
-    get fileFormat(): Contents.FileFormat {
-      return 'text';
-    }
+    readonly fileFormat = 'text';
 
     /**
      * Get whether the model factory has been disposed.
@@ -360,7 +341,7 @@ export namespace JudgeModel {
     constructor() {
       super();
 
-      this._problemId = this.ydoc.getText('problemId');
+      this._problemId = this.ydoc.getText('problem_id');
       this._source = this.ydoc.getText('source');
       this._outputs = this.ydoc.getArray('outputs');
 
@@ -369,6 +350,7 @@ export namespace JudgeModel {
       });
 
       this._ycodeCell = new YCodeCell(this, this._source, this._outputs);
+
       this.undoManager = new Y.UndoManager([this._source]);
     }
 
@@ -469,7 +451,7 @@ export namespace JudgeModel {
       return '';
     }
     deleteMetadata(key: string): void {
-      throw new Error('Method not implemented.');
+      // no-op
     }
     getMetadata(key?: unknown) {
       return {};

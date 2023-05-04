@@ -14,15 +14,8 @@ import { CodeEditor, IEditorServices } from '@jupyterlab/codeeditor';
 import { addCommands, addMenuItems, CommandIDs } from './commands';
 import { IRenderMimeRegistry } from '@jupyterlab/rendermime';
 import { IDocumentManager } from '@jupyterlab/docmanager';
-import { IFileBrowserFactory } from '@jupyterlab/filebrowser';
 import { IMainMenu } from '@jupyterlab/mainmenu';
-import {
-  BROWSER_NAME,
-  DRIVE_NAME,
-  PLUGIN_ID,
-  TRANSLATOR_DOMAIN
-} from './constants';
-import { Drive } from '@jupyterlab/services';
+import { PLUGIN_ID, TRANSLATOR_DOMAIN } from './constants';
 import { ISettingRegistry } from '@jupyterlab/settingregistry';
 
 import { JSONObject } from '@lumino/coreutils';
@@ -79,7 +72,6 @@ const plugin: JupyterFrontEndPlugin<void> = {
     IEditorServices,
     IRenderMimeRegistry,
     IDocumentManager,
-    IFileBrowserFactory,
     IMainMenu,
     ICommandPalette
   ],
@@ -98,7 +90,6 @@ const plugin: JupyterFrontEndPlugin<void> = {
     editorService: IEditorServices,
     rendermime: IRenderMimeRegistry,
     docManager: IDocumentManager,
-    browserFactory: IFileBrowserFactory,
     menu: IMainMenu,
     palette: ICommandPalette,
     judgePanelFactory: IJudgePanelFactory | null,
@@ -205,15 +196,6 @@ const plugin: JupyterFrontEndPlugin<void> = {
         name: widget => widget.context.path
       });
     }
-
-    // 독립적인 Drive와 File Browser 를 생성합니다.
-    // 이 Drive 경로로 접근되면 File Browser 에 영향을 주지 않습니다.
-    // 기존 Drive 를 사용하는 경우 Judge 파일을 클릭하면 숨김 폴더가 열리는 문제가 있습니다.
-    // https://www.notion.so/team-mono/UX-d07ce16254c64434b13712db5d042a4c
-    app.serviceManager.contents.addDrive(new Drive({ name: DRIVE_NAME }));
-    browserFactory.createFileBrowser(BROWSER_NAME, {
-      driveName: DRIVE_NAME
-    });
   }
 };
 

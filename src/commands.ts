@@ -8,7 +8,7 @@ import { ServerConnection } from '@jupyterlab/services';
 import { IEditMenu, IMainMenu, IRunMenu } from '@jupyterlab/mainmenu';
 import { Widget } from '@lumino/widgets';
 import { JudgeModel } from './model';
-import { DRIVE_NAME, JUDGE_HIDDEN_FOLDER_NAME, PLUGIN_ID } from './constants';
+import { JUDGE_HIDDEN_FOLDER_NAME, PLUGIN_ID } from './constants';
 import { IProblemProvider } from './tokens';
 import { IDocumentWidget } from '@jupyterlab/docregistry';
 
@@ -69,14 +69,14 @@ export async function openOrCreateFromId(
   const problem = await problemProvider.getProblem(problemId);
   if (problem) {
     const title = problem.title;
-    const path = `${DRIVE_NAME}:${JUDGE_HIDDEN_FOLDER_NAME}/${problemId}/${title}.judge`;
+    const path = `${JUDGE_HIDDEN_FOLDER_NAME}/${problemId}/${title}.judge`;
 
-    const directory = `${DRIVE_NAME}:${JUDGE_HIDDEN_FOLDER_NAME}`;
+    const directory = `${JUDGE_HIDDEN_FOLDER_NAME}`;
     await docManager.services.contents.save(directory, {
       name: directory,
       type: 'directory'
     });
-    const directoryId = `${DRIVE_NAME}:${JUDGE_HIDDEN_FOLDER_NAME}/${problemId}`;
+    const directoryId = `${JUDGE_HIDDEN_FOLDER_NAME}/${problemId}`;
     await docManager.services.contents.save(directoryId, {
       name: directoryId,
       type: 'directory'

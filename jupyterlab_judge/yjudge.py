@@ -6,13 +6,14 @@ from jupyter_ydoc.ydoc import YBaseDoc
 class YJudge(YBaseDoc):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self._problem_id = self._ydoc.get_text("problemId")
-        self._cell = self._ydoc.get_map("cell")
-        
+        self._problem_id = self._ydoc.get_text("problem_id")
+        self._source = self._ydoc.get_text("source")
+        self._outputs = self._ydoc.get_array("outputs")
+
     def get(self):
         return json.dumps({
             'problem_id': str(self._problem_id),
-            'code': str(self._cell.get('source')),
+            'code': str(self._source),
             'judge_format': 1
         })
 
@@ -27,16 +28,17 @@ class YJudge(YBaseDoc):
             if value['problem_id']:
                 self._problem_id.extend(t, value['problem_id'])
 
-            # clear cell
-            self._cell.set(t, 'id', '')
-            self._cell.set(t, 'metadata', {})
-            self._cell.set(t, 'cell_type', 'code')
-            self._cell.set(t, 'execution_count', 0)
-            self._cell.set(t, 'source', Y.YText(value['code']))
-            self._cell.set(t, 'outputs', Y.YArray())
+            # clear source
+            source_len = len(self._source)
+            if source_len:
+                self._source.delete_range(t, 0, source_len)
+            # initialize source
+            if value['code']:
+                self._source.extend(t, value['code'])
     
     def observe(self, callback):
         self.unobserve()
         self._subscriptions[self._ystate] = self._ystate.observe(callback)
         self._subscriptions[self._problem_id] = self._problem_id.observe(callback)
-        self._subscriptions[self._cell] = self._cell.observe_deep(callback)
+        self._subscriptions[self._source] = self._source.observe_deep(callback)
+        self._subscriptions[self._outputs] = self._outputs.observe_deep(callback)
