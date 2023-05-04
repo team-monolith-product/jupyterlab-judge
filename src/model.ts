@@ -1,19 +1,22 @@
-import * as models from '@jupyterlab/shared-models';
+import * as models from '@jupyter/ydoc';
 import * as Y from 'yjs';
-import * as nbformat from '@jupyterlab/nbformat';
+import type * as nbformat from '@jupyterlab/nbformat';
 
 import { DocumentRegistry } from '@jupyterlab/docregistry';
 import { IModelDB, ModelDB } from '@jupyterlab/observables';
-import { Contents } from '@jupyterlab/services';
 import { ISignal, Signal } from '@lumino/signaling';
 import { PartialJSONObject } from '@lumino/coreutils';
 import { IChangedArgs } from '@jupyterlab/coreutils';
 import { CodeEditor } from '@jupyterlab/codeeditor';
-import { Awareness } from 'y-protocols/awareness';
 import { IOutputAreaModel } from '@jupyterlab/outputarea';
 import { CodeCellModel } from '@jupyterlab/cells';
 import { IProblemProvider } from './tokens';
 import { ProblemProvider } from './problemProvider/problemProvider';
+import { IOutput, IBaseCell } from '@jupyterlab/nbformat';
+import { IMapChange } from '@jupyter/ydoc';
+import type { PartialJSONValue } from '@lumino/coreutils';
+import { Awareness } from 'y-protocols/awareness';
+import { Contents } from '@jupyterlab/services';
 
 export class JudgeModel implements DocumentRegistry.IModel {
   constructor(problemProvider: IProblemProvider) {
@@ -27,18 +30,31 @@ export class JudgeModel implements DocumentRegistry.IModel {
           );
           this._problemChanged.emit(this._problem);
         }
+
+        if (judgeChange.stateChange) {
+          judgeChange.stateChange.forEach(value => {
+            if (value.name === 'dirty') {
+              this.dirty = value.newValue;
+            }
+          });
+        }
+
+        if (judgeChange.sourceChange) {
+          this._contentChanged.emit();
+          this.dirty = true;
+        }
       }
     );
 
     this._codeModel = new CodeCellModel({});
     this._codeModel.mimeType = 'text/x-python';
-    this.sharedModel.ycodeCellChanged.connect((sender, ycodeCell) => {
-      this._codeModel.switchSharedModel(ycodeCell, true);
-    });
+    this._codeModel.switchSharedModel(this.sharedModel.yCodeCell, true);
 
     this._problem = null;
     this._problemProvider = problemProvider;
   }
+
+  readonly collaborative = true;
 
   /**
    * A signal emitted when the document content changes.
@@ -58,15 +74,20 @@ export class JudgeModel implements DocumentRegistry.IModel {
    * The dirty state of the document.
    */
   get dirty(): boolean {
-    return this.sharedModel.dirty;
+    return this._dirty;
   }
   set dirty(newValue: boolean) {
-    if (newValue === this.dirty) {
+    const oldValue = this._dirty;
+    if (newValue === oldValue) {
       return;
     }
-    this.sharedModel.dirty = newValue;
+    this._dirty = newValue;
+    this._stateChanged.emit({
+      name: 'dirty',
+      oldValue,
+      newValue
+    });
   }
-
   /**
    * The read only state of the document.
    */
@@ -97,7 +118,7 @@ export class JudgeModel implements DocumentRegistry.IModel {
   }
 
   get defaultKernelName(): string {
-    return `Judge: Problem ${this.sharedModel.getProblemId()}`;
+    return `Judge: Problem ${this.sharedModel.problemId}`;
   }
 
   get defaultKernelLanguage(): string {
@@ -120,11 +141,11 @@ export class JudgeModel implements DocumentRegistry.IModel {
   private _codeModel: CodeCellModel;
 
   get source(): string {
-    return this.sharedModel.getSource();
+    return this.sharedModel.source;
   }
 
   set source(value: string) {
-    this.sharedModel.setSource(value);
+    this.sharedModel.source = value;
   }
 
   // NoPromptOutputArea 에 전달되기 위해 사용됨
@@ -142,7 +163,7 @@ export class JudgeModel implements DocumentRegistry.IModel {
 
   async submissions(): Promise<ProblemProvider.ISubmission[]> {
     return await this._problemProvider.getSubmissions(
-      this.sharedModel.getProblemId()
+      this.sharedModel.problemId
     );
   }
 
@@ -185,32 +206,28 @@ export class JudgeModel implements DocumentRegistry.IModel {
 
   toJSON(): JudgeModel.IJudgeContent {
     return {
-      problem_id: this.sharedModel.getProblemId(),
-      code: this.sharedModel.getSource(),
+      problem_id: this.sharedModel.problemId,
+      code: this.sharedModel.source,
       judge_format: 1
     };
   }
 
   fromJSON(value: JudgeModel.IJudgeContent): void {
-    this.sharedModel.createCellModelFromSource(
+    this.sharedModel.source =
       value.code ??
-        '# 파일이 손상되었습니다. 파일을 삭제하고 새로 생성해주세요.'
-    );
-    // fromJSON 은 초기 Cell Model 을 생성해야하는 영역입니다.
-    // setSource 는 Cell Model 을 생성하지 않았다면 작동하지 않습니다.
-    // this.sharedModel.setSource(value.code ?? '# 파일이 손상되었습니다. 파일을 삭제하고 새로 생성해주세요.');
-    this.sharedModel.setProblemId(value.problem_id ?? '');
+      '# 파일이 손상되었습니다. 파일을 삭제하고 새로 생성해주세요.';
+
+    this.sharedModel.problemId = value.problem_id ?? '';
+    this.dirty = true;
   }
 
   async getTestCases(): Promise<string[]> {
-    return await this._problemProvider.getTestCases(
-      this.sharedModel.getProblemId()
-    );
+    return await this._problemProvider.getTestCases(this.sharedModel.problemId);
   }
 
   async validate(outputs: string[]): Promise<ProblemProvider.IValidateResult> {
     return await this._problemProvider.validate(
-      this.sharedModel.getProblemId(),
+      this.sharedModel.problemId,
       outputs
     );
   }
@@ -220,13 +237,12 @@ export class JudgeModel implements DocumentRegistry.IModel {
   ): Promise<ProblemProvider.ISubmission> {
     const submission = await this._problemProvider.submit(request);
     this._submissionsChanged.emit(
-      await this._problemProvider.getSubmissions(
-        this.sharedModel.getProblemId()
-      )
+      await this._problemProvider.getSubmissions(this.sharedModel.problemId)
     );
     return submission;
   }
 
+  private _dirty = false;
   private _problem: ProblemProvider.IProblem | null;
   private _problemChanged = new Signal<this, ProblemProvider.IProblem | null>(
     this
@@ -274,32 +290,12 @@ export namespace JudgeModel {
       this._problemProviderFactory = options.problemProviderFactory;
     }
 
-    /**
-     * The name of the model.
-     *
-     * @returns The name
-     */
-    get name(): string {
-      return 'judge-model';
-    }
-
-    /**
-     * The content type of the file.
-     *
-     * @returns The content type
-     */
+    readonly collaborative = true;
+    readonly name = 'judge-model';
     get contentType(): Contents.ContentType {
-      return 'file';
+      return 'judge' as Contents.ContentType;
     }
-
-    /**
-     * The format of the file.
-     *
-     * @returns the file format
-     */
-    get fileFormat(): Contents.FileFormat {
-      return 'text';
-    }
+    readonly fileFormat = 'text';
 
     /**
      * Get whether the model factory has been disposed.
@@ -343,8 +339,8 @@ export namespace JudgeModel {
   }
 
   export interface IJudgeChange
-    extends models.DocumentChange,
-      models.TextChange {
+    extends models.SourceChange,
+      models.DocumentChange {
     problemIdChange?: string;
   }
 
@@ -352,61 +348,19 @@ export namespace JudgeModel {
     constructor() {
       super();
 
-      this._yproblemId.observe(event => {
-        this._changed.emit({ problemIdChange: this.getProblemId() });
+      this._problemId = this.ydoc.getText('problem_id');
+      this._source = this.ydoc.getText('source');
+      this._outputs = this.ydoc.getArray('outputs');
+      this._ycodeCell = new YCodeCell(this, this._source, this._outputs);
+
+      this._problemId.observe(event => {
+        this._changed.emit({ problemIdChange: this.problemId });
+      });
+      this._ycodeCell.changed.connect((_, change) => {
+        this._changed.emit(change);
       });
 
-      this._ycodeCell = null;
-
-      this._cell().observe((event, transact) => {
-        if (event.changes.keys.get('id')) {
-          // createCellModelFromSource 을 통해 새로 Cell 이 생성되었을 때
-          this._switchCodeCell(this._cell());
-        }
-      });
-    }
-
-    createCellModelFromSource(source: string): void {
-      this.transact(() => {
-        const ymodel = this._cell();
-        ymodel.set('source', new Y.Text(source));
-        ymodel.set('metadata', {});
-        ymodel.set('cell_type', 'code');
-        ymodel.set('id', '');
-        ymodel.set('execution_count', 0); // for some default value
-        ymodel.set('outputs', new Y.Array<nbformat.IOutput>());
-      });
-      this._switchCodeCell(this._cell());
-    }
-
-    private _cell(): Y.Map<any> {
-      return this.ydoc.getMap('cell');
-    }
-
-    private _switchCodeCell(value: Y.Map<any>) {
-      const ycodeCellPrev = this._ycodeCell;
-      this._ycodeCell = new YCodeCell(value, this);
-      this.undoManager = new Y.UndoManager([this._cell()], {
-        trackedOrigins: new Set([this._ycodeCell])
-      });
-      this._ycodeCell.undoManager = this.undoManager;
-      this.undoManager.clear();
-      this._ycodeCellChanged.emit(this._ycodeCell);
-      this._ycodeCell.changed.connect((sender, change) => {
-        if (change.sourceChange) {
-          this.dirty = true;
-        }
-      });
-
-      ycodeCellPrev?.dispose();
-    }
-
-    get changed(): ISignal<this, IJudgeChange> {
-      return this._changed;
-    }
-
-    get ycodeCellChanged(): ISignal<this, models.YCodeCell> {
-      return this._ycodeCellChanged;
+      this.undoManager = new Y.UndoManager([this._source]);
     }
 
     /**
@@ -416,54 +370,192 @@ export namespace JudgeModel {
       /* no-op */
     }
 
-    get yCodeCell(): models.YCodeCell | null {
+    get yCodeCell(): models.ISharedCodeCell {
       return this._ycodeCell;
     }
 
-    getProblemId(): string {
-      return this._yproblemId.toString();
+    get problemId(): string {
+      return this._problemId.toString();
     }
-
-    public setProblemId(value: string): void {
+    set problemId(value: string) {
       this.transact(() => {
-        const ytext = this._yproblemId;
+        const ytext = this._problemId;
         ytext.delete(0, ytext.length);
         ytext.insert(0, value);
       });
     }
-
-    getSource(): string {
-      return this._ycodeCell?.getSource() ?? '';
+    get source(): string {
+      return this._ycodeCell.getSource() ?? '';
+    }
+    set source(value: string) {
+      this._ycodeCell.setSource(value);
     }
 
-    setSource(value: string): void {
-      if (this._ycodeCell) {
-        this._ycodeCell.setSource(value);
-      }
-    }
-
-    // YDocument에서는 source에 대해서 undoManager 가 정의되어 있어
-    // 수정합니다.
-    public undoManager = new Y.UndoManager([this._cell()]);
-
-    private _ycodeCell: models.YCodeCell | null;
-    private _yproblemId = this.ydoc.getText('problemId');
-    private _ycodeCellChanged = new Signal<this, models.YCodeCell>(this);
+    private _ycodeCell: models.ISharedCodeCell;
+    private _problemId: Y.Text;
+    private _source: Y.Text;
+    private _outputs: Y.Array<nbformat.IOutput>;
+    public undoManager: Y.UndoManager;
   }
 
-  // models.YCodeCell는 Awareness 가 YNotebook 에 종속적이다.
-  // 따라서 YJudge에 종속적이도록 수정한다.
-  class YCodeCell extends models.YCodeCell {
-    constructor(map: Y.Map<any>, yjudge: YJudge) {
-      super(map);
+  class YCodeCell implements models.ISharedCodeCell, models.IYText {
+    constructor(
+      yjudge: YJudge,
+      source: Y.Text,
+      outputs: Y.Array<nbformat.IOutput>
+    ) {
       this._yjudge = yjudge;
+      this._source = source;
+      this._outputs = outputs;
+
+      this._source.observe(this._sourceObserver);
+      this._outputs.observe(this._outputsObserver);
     }
 
-    get awareness(): Awareness | null {
+    readonly id = '';
+    readonly cell_type = 'code';
+    readonly execution_count = 0;
+    readonly isStandalone = true;
+    readonly notebook = null;
+    readonly metadata = {};
+    readonly metadataChanged = new Signal<this, IMapChange<any>>(this);
+    get changed(): ISignal<
+      this,
+      models.CellChange<nbformat.IBaseCellMetadata>
+    > {
+      return this._changed;
+    }
+    get outputs(): Array<nbformat.IOutput> {
+      return this.getOutputs();
+    }
+    getOutputs(): IOutput[] {
+      return this._outputs.toArray();
+    }
+    setOutputs(outputs: IOutput[]): void {
+      this.transact(() => {
+        this._outputs.delete(0, this._outputs.length);
+        this._outputs.insert(0, outputs);
+      }, false);
+    }
+    updateOutputs(start: number, end: number, outputs: IOutput[]): void {
+      const fin =
+        end < this._outputs.length ? end - start : this._outputs.length - start;
+      this.transact(() => {
+        this._outputs.delete(start, fin);
+        this._outputs.insert(start, outputs);
+      }, false);
+    }
+    toJSON(): IBaseCell {
+      throw new Error('Method not implemented.');
+    }
+    getId(): string {
+      return '';
+    }
+    deleteMetadata(key: string): void {
+      // no-op
+    }
+    getMetadata(key?: unknown) {
+      return {};
+    }
+    setMetadata(metadata: nbformat.INotebookMetadata): void;
+    setMetadata(metadata: string, value: PartialJSONValue): void;
+    setMetadata(
+      metadata: nbformat.INotebookMetadata | string,
+      value?: PartialJSONValue
+    ): void {
+      // no-op
+    }
+    get source(): string {
+      return this.getSource();
+    }
+    getSource(): string {
+      return this._source.toString();
+    }
+    setSource(value: string): void {
+      this.transact(() => {
+        const ytext = this._source;
+        ytext.delete(0, ytext.length);
+        ytext.insert(0, value);
+      });
+    }
+    updateSource(start: number, end: number, value = ''): void {
+      this.transact(() => {
+        const ysource = this._source;
+        // insert and then delete.
+        // This ensures that the cursor position is adjusted after the replaced content.
+        ysource.insert(start, value);
+        ysource.delete(start + value.length, end - start);
+      });
+    }
+
+    private _sourceObserver = (event: Y.YTextEvent): void => {
+      this._changed.emit({
+        sourceChange: event.changes.delta as models.Delta<string>
+      });
+    };
+    private _outputsObserver = (
+      event: Y.YArrayEvent<nbformat.IOutput>
+    ): void => {
+      this._changed.emit({
+        outputsChange: event.changes.delta as models.Delta<IOutput[]>
+      });
+    };
+
+    undo(): void {
+      this._yjudge.undo();
+    }
+    redo(): void {
+      this._yjudge.redo();
+    }
+    canUndo(): boolean {
+      return this._yjudge.canUndo();
+    }
+    canRedo(): boolean {
+      return this._yjudge.canRedo();
+    }
+    clearUndoHistory(): void {
+      this._yjudge.clearUndoHistory();
+    }
+    transact(f: () => void, undoable?: boolean | undefined): void {
+      this._yjudge.ydoc.transact(f, undoable);
+    }
+
+    get disposed(): ISignal<this, void> {
+      return this._disposed;
+    }
+    get isDisposed(): boolean {
+      return this._isDisposed;
+    }
+    dispose(): void {
+      if (this._isDisposed) {
+        return;
+      }
+      this._isDisposed = true;
+      this._source.unobserve(this._sourceObserver);
+      this._outputs.unobserve(this._outputsObserver);
+      this._disposed.emit();
+      Signal.clearData(this);
+    }
+
+    get ysource(): Y.Text {
+      return this._source;
+    }
+    get awareness(): Awareness {
       return this._yjudge.awareness;
+    }
+    get undoManager(): Y.UndoManager {
+      return this._yjudge.undoManager;
     }
 
     private _yjudge: YJudge;
+    private _source: Y.Text;
+    private _outputs: Y.Array<nbformat.IOutput>;
+    private _changed = new Signal<
+      this,
+      models.CellChange<nbformat.IBaseCellMetadata>
+    >(this);
+    private _isDisposed = false;
+    private _disposed = new Signal<this, void>(this);
   }
 
   export async function newFileContent(
