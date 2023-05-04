@@ -403,16 +403,8 @@ export namespace JudgeModel {
       this._source = source;
       this._outputs = outputs;
 
-      this._source.observe(event => {
-        this._changed.emit({
-          sourceChange: event.changes.delta as models.Delta<string>
-        });
-      });
-      this._outputs.observe(event => {
-        this._changed.emit({
-          outputsChange: event.changes.delta as models.Delta<IOutput[]>
-        });
-      });
+      this._source.observe(this._sourceObserver);
+      this._outputs.observe(this._outputsObserver);
     }
 
     readonly id = '';
@@ -491,6 +483,19 @@ export namespace JudgeModel {
       });
     }
 
+    private _sourceObserver = (event: Y.YTextEvent): void => {
+      this._changed.emit({
+        sourceChange: event.changes.delta as models.Delta<string>
+      });
+    };
+    private _outputsObserver = (
+      event: Y.YArrayEvent<nbformat.IOutput>
+    ): void => {
+      this._changed.emit({
+        outputsChange: event.changes.delta as models.Delta<IOutput[]>
+      });
+    };
+
     undo(): void {
       this._yjudge.undo();
     }
@@ -521,22 +526,8 @@ export namespace JudgeModel {
         return;
       }
       this._isDisposed = true;
-      // this.ymodel.unobserveDeep(this._modelObserver);
-
-      // if (this._awareness) {
-      //   // A new document is created for standalone cell.
-      //   const doc = this._awareness.doc;
-      //   this._awareness.destroy();
-      //   doc.destroy();
-      // }
-      // if (this._undoManager) {
-      //   // Be sure to not destroy the document undo manager.
-      //   if (this._undoManager === this.notebook?.undoManager) {
-      //     this._undoManager = null;
-      //   } else {
-      //     this._undoManager.destroy();
-      //   }
-      // }
+      this._source.unobserve(this._sourceObserver);
+      this._outputs.unobserve(this._outputsObserver);
       this._disposed.emit();
       Signal.clearData(this);
     }
