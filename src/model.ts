@@ -38,6 +38,11 @@ export class JudgeModel implements DocumentRegistry.IModel {
             }
           });
         }
+
+        if (judgeChange.sourceChange) {
+          this._contentChanged.emit();
+          this.dirty = true;
+        }
       }
     );
 
@@ -333,7 +338,9 @@ export namespace JudgeModel {
     private _problemProviderFactory: () => IProblemProvider;
   }
 
-  export interface IJudgeChange extends models.DocumentChange {
+  export interface IJudgeChange
+    extends models.SourceChange,
+      models.DocumentChange {
     problemIdChange?: string;
   }
 
@@ -344,18 +351,16 @@ export namespace JudgeModel {
       this._problemId = this.ydoc.getText('problem_id');
       this._source = this.ydoc.getText('source');
       this._outputs = this.ydoc.getArray('outputs');
+      this._ycodeCell = new YCodeCell(this, this._source, this._outputs);
 
       this._problemId.observe(event => {
         this._changed.emit({ problemIdChange: this.problemId });
       });
-
-      this._ycodeCell = new YCodeCell(this, this._source, this._outputs);
+      this._ycodeCell.changed.connect((_, change) => {
+        this._changed.emit(change);
+      });
 
       this.undoManager = new Y.UndoManager([this._source]);
-    }
-
-    get changed(): ISignal<this, IJudgeChange> {
-      return this._changed;
     }
 
     /**
