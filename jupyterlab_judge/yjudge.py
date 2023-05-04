@@ -8,7 +8,6 @@ class YJudge(YBaseDoc):
         super().__init__(*args, **kwargs)
         self._problem_id = self._ydoc.get_text("problem_id")
         self._source = self._ydoc.get_text("source")
-        self._outputs = self._ydoc.get_array("outputs")
 
     def get(self):
         return json.dumps({
@@ -41,4 +40,3 @@ class YJudge(YBaseDoc):
         self._subscriptions[self._ystate] = self._ystate.observe(callback)
         self._subscriptions[self._problem_id] = self._problem_id.observe(callback)
         self._subscriptions[self._source] = self._source.observe_deep(callback)
-        self._subscriptions[self._outputs] = self._outputs.observe_deep(callback)
