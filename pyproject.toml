@@ -39,6 +39,9 @@ test = [
 [project.entry-points."jupyterlab.locale"]
 jupyterlab_judge = "jupyterlab_judge"
 
+[project.entry-points."jupyter_ydoc"]
+judge = "jupyterlab_judge.yjudge:YJudge"
+
 [tool.hatch.version]
 source = "nodejs"
 
