@@ -111,7 +111,7 @@ export class JudgeModel implements DocumentRegistry.IModel {
   }
 
   get defaultKernelName(): string {
-    return `Judge: Problem ${this.sharedModel.getProblemId()}`;
+    return `Judge: Problem ${this.sharedModel.problemId}`;
   }
 
   get defaultKernelLanguage(): string {
@@ -134,11 +134,11 @@ export class JudgeModel implements DocumentRegistry.IModel {
   private _codeModel: CodeCellModel;
 
   get source(): string {
-    return this.sharedModel.getSource();
+    return this.sharedModel.source;
   }
 
   set source(value: string) {
-    this.sharedModel.setSource(value);
+    this.sharedModel.source = value;
   }
 
   // NoPromptOutputArea 에 전달되기 위해 사용됨
@@ -156,7 +156,7 @@ export class JudgeModel implements DocumentRegistry.IModel {
 
   async submissions(): Promise<ProblemProvider.ISubmission[]> {
     return await this._problemProvider.getSubmissions(
-      this.sharedModel.getProblemId()
+      this.sharedModel.problemId
     );
   }
 
@@ -199,34 +199,29 @@ export class JudgeModel implements DocumentRegistry.IModel {
 
   toJSON(): JudgeModel.IJudgeContent {
     return {
-      problem_id: this.sharedModel.getProblemId(),
-      code: this.sharedModel.getSource(),
+      problem_id: this.sharedModel.problemId,
+      code: this.sharedModel.source,
       judge_format: 1
     };
   }
 
   fromJSON(value: JudgeModel.IJudgeContent): void {
     console.log('fromJSON(', value, ')');
-    this.sharedModel.setSource(
+    this.sharedModel.source =
       value.code ??
-        '# 파일이 손상되었습니다. 파일을 삭제하고 새로 생성해주세요.'
-    );
-    // fromJSON 은 초기 Cell Model 을 생성해야하는 영역입니다.
-    // setSource 는 Cell Model 을 생성하지 않았다면 작동하지 않습니다.
-    // this.sharedModel.setSource(value.code ?? '# 파일이 손상되었습니다. 파일을 삭제하고 새로 생성해주세요.');
-    this.sharedModel.setProblemId(value.problem_id ?? '');
+      '# 파일이 손상되었습니다. 파일을 삭제하고 새로 생성해주세요.';
+
+    this.sharedModel.problemId = value.problem_id ?? '';
     this.dirty = true;
   }
 
   async getTestCases(): Promise<string[]> {
-    return await this._problemProvider.getTestCases(
-      this.sharedModel.getProblemId()
-    );
+    return await this._problemProvider.getTestCases(this.sharedModel.problemId);
   }
 
   async validate(outputs: string[]): Promise<ProblemProvider.IValidateResult> {
     return await this._problemProvider.validate(
-      this.sharedModel.getProblemId(),
+      this.sharedModel.problemId,
       outputs
     );
   }
@@ -236,9 +231,7 @@ export class JudgeModel implements DocumentRegistry.IModel {
   ): Promise<ProblemProvider.ISubmission> {
     const submission = await this._problemProvider.submit(request);
     this._submissionsChanged.emit(
-      await this._problemProvider.getSubmissions(
-        this.sharedModel.getProblemId()
-      )
+      await this._problemProvider.getSubmissions(this.sharedModel.problemId)
     );
     return submission;
   }
@@ -372,7 +365,7 @@ export namespace JudgeModel {
       this._outputs = this.ydoc.getArray('outputs');
 
       this._problemId.observe(event => {
-        this._changed.emit({ problemIdChange: this.getProblemId() });
+        this._changed.emit({ problemIdChange: this.problemId });
       });
 
       this._ycodeCell = new YCodeCell(this, this._source, this._outputs);
@@ -394,24 +387,20 @@ export namespace JudgeModel {
       return this._ycodeCell;
     }
 
-    getProblemId(): string {
+    get problemId(): string {
       return this._problemId.toString();
     }
-
-    public setProblemId(value: string): void {
+    set problemId(value: string) {
       this.transact(() => {
         const ytext = this._problemId;
         ytext.delete(0, ytext.length);
         ytext.insert(0, value);
       });
     }
-
-    // YDocument 의 내용이 아님. 혼동을 주니 교체하자.
-    getSource(): string {
+    get source(): string {
       return this._ycodeCell.getSource() ?? '';
     }
-    // YDocument 의 내용이 아님. 혼동을 주니 교체하자.
-    setSource(value: string): void {
+    set source(value: string) {
       this._ycodeCell.setSource(value);
     }
 
