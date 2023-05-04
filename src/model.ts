@@ -403,10 +403,14 @@ export namespace JudgeModel {
       this._source = source;
       this._outputs = outputs;
 
-      // TOOD changed 구현
       this._source.observe(event => {
         this._changed.emit({
           sourceChange: event.changes.delta as models.Delta<string>
+        });
+      });
+      this._outputs.observe(event => {
+        this._changed.emit({
+          outputsChange: event.changes.delta as models.Delta<IOutput[]>
         });
       });
     }
