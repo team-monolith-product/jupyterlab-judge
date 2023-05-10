@@ -133,7 +133,7 @@ export class JudgeModel implements DocumentRegistry.IModel {
   private _stateChanged = new Signal<this, IChangedArgs<any>>(this);
   private _isDisposed = false;
 
-  // CodeEditorWrapper 에 전달되기 위해 사용됨
+  // Usually passed to  CodeEditorWrapper
   get codeModel(): CodeEditor.IModel {
     return this._codeModel;
   }
@@ -148,9 +148,19 @@ export class JudgeModel implements DocumentRegistry.IModel {
     this.sharedModel.source = value;
   }
 
-  // NoPromptOutputArea 에 전달되기 위해 사용됨
+  // Usually passed to NoPromptOutputArea
   get outputAreaModel(): IOutputAreaModel {
     return this._codeModel.outputs;
+  }
+
+  getMetadata(): {
+    [x: string]: any;
+  } {
+    return this.sharedModel.getMetadata();
+  }
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  setMetadata(key: string, value: any): void {
+    this.sharedModel.setMetadata(key, value);
   }
 
   get problem(): ProblemProvider.IProblem | null {
@@ -351,6 +361,7 @@ export namespace JudgeModel {
       this._problemId = this.ydoc.getText('problem_id');
       this._source = this.ydoc.getText('source');
       this._outputs = this.ydoc.getArray('outputs');
+      this._metadata = this.ydoc.getMap('metadata');
       this._ycodeCell = new YCodeCell(this, this._source, this._outputs);
 
       this._problemId.observe(event => {
@@ -391,10 +402,21 @@ export namespace JudgeModel {
       this._ycodeCell.setSource(value);
     }
 
+    getMetadata(): {
+      [x: string]: any;
+    } {
+      return this._metadata.toJSON();
+    }
+    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+    setMetadata(key: string, value: any): void {
+      this._metadata.set(key, value);
+    }
+
     private _ycodeCell: models.ISharedCodeCell;
     private _problemId: Y.Text;
     private _source: Y.Text;
     private _outputs: Y.Array<nbformat.IOutput>;
+    private _metadata: Y.Map<any>;
     public undoManager: Y.UndoManager;
   }
 
