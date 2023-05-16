@@ -2,6 +2,22 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.17.1
+
+([Full Changelog](https://github.com/team-monolith-product/jupyterlab-judge/compare/v0.17.0...d684f014498cd32ae63940ef43f280a0b1531dff))
+
+### Merged PRs
+
+- Feature/ignore client network fail [#30](https://github.com/team-monolith-product/jupyterlab-judge/pull/30) ([@a3626a](https://github.com/a3626a))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/team-monolith-product/jupyterlab-judge/graphs/contributors?from=2023-05-11&to=2023-05-16&type=c))
+
+[@a3626a](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3Aa3626a+updated%3A2023-05-11..2023-05-16&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.17.0
 
 ([Full Changelog](https://github.com/team-monolith-product/jupyterlab-judge/compare/v0.16.0...df0020eaff02a45c0019a05f63b402d70e6804ac))
@@ -15,8 +31,6 @@
 ([GitHub contributors page for this release](https://github.com/team-monolith-product/jupyterlab-judge/graphs/contributors?from=2023-05-04&to=2023-05-11&type=c))
 
 [@a3626a](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3Aa3626a+updated%3A2023-05-04..2023-05-11&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.16.0
 
