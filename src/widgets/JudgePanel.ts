@@ -382,9 +382,8 @@ export class JudgePanel extends BoxPanel {
       if (sessionContext.kernelDisplayStatus === 'connecting') {
         // Network problem:
         // Allow undefined reconnectAttempt, for custom or unexpected IKernelConnection implementation
-        const reconnectAttempt: number | undefined = (
-          sessionContext.session.kernel as any
-        )._reconnectAttempt;
+        const reconnectAttempt: number | undefined = (kernel as any)
+          ._reconnectAttempt;
 
         if (reconnectAttempt === undefined) {
           // This case must be reported
