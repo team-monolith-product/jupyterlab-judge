@@ -54,6 +54,27 @@ export class JudgeError extends Error {
   }
 }
 
+export class JudgeKernelNotConnectedError extends JudgeError {
+  constructor(message?: string) {
+    super(message);
+    this.name = this.constructor.name;
+  }
+}
+
+export class JudgeKernelImplementationError extends JudgeError {
+  constructor(message?: string) {
+    super(message);
+    this.name = this.constructor.name;
+  }
+}
+
+export class JudgeKernelReconnectingFailedError extends JudgeError {
+  constructor(message?: string) {
+    super(message);
+    this.name = this.constructor.name;
+  }
+}
+
 export namespace JudgePanel {
   export interface IOptions {
     editorConfig: Partial<CodeEditor.IConfig>;
@@ -357,12 +378,44 @@ export class JudgePanel extends BoxPanel {
     }
 
     if (sessionContext.kernelDisplayStatus !== 'idle') {
-      console.warn(
-        `Kernel is still ${sessionContext.kernelDisplayStatus} after 20s`
-      );
-      throw new JudgeError(
-        this._trans.__('Kernel is not responding. Please try again.')
-      );
+      // Many issues have been reported here
+      if (sessionContext.kernelDisplayStatus === 'connecting') {
+        // Network problem:
+        // Allow undefined reconnectAttempt, for custom or unexpected IKernelConnection implementation
+        const reconnectAttempt: number | undefined = (kernel as any)
+          ._reconnectAttempt;
+
+        if (reconnectAttempt === undefined) {
+          // This case must be reported
+          throw new JudgeKernelImplementationError(
+            this._trans.__(
+              'Kernel is still connecting. Please check your network.'
+            )
+          );
+        } else if (reconnectAttempt > 0) {
+          // This have some chance to be a server side problem
+          throw new JudgeKernelReconnectingFailedError(
+            this._trans.__(
+              'Kernel is still connecting. Please check your network.'
+            )
+          );
+        } else if (reconnectAttempt === 0) {
+          // This is likely a client side network problem
+          throw new JudgeKernelNotConnectedError(
+            this._trans.__(
+              'Kernel is still connecting. Please check your network.'
+            )
+          );
+        }
+      } else {
+        // Kernel problem
+        console.warn(
+          `Kernel is still ${sessionContext.kernelDisplayStatus} after 20s`
+        );
+        throw new JudgeError(
+          this._trans.__('Kernel is not responding. Please try again.')
+        );
+      }
     }
 
     const results: IRunResult[] = [];

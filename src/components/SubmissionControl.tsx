@@ -1,6 +1,10 @@
 import styled from '@emotion/styled';
 import React, { useState, useContext } from 'react';
-import { JudgeError, JudgePanel } from '../widgets/JudgePanel';
+import {
+  JudgeError,
+  JudgeKernelNotConnectedError,
+  JudgePanel
+} from '../widgets/JudgePanel';
 import { transContext } from '../widgets/JudgeSubmissionArea';
 
 export function SubmissionControl(props: {
@@ -30,7 +34,10 @@ export function SubmissionControl(props: {
               errorDetails
             };
             setInProgress(false);
-            throw e;
+            if (!(e instanceof JudgeKernelNotConnectedError)) {
+              // dont report client network error
+              throw e;
+            }
           }
           setInProgress(false);
         }}
