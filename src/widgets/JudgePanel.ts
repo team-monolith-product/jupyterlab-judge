@@ -7,7 +7,7 @@ import {
 } from '@jupyterlab/apputils';
 import { Message } from '@lumino/messaging';
 import { ITranslator, TranslationBundle } from '@jupyterlab/translation';
-import { textEditorIcon } from '@jupyterlab/ui-components';
+import { LabIcon } from '@jupyterlab/ui-components';
 import {
   CodeEditor,
   CodeEditorWrapper,
@@ -40,6 +40,7 @@ import { JudgeSubmissionArea } from './JudgeSubmissionArea';
 import { SubmissionList } from '../components/SubmissionList';
 import { IKernelConnection } from '@jupyterlab/services/lib/kernel/kernel';
 import { JudgeSignal } from '../tokens';
+import { customJudgeColorSvg } from '@team-monolith/cds';
 
 interface IRunResult {
   status: 'OK' | 'TLE' | 'OLE' | 'RE';
@@ -632,7 +633,10 @@ export class JudgeDocumentFactory extends ABCWidgetFactory<
       submissionListFactory: this._submissionListFactory
     });
 
-    judgePanel.title.icon = textEditorIcon;
+    judgePanel.title.icon = new LabIcon({
+      name: 'jupyterlab-judge:problem-icon',
+      svgstr: customJudgeColorSvg
+    });
     const widget = new JudgeDocument({
       content: judgePanel,
       context,
