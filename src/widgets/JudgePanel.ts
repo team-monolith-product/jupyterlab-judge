@@ -42,6 +42,11 @@ import { IKernelConnection } from '@jupyterlab/services/lib/kernel/kernel';
 import { JudgeSignal } from '../tokens';
 import { customJudgeColorSvg } from '@team-monolith/cds';
 
+const JudgeColorLabIcon = new LabIcon({
+  name: 'jupyterlab-judge:problem-icon',
+  svgstr: customJudgeColorSvg
+});
+
 interface IRunResult {
   status: 'OK' | 'TLE' | 'OLE' | 'RE';
   output: string;
@@ -633,10 +638,7 @@ export class JudgeDocumentFactory extends ABCWidgetFactory<
       submissionListFactory: this._submissionListFactory
     });
 
-    judgePanel.title.icon = new LabIcon({
-      name: 'jupyterlab-judge:problem-icon',
-      svgstr: customJudgeColorSvg
-    });
+    judgePanel.title.icon = JudgeColorLabIcon;
     const widget = new JudgeDocument({
       content: judgePanel,
       context,
