@@ -2039,15 +2039,14 @@
     prop-types "^15.7.2"
     react-is "^16.9.0"
 
-"@team-monolith/cds@^0.9.1":
-  version "0.9.1"
-  resolved "https://registry.yarnpkg.com/@team-monolith/cds/-/cds-0.9.1.tgz#8a4ac54335dd6078e402bce0ab1c4d5f2c4aaffe"
-  integrity sha512-7Gl9jkvw4dkYebIYPPCTqyvfjvC+c8HyY1j9pgGRX7EGBsdRskWMuxp52wHQstXxpjHpl593Cr3zxMaV5OI0Iw==
+"@team-monolith/cds@^0.20.1":
+  version "0.20.1"
+  resolved "https://registry.yarnpkg.com/@team-monolith/cds/-/cds-0.20.1.tgz#51f2bf715334925a15074f22067712399539bcfa"
+  integrity sha512-ch/LCHLwAhCI1FDk1l8Ass4PRXqRWAUvjE2EpaSkOKDa9SjdfK1xiLmnGbfiPFoaYRBhm+/424mSi99fnwiu+Q==
   dependencies:
     "@emotion/react" "^11.8.2"
     "@emotion/styled" "^11.8.1"
     "@mui/material" "^5.13.6"
-    "@types/node" "^16.11.26"
     "@types/react" "^17.0.39"
     "@types/react-dom" "^17.0.11"
     react "^17.0.2"
@@ -2102,11 +2101,6 @@
   version "20.4.1"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-20.4.1.tgz#a6033a8718653c50ac4962977e14d0f984d9527d"
   integrity sha512-JIzsAvJeA/5iY6Y/OxZbv1lUcc8dNSE77lb2gnBH+/PJ3lFR1Ccvgwl5JWnHAkNHcRsT0TbpVOsiMKZ1F/yyJg==
-
-"@types/node@^16.11.26":
-  version "16.18.38"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-16.18.38.tgz#1dcdb6c54d02b323f621213745f2e44af30c73e6"
-  integrity sha512-6sfo1qTulpVbkxECP+AVrHV9OoJqhzCsfTNp5NIG+enM4HyM3HvZCO798WShIXBN0+QtDIcutJCjsVYnQP5rIQ==
 
 "@types/normalize-package-data@^2.4.0":
   version "2.4.1"
