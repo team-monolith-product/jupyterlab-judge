@@ -2,11 +2,25 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.18.3
+
+([Full Changelog](https://github.com/team-monolith-product/jupyterlab-judge/compare/v0.18.2...1668228274f9fe729659dcef8a1b51311f6aa5e0))
+
+### Merged PRs
+
+- Update cds to 0.20 to remove @types/node dependencies. [#33](https://github.com/team-monolith-product/jupyterlab-judge/pull/33) ([@a3626a](https://github.com/a3626a))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/team-monolith-product/jupyterlab-judge/graphs/contributors?from=2023-07-11&to=2023-08-23&type=c))
+
+[@a3626a](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3Aa3626a+updated%3A2023-07-11..2023-08-23&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.18.2
 
 No merged PRs
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.18.1
 
