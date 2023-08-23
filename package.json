@@ -79,7 +79,7 @@
         "@jupyterlab/settingregistry": "^3.6.0",
         "@jupyterlab/shared-models": "^3.6.0",
         "@jupyterlab/translation": "^3.6.0",
-        "@team-monolith/cds": "^0.9.1",
+        "@team-monolith/cds": "^0.20.1",
         "@types/codemirror": "~5.60.5",
         "react-query": "~3.39.0",
         "snakecase-keys": "^4.0.2"
