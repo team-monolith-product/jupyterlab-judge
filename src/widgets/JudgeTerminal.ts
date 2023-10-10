@@ -49,7 +49,7 @@ export class JudgeTerminal extends Panel {
     const resetButtonLabel = document.createElement('span');
     resetButtonLabel.className = 'jp-JudgeTerminal-resetButtonLabel';
     resetButtonLabel.textContent = trans.__('Reset to skeleton code');
-    resetButton.addEventListener('click', async () => {
+    resetButton.addEventListener('click', () => {
       if (!options.panel.model.problem) {
         return;
       }
