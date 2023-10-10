@@ -155,3 +155,17 @@ folder is located. Then you can remove the symlink named `jupyterlab-judge` with
 ### Packaging the extension
 
 See [RELEASE](RELEASE.md)
+
+### Translate
+
+After adding `trans.__`, execute following code
+```
+jupyterlab-translate update . jupyterlab_judge -l ko_KR
+```
+
+This will update `jupyterlab_judge.po` file with some errors. (ignore it)
+
+Add your translation to `jupyterlab_judge.po` and execute
+```
+jupyterlab-translate compile . jupyterlab_judge -l ko_KR
+```
