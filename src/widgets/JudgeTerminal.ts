@@ -1,8 +1,14 @@
 import { Widget, Panel } from '@lumino/widgets';
 import { JudgeOutputArea } from './JudgeOutputArea';
-import { runIcon, stopIcon, refreshIcon } from '@jupyterlab/ui-components';
+import { LabIcon, runIcon, stopIcon } from '@jupyterlab/ui-components';
 import { TRANSLATOR_DOMAIN } from '../constants';
 import { JudgePanel } from './JudgePanel';
+import { cornerUpLeftDoubleFillSvg } from '@team-monolith/cds';
+
+const resetIcon = new LabIcon({
+  name: 'judge-icon:reset',
+  svgstr: cornerUpLeftDoubleFillSvg
+});
 
 export namespace JudgeTerminal {
   export interface IOptions extends JudgeOutputArea.IOptions {
@@ -31,7 +37,15 @@ export class JudgeTerminal extends Panel {
     // Reset to skeleton code button
     const resetButton = document.createElement('button');
     resetButton.className = 'jp-JudgeTerminal-resetButton';
-    refreshIcon.element({ container: resetButton });
+    resetIcon.element({ container: resetButton });
+    const icon = resetButton.children.item(0);
+    if (icon) {
+      // It must exist
+      // To follow JL's icon style add class and fill attribute
+      // Actualy value of fill attribute is not important
+      icon.classList.add('jp-icon3');
+      icon.setAttribute('fill', 'FFFFFF');
+    }
     const resetButtonLabel = document.createElement('span');
     resetButtonLabel.className = 'jp-JudgeTerminal-resetButtonLabel';
     resetButtonLabel.textContent = trans.__('Reset to skeleton code');
