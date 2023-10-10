@@ -2,6 +2,22 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.19.0
+
+([Full Changelog](https://github.com/team-monolith-product/jupyterlab-judge/compare/v0.18.3...7da9953ab84b5ebe1e96bbb0fdc41fbe9f7d7ef3))
+
+### Merged PRs
+
+- Add reset to skeleton code [#34](https://github.com/team-monolith-product/jupyterlab-judge/pull/34) ([@a3626a](https://github.com/a3626a))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/team-monolith-product/jupyterlab-judge/graphs/contributors?from=2023-08-23&to=2023-10-10&type=c))
+
+[@a3626a](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3Aa3626a+updated%3A2023-08-23..2023-10-10&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.18.3
 
 ([Full Changelog](https://github.com/team-monolith-product/jupyterlab-judge/compare/v0.18.2...1668228274f9fe729659dcef8a1b51311f6aa5e0))
@@ -15,8 +31,6 @@
 ([GitHub contributors page for this release](https://github.com/team-monolith-product/jupyterlab-judge/graphs/contributors?from=2023-07-11&to=2023-08-23&type=c))
 
 [@a3626a](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3Aa3626a+updated%3A2023-07-11..2023-08-23&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.18.2
 
