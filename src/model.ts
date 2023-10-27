@@ -46,9 +46,10 @@ export class JudgeModel implements DocumentRegistry.IModel {
       }
     );
 
-    this._codeModel = new CodeCellModel({});
+    this._codeModel = new CodeCellModel({
+      sharedModel: this.sharedModel.yCodeCell
+    });
     this._codeModel.mimeType = 'text/x-python';
-    this._codeModel.switchSharedModel(this.sharedModel.yCodeCell, true);
 
     this._problem = null;
     this._problemProvider = problemProvider;
@@ -371,7 +372,7 @@ export namespace JudgeModel {
         this._changed.emit(change);
       });
 
-      this.undoManager = new Y.UndoManager([this._source]);
+      this.undoManager.addToScope(this._source);
     }
 
     /**
@@ -417,7 +418,6 @@ export namespace JudgeModel {
     private _source: Y.Text;
     private _outputs: Y.Array<nbformat.IOutput>;
     private _metadata: Y.Map<any>;
-    public undoManager: Y.UndoManager;
   }
 
   class YCodeCell implements models.ISharedCodeCell, models.IYText {
@@ -441,10 +441,7 @@ export namespace JudgeModel {
     readonly notebook = null;
     readonly metadata = {};
     readonly metadataChanged = new Signal<this, IMapChange<any>>(this);
-    get changed(): ISignal<
-      this,
-      models.CellChange<nbformat.IBaseCellMetadata>
-    > {
+    get changed(): ISignal<this, models.CellChange> {
       return this._changed;
     }
     get outputs(): Array<nbformat.IOutput> {
@@ -572,10 +569,7 @@ export namespace JudgeModel {
     private _yjudge: YJudge;
     private _source: Y.Text;
     private _outputs: Y.Array<nbformat.IOutput>;
-    private _changed = new Signal<
-      this,
-      models.CellChange<nbformat.IBaseCellMetadata>
-    >(this);
+    private _changed = new Signal<this, models.CellChange>(this);
     private _isDisposed = false;
     private _disposed = new Signal<this, void>(this);
   }
