@@ -114,7 +114,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
     const judgeDocumentFactoryName = trans.__('Judge');
 
     // 사용자가 노트북에 설정한 코드 셀 컨피그를 가져와 저지에 적용합니다.
-    let editorConfig: Partial<CodeEditor.IConfig> | null = null;
+    let editorConfig: Pick<CodeEditor.IOptions, 'config'> | undefined = undefined;
     if (settingRegistry) {
       const settings = await settingRegistry.load(
         '@jupyterlab/notebook-extension:tracker'

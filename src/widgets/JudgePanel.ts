@@ -83,7 +83,7 @@ export class JudgeKernelReconnectingFailedError extends JudgeError {
 
 export namespace JudgePanel {
   export interface IOptions {
-    editorConfig: Partial<CodeEditor.IConfig>;
+    editorConfig: Pick<CodeEditor.IOptions, 'config'>;
     rendermime: IRenderMimeRegistry;
     context: DocumentRegistry.IContext<JudgeModel>;
     translator: ITranslator;
@@ -122,7 +122,7 @@ export class JudgePanel extends BoxPanel {
     this._editorWidget = new CodeEditorWrapper({
       model: this.model.codeModel,
       factory: new CodeMirrorEditorFactory().newInlineEditor,
-      config: { ...options.editorConfig, lineNumbers: true }
+      editorOptions: { config: { ...options.editorConfig, lineNumbers: true } }
     });
     this._editorWidget.addClass('jp-JudgePanel-editor');
 
@@ -655,7 +655,7 @@ export class JudgeDocumentFactory extends ABCWidgetFactory<
 
   private _rendermime: IRenderMimeRegistry;
   private _commands: CommandRegistry;
-  private _editorConfig: Partial<CodeEditor.IConfig>;
+  private _editorConfig: Pick<CodeEditor.IOptions, 'config'>;
   private _sessionContextDialogs: ISessionContextDialogs;
   private _judgePanelFactory: (options: JudgePanel.IOptions) => JudgePanel;
   private _judgeSubmissionAreaFactory: (
@@ -682,7 +682,7 @@ export namespace JudgeDocumentFactory {
     editorServices: IEditorServices;
     rendermime: IRenderMimeRegistry;
     commands: CommandRegistry;
-    editorConfig: Partial<CodeEditor.IConfig>;
+    editorConfig: Pick<CodeEditor.IOptions, 'config'>;
     sessionContextDialogs: ISessionContextDialogs;
     /**
      * The factory options associated with the factory.
