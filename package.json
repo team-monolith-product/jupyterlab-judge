@@ -80,15 +80,14 @@
         "@jupyterlab/settingregistry": "^4.0.7",
         "@jupyterlab/shared-models": "^3.6.0",
         "@jupyterlab/translation": "^4.0.7",
-        "@team-monolith/cds": "^0.20.1",
+        "@team-monolith/cds": "^1.0.1",
         "@types/codemirror": "~5.60.5",
         "react-query": "~3.39.0",
         "snakecase-keys": "^4.0.2"
     },
     "resolutions": {
-        "@types/react": "^17.0.39",
-        "@mui/material": "^5.13.6",
-        "@jupyterlab/rendermime-interfaces": "~3.6.5"
+        "@types/react": "^18.0.26",
+        "@mui/material": "^5.13.6"
     },
     "devDependencies": {
         "@babel/core": "^7.0.0",
