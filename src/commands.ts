@@ -5,8 +5,7 @@ import { JudgeDocument } from './widgets/JudgePanel';
 import { CommandRegistry } from '@lumino/commands';
 import { IDocumentManager } from '@jupyterlab/docmanager';
 import { ServerConnection } from '@jupyterlab/services';
-import { IEditMenu, IMainMenu, IRunMenu } from '@jupyterlab/mainmenu';
-import { Widget } from '@lumino/widgets';
+import { IMainMenu } from '@jupyterlab/mainmenu';
 import { JudgeModel } from './model';
 import { JUDGE_HIDDEN_FOLDER_NAME, PLUGIN_ID } from './constants';
 import { IProblemProvider } from './tokens';
@@ -19,6 +18,12 @@ export namespace CommandIDs {
   export const open = `${PLUGIN_ID}:plugin:open`;
   export const openOrCreateFromId = `${PLUGIN_ID}:plugin:open-or-create-from-id`;
   export const execute = `${PLUGIN_ID}:plugin:execute`;
+
+  export const undo = `${PLUGIN_ID}:plugin:undo`;
+  export const redo = `${PLUGIN_ID}:plugin:redo`;
+
+  export const run = `${PLUGIN_ID}:plugin:run`;
+  export const runAll = `${PLUGIN_ID}:plugin:run-all`;
 }
 
 /**
@@ -119,50 +124,42 @@ export function addMenuItems(
   tracker: WidgetTracker<JudgeDocument>,
   trans: TranslationBundle
 ): void {
-  addUndoRedoToEditMenu(menu, tracker);
-  addCodeRunnerToRunMenu(menu, tracker, trans);
+  addUndoRedoToEditMenu(menu);
+  addCodeRunnerToRunMenu(menu);
 }
 
 /**
  * Add Judge undo and redo widgets to the Edit menu
  */
-function addUndoRedoToEditMenu(
-  menu: IMainMenu,
-  tracker: WidgetTracker<JudgeDocument>
-): void {
-  // TODO Type Inference 활용하여 AS 없이 해야하는데 잘 안됨.
-  // undoer를 IEditMenu.IUndoer<JudgeDocument>로 정의하면 add에서 Type이 호환되지 않는다고 함.
-  const undoer: IEditMenu.IUndoer<Widget> = {
-    tracker,
-    undo: widget => {
-      (widget as JudgeDocument).content.editor.undo();
-    },
-    redo: widget => {
-      (widget as JudgeDocument).content.editor.redo();
+export function addUndoRedoToEditMenu(menu: IMainMenu): void {
+  menu.editMenu.undoers.undo.add({
+    id: CommandIDs.undo,
+    isEnabled: widget => {
+      return widget instanceof JudgeDocument;
     }
-  };
-  menu.editMenu.undoers.add(undoer);
+  });
+  menu.editMenu.undoers.redo.add({
+    id: CommandIDs.redo,
+    isEnabled: widget => {
+      return widget instanceof JudgeDocument;
+    }
+  });
 }
 
 /**
  * Add Judge run widgets to the Run menu
  */
-function addCodeRunnerToRunMenu(
-  menu: IMainMenu,
-  tracker: WidgetTracker<JudgeDocument>,
-  trans: TranslationBundle
-): void {
-  // TODO Type Inference 활용하여 AS 없이 해야하는데 잘 안됨.
-  const codeRunner: IRunMenu.ICodeRunner<Widget> = {
-    tracker,
-    runLabel: (n: number) => trans.__('Run Code'),
-    run: async widget => {
-      await (widget as JudgeDocument).content.execute();
-    },
-    runAllLabel: (n: number) => trans.__('Run All Code'),
-    runAll: async widget => {
-      await (widget as JudgeDocument).content.execute();
+export function addCodeRunnerToRunMenu(menu: IMainMenu): void {
+  menu.runMenu.codeRunners.run.add({
+    id: CommandIDs.run,
+    isEnabled: widget => {
+      return widget instanceof JudgeDocument;
     }
-  };
-  menu.runMenu.codeRunners.add(codeRunner);
+  });
+  menu.runMenu.codeRunners.runAll.add({
+    id: CommandIDs.runAll,
+    isEnabled: widget => {
+      return widget instanceof JudgeDocument;
+    }
+  });
 }
