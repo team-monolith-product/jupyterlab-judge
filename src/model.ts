@@ -341,7 +341,7 @@ export namespace JudgeModel {
      * @param modelDB Model database
      * @returns The model
      */
-    createNew(languagePreference?: string, modelDB?: IModelDB): JudgeModel {
+    createNew(options?: DocumentRegistry.IModelOptions): JudgeModel {
       return new JudgeModel(this._problemProviderFactory());
     }
 
@@ -358,7 +358,7 @@ export namespace JudgeModel {
   export class YJudge extends models.YDocument<IJudgeChange> {
     constructor() {
       super();
-
+      this.version = '1.0.0';
       this._problemId = this.ydoc.getText('problem_id');
       this._source = this.ydoc.getText('source');
       this._outputs = this.ydoc.getArray('outputs');
@@ -413,6 +413,7 @@ export namespace JudgeModel {
       this._metadata.set(key, value);
     }
 
+    version: string;
     private _ycodeCell: models.ISharedCodeCell;
     private _problemId: Y.Text;
     private _source: Y.Text;
