@@ -41,3 +41,7 @@ min-width has no effect on the right panel, so we need to set it on the children
   min-height: 100px;
   min-width: 500px;
 }
+
+.jp-JudgePanel-editor .cm-editor {
+  height: 100%;
+}
