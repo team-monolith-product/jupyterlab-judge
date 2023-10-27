@@ -52,8 +52,6 @@ for the frontend extension.
 
 * JupyterLab >= 4.0
 
-During 4.0 development process pypi `4.0.0a27` and npm `4.0.0-alpha.12` is used. Not actively maintained.
-
 ## Install
 
 To install the extension, execute:
@@ -97,9 +95,8 @@ conda create -n jupyterlab-ext --override-channels --strict-channel-priority -c 
 
 In `1.*.*`, you can create Conda environment by executing :
 ```
-conda create -n jupyterlab4-ext --override-channels --strict-channel-priority -c conda-forge -c nodefaults cookiecutter nodejs jupyter-packaging git
+conda create -n jupyterlab4-ext --override-channels --strict-channel-priority -c conda-forge -c nodefaults jupyterlab=4 nodejs=18 git copier=7 jinja2-time
 conda activate jupyterlab4-ext
-pip install jupyterlab==4.0.0a27
 ```
 
 ### Development install
@@ -151,6 +148,44 @@ pip uninstall jupyterlab_judge
 In development mode, you will also need to remove the symlink created by `jupyter labextension develop`
 command. To find its location, you can run `jupyter labextension list` to figure out where the `labextensions`
 folder is located. Then you can remove the symlink named `jupyterlab-judge` within that folder.
+
+### Testing the extension
+
+#### Server tests
+
+This extension is using [Pytest](https://docs.pytest.org/) for Python code testing.
+
+Install test dependencies (needed only once):
+
+```sh
+pip install -e ".[test]"
+# Each time you install the Python package, you need to restore the front-end extension link
+jupyter labextension develop . --overwrite
+```
+
+To execute them, run:
+
+```sh
+pytest -vv -r ap --cov jupyterlab_judge
+```
+
+#### Frontend tests
+
+This extension is using [Jest](https://jestjs.io/) for JavaScript code testing.
+
+To execute them, execute:
+
+```sh
+jlpm
+jlpm test
+```
+
+#### Integration tests
+
+This extension uses [Playwright](https://playwright.dev/docs/intro) for the integration tests (aka user level tests).
+More precisely, the JupyterLab helper [Galata](https://github.com/jupyterlab/jupyterlab/tree/master/galata) is used to handle testing the extension in JupyterLab.
+
+More information are provided within the [ui-tests](./ui-tests/README.md) README.
 
 ### Packaging the extension
 

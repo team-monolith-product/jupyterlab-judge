@@ -1,0 +1,19 @@
+# Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
+_commit: v4.2.2
+_src_path: https://github.com/jupyterlab/extension-template
+author_email: lch@team-mono.com
+author_name: ChangHwan Lee
+data_format: string
+file_extension: ''
+has_binder: false
+has_settings: true
+kind: server
+labextension_name: jupyterlab-judge
+mimetype: ''
+mimetype_name: ''
+project_short_description: A simple online judge for Jupyter Lab.
+python_name: jupyterlab_judge
+repository: https://github.com/team-monolith-product/jupyterlab-judge.git
+test: true
+viewer_name: ''
+
