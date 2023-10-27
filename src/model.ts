@@ -3,7 +3,6 @@ import * as Y from 'yjs';
 import type * as nbformat from '@jupyterlab/nbformat';
 
 import { DocumentRegistry } from '@jupyterlab/docregistry';
-import { IModelDB, ModelDB } from '@jupyterlab/observables';
 import { ISignal, Signal } from '@lumino/signaling';
 import { PartialJSONObject } from '@lumino/coreutils';
 import { IChangedArgs } from '@jupyterlab/coreutils';
@@ -20,7 +19,6 @@ import { Contents } from '@jupyterlab/services';
 
 export class JudgeModel implements DocumentRegistry.IModel {
   constructor(problemProvider: IProblemProvider) {
-    this.modelDB = new ModelDB();
     this.sharedModel = new JudgeModel.YJudge();
     this.sharedModel.changed.connect(
       async (sender, judgeChange: JudgeModel.IJudgeChange) => {
@@ -127,8 +125,6 @@ export class JudgeModel implements DocumentRegistry.IModel {
   }
 
   readonly sharedModel: JudgeModel.YJudge;
-  // We don't manage modelDB now.
-  readonly modelDB: IModelDB;
 
   private _contentChanged = new Signal<this, void>(this);
   private _stateChanged = new Signal<this, IChangedArgs<any>>(this);
@@ -373,6 +369,7 @@ export namespace JudgeModel {
       });
 
       this.undoManager.addToScope(this._source);
+      this.undoManager.addTrackedOrigin(this._ycodeCell);
     }
 
     /**
@@ -536,8 +533,8 @@ export namespace JudgeModel {
     clearUndoHistory(): void {
       this._yjudge.clearUndoHistory();
     }
-    transact(f: () => void, undoable?: boolean | undefined): void {
-      this._yjudge.ydoc.transact(f, undoable);
+    transact(f: () => void, undoable = true): void {
+      this._yjudge.ydoc.transact(f, undoable ? this : null);
     }
 
     get disposed(): ISignal<this, void> {

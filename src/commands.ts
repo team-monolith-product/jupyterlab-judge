@@ -64,6 +64,41 @@ export function addCommands(
     },
     label: trans.__('Execute')
   });
+
+  commands.addCommand(CommandIDs.redo, {
+    execute: async () => {
+      if (tracker.currentWidget) {
+        tracker.currentWidget.content.editor.redo();
+      }
+    },
+    label: trans.__('Redo')
+  });
+
+  commands.addCommand(CommandIDs.undo, {
+    execute: async () => {
+      if (tracker.currentWidget) {
+        tracker.currentWidget.content.editor.undo();
+      }
+    },
+    label: trans.__('Undo')
+  });
+
+  commands.addCommand(CommandIDs.run, {
+    execute: async () => {
+      if (tracker.currentWidget) {
+        tracker.currentWidget.content.execute();
+      }
+    },
+    label: trans.__('Run')
+  });
+  commands.addCommand(CommandIDs.runAll, {
+    execute: async () => {
+      if (tracker.currentWidget) {
+        tracker.currentWidget.content.execute();
+      }
+    },
+    label: trans.__('Run All')
+  });
 }
 
 export async function openOrCreateFromId(
