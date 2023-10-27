@@ -24,7 +24,6 @@ import {
   IRenderMimeRegistry,
   MimeModel
 } from '@jupyterlab/rendermime';
-import { CodeMirrorEditorFactory } from '@jupyterlab/codemirror';
 import { CommandRegistry } from '@lumino/commands';
 import { OutputArea } from '@jupyterlab/outputarea';
 import { KernelMessage } from '@jupyterlab/services';
@@ -83,6 +82,7 @@ export class JudgeKernelReconnectingFailedError extends JudgeError {
 
 export namespace JudgePanel {
   export interface IOptions {
+    editorServices: IEditorServices;
     editorConfig: Pick<CodeEditor.IOptions, 'config'>;
     rendermime: IRenderMimeRegistry;
     context: DocumentRegistry.IContext<JudgeModel>;
@@ -121,7 +121,7 @@ export class JudgePanel extends BoxPanel {
 
     this._editorWidget = new CodeEditorWrapper({
       model: this.model.codeModel,
-      factory: new CodeMirrorEditorFactory().newInlineEditor,
+      factory: options.editorServices.factoryService.newInlineEditor,
       editorOptions: { config: { ...options.editorConfig, lineNumbers: true } }
     });
     this._editorWidget.addClass('jp-JudgePanel-editor');
@@ -612,6 +612,7 @@ export class JudgeDocumentFactory extends ABCWidgetFactory<
    */
   constructor(options: JudgeDocumentFactory.IOptions) {
     super(options.factoryOptions);
+    this._editorServices = options.editorServices;
     this._rendermime = options.rendermime;
     this._commands = options.commands;
     this._editorConfig = options.editorConfig;
@@ -632,6 +633,7 @@ export class JudgeDocumentFactory extends ABCWidgetFactory<
   ): JudgeDocument {
     const judgePanel = this._judgePanelFactory({
       rendermime: this._rendermime,
+      editorServices: this._editorServices,
       editorConfig: this._editorConfig,
       context,
       translator: this.translator,
@@ -653,6 +655,7 @@ export class JudgeDocumentFactory extends ABCWidgetFactory<
     return widget;
   }
 
+  private _editorServices: IEditorServices;
   private _rendermime: IRenderMimeRegistry;
   private _commands: CommandRegistry;
   private _editorConfig: Pick<CodeEditor.IOptions, 'config'>;
