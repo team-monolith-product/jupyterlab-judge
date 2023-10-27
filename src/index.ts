@@ -3,7 +3,11 @@ import {
   JupyterFrontEnd,
   JupyterFrontEndPlugin
 } from '@jupyterlab/application';
-import { ICommandPalette, WidgetTracker } from '@jupyterlab/apputils';
+import {
+  ICommandPalette,
+  ISessionContextDialogs,
+  WidgetTracker
+} from '@jupyterlab/apputils';
 import { ITranslator } from '@jupyterlab/translation';
 import {
   JudgeDocument,
@@ -73,7 +77,8 @@ const plugin: JupyterFrontEndPlugin<void> = {
     IRenderMimeRegistry,
     IDocumentManager,
     IMainMenu,
-    ICommandPalette
+    ICommandPalette,
+    ISessionContextDialogs
   ],
   optional: [
     IJudgePanelFactory,
@@ -92,6 +97,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
     docManager: IDocumentManager,
     menu: IMainMenu,
     palette: ICommandPalette,
+    sessionContextDialogs: ISessionContextDialogs,
     judgePanelFactory: IJudgePanelFactory | null,
     judgeSubmissionAreaFactory: IJudgeSubmissionAreaFactory | null,
     judgeTerminalFactory: IJudgeTerminalFactory | null,
@@ -124,6 +130,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
       rendermime: rendermime,
       commands: app.commands,
       editorConfig: editorConfig,
+      sessionContextDialogs: sessionContextDialogs,
       judgePanelFactory:
         judgePanelFactory ??
         ((options: JudgePanel.IOptions) => new JudgePanel(options)),
