@@ -125,8 +125,8 @@ export class JudgePanel extends BoxPanel {
       editorOptions: { config: { ...options.editorConfig, lineNumbers: true } }
     });
     this._editorWidget.addClass('jp-JudgePanel-editor');
-    this._editorWidget.node.setAttribute('data-jp-undoer', 'true'); // undo/redo 단축키 활성화
-    this._editorWidget.node.setAttribute('data-jp-code-runner', 'true'); // 코드 실행 단축키 활성화
+    this._editorWidget.node.setAttribute('data-jp-undoer', 'true'); // Activate undo/redo keybindings
+    this._editorWidget.node.setAttribute('data-jp-code-runner', 'true'); // Activate run-code keybinding
 
     this._markdownRenderer = options.rendermime.createRenderer('text/markdown');
     this._markdownRenderer.addClass('jp-JudgePanel-markdown');
