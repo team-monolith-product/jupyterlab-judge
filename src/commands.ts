@@ -147,6 +147,7 @@ async function openOrCreate(
     }
     throw e;
   } finally {
+    // eslint-disable-next-line no-unsafe-finally
     return docManager.openOrReveal(path);
   }
 }

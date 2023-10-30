@@ -67,7 +67,8 @@ const ControlButton = styled.button`
   background: var(--jp-brand-color1);
 
   /* Shadow-2 */
-  box-shadow: 0px 0.15px 0.45px rgba(0, 0, 0, 0.11),
+  box-shadow:
+    0px 0.15px 0.45px rgba(0, 0, 0, 0.11),
     0px 0.8px 1.8px rgba(0, 0, 0, 0.13);
   border-radius: 8px;
 

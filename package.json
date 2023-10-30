@@ -233,6 +233,7 @@
             "csstree/validator": true,
             "property-no-vendor-prefix": null,
             "selector-no-vendor-prefix": null,
+            "selector-class-pattern": null,
             "value-no-vendor-prefix": null
         }
     }
