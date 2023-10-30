@@ -1,6 +1,6 @@
 {
     "name": "jupyterlab-judge",
-    "version": "1.19.0",
+    "version": "0.19.0",
     "description": "A simple online judge for Jupyter Lab.",
     "keywords": [
         "jupyter",
