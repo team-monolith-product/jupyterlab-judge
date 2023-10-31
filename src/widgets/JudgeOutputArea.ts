@@ -73,6 +73,7 @@ export class JudgeOutputArea extends OutputArea {
     panel.addClass(OUTPUT_AREA_STDIN_ITEM_CLASS);
 
     const input = factory.createStdin({
+      parent_header: msg.header,
       prompt: stdinPrompt,
       password,
       future

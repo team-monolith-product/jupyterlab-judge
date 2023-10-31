@@ -11,13 +11,14 @@ A simple online judge for Jupyter Lab.
 ![highlights](https://user-images.githubusercontent.com/4434752/174207715-fff3ecb5-0143-41f0-a162-d4b17a517874.gif)
 
 ## Goal
+
 - No additional system for code execution
 - Solve and get result on Jupyter Lab
 - Replaceable backend
 
 ### No Additional System For Code Execution
 
-Typical online judge systems require task manager for code executions. 
+Typical online judge systems require task manager for code executions.
 This project uses kernels to execute codes. Therefore no other system is required.
 However this architecture leads some security risks. It will be explained later.
 
@@ -46,11 +47,11 @@ for the frontend extension.
 
 ### 0.\*.\*
 
-* JupyterLab >= 3.0
+- JupyterLab >= 3.0
 
 ### 1.\*.\*
 
-* JupyterLab >= 4.0
+- JupyterLab >= 4.0
 
 ## Install
 
@@ -89,11 +90,13 @@ jupyter labextension list
 ### Development Environment
 
 In `0.*.*`, you can create Conda environment by executing :
+
 ```
 conda create -n jupyterlab-ext --override-channels --strict-channel-priority -c conda-forge -c nodefaults jupyterlab=3 cookiecutter nodejs jupyter-packaging git
 ```
 
 In `1.*.*`, you can create Conda environment by executing :
+
 ```
 conda create -n jupyterlab4-ext --override-channels --strict-channel-priority -c conda-forge -c nodefaults jupyterlab=4 nodejs=18 git copier=7 jinja2-time
 conda activate jupyterlab4-ext
@@ -194,6 +197,7 @@ See [RELEASE](RELEASE.md)
 ### Translate
 
 After adding `trans.__`, execute following code
+
 ```
 jupyterlab-translate update . jupyterlab_judge -l ko_KR
 ```
@@ -201,6 +205,7 @@ jupyterlab-translate update . jupyterlab_judge -l ko_KR
 This will update `jupyterlab_judge.po` file with some errors. (ignore it)
 
 Add your translation to `jupyterlab_judge.po` and execute
+
 ```
 jupyterlab-translate compile . jupyterlab_judge -l ko_KR
 ```

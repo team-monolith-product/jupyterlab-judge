@@ -68,6 +68,7 @@ export class JudgeTerminal extends Panel {
     toolbar.addClass('jp-JudgeTerminal-toolbar');
     const executeButton = document.createElement('button');
     executeButton.className = 'jp-JudgeTerminal-executeButton';
+    executeButton.title = `${trans.__('Execute')} (Shift+Enter)`;
     runIcon.element({ container: executeButton });
     const excuteButtonLabel = document.createElement('span');
     excuteButtonLabel.className = 'jp-JudgeTerminal-executeButtonLabel';

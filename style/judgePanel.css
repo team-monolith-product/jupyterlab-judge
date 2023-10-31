@@ -12,7 +12,6 @@
   border-left: 0 none;
   border-right: 1px solid var(--jp-border-color0);
   min-width: 200px;
-
   overflow-y: auto;
 }
 
@@ -40,4 +39,8 @@ min-width has no effect on the right panel, so we need to set it on the children
 .jp-JudgePanel-submissionPanel {
   min-height: 100px;
   min-width: 500px;
+}
+
+.jp-JudgePanel-editor .cm-editor {
+  height: 100%;
 }

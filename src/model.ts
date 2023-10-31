@@ -3,7 +3,6 @@ import * as Y from 'yjs';
 import type * as nbformat from '@jupyterlab/nbformat';
 
 import { DocumentRegistry } from '@jupyterlab/docregistry';
-import { IModelDB, ModelDB } from '@jupyterlab/observables';
 import { ISignal, Signal } from '@lumino/signaling';
 import { PartialJSONObject } from '@lumino/coreutils';
 import { IChangedArgs } from '@jupyterlab/coreutils';
@@ -20,7 +19,6 @@ import { Contents } from '@jupyterlab/services';
 
 export class JudgeModel implements DocumentRegistry.IModel {
   constructor(problemProvider: IProblemProvider) {
-    this.modelDB = new ModelDB();
     this.sharedModel = new JudgeModel.YJudge();
     this.sharedModel.changed.connect(
       async (sender, judgeChange: JudgeModel.IJudgeChange) => {
@@ -46,9 +44,10 @@ export class JudgeModel implements DocumentRegistry.IModel {
       }
     );
 
-    this._codeModel = new CodeCellModel({});
+    this._codeModel = new CodeCellModel({
+      sharedModel: this.sharedModel.yCodeCell
+    });
     this._codeModel.mimeType = 'text/x-python';
-    this._codeModel.switchSharedModel(this.sharedModel.yCodeCell, true);
 
     this._problem = null;
     this._problemProvider = problemProvider;
@@ -126,8 +125,6 @@ export class JudgeModel implements DocumentRegistry.IModel {
   }
 
   readonly sharedModel: JudgeModel.YJudge;
-  // We don't manage modelDB now.
-  readonly modelDB: IModelDB;
 
   private _contentChanged = new Signal<this, void>(this);
   private _stateChanged = new Signal<this, IChangedArgs<any>>(this);
@@ -340,7 +337,7 @@ export namespace JudgeModel {
      * @param modelDB Model database
      * @returns The model
      */
-    createNew(languagePreference?: string, modelDB?: IModelDB): JudgeModel {
+    createNew(options?: DocumentRegistry.IModelOptions): JudgeModel {
       return new JudgeModel(this._problemProviderFactory());
     }
 
@@ -357,7 +354,7 @@ export namespace JudgeModel {
   export class YJudge extends models.YDocument<IJudgeChange> {
     constructor() {
       super();
-
+      this._version = '1.0.0';
       this._problemId = this.ydoc.getText('problem_id');
       this._source = this.ydoc.getText('source');
       this._outputs = this.ydoc.getArray('outputs');
@@ -371,7 +368,8 @@ export namespace JudgeModel {
         this._changed.emit(change);
       });
 
-      this.undoManager = new Y.UndoManager([this._source]);
+      this.undoManager.addToScope(this._source);
+      this.undoManager.addTrackedOrigin(this._ycodeCell);
     }
 
     /**
@@ -412,12 +410,16 @@ export namespace JudgeModel {
       this._metadata.set(key, value);
     }
 
+    get version(): string {
+      return this._version;
+    }
+
+    private _version: string;
     private _ycodeCell: models.ISharedCodeCell;
     private _problemId: Y.Text;
     private _source: Y.Text;
     private _outputs: Y.Array<nbformat.IOutput>;
     private _metadata: Y.Map<any>;
-    public undoManager: Y.UndoManager;
   }
 
   class YCodeCell implements models.ISharedCodeCell, models.IYText {
@@ -441,10 +443,7 @@ export namespace JudgeModel {
     readonly notebook = null;
     readonly metadata = {};
     readonly metadataChanged = new Signal<this, IMapChange<any>>(this);
-    get changed(): ISignal<
-      this,
-      models.CellChange<nbformat.IBaseCellMetadata>
-    > {
+    get changed(): ISignal<this, models.CellChange> {
       return this._changed;
     }
     get outputs(): Array<nbformat.IOutput> {
@@ -538,8 +537,8 @@ export namespace JudgeModel {
     clearUndoHistory(): void {
       this._yjudge.clearUndoHistory();
     }
-    transact(f: () => void, undoable?: boolean | undefined): void {
-      this._yjudge.ydoc.transact(f, undoable);
+    transact(f: () => void, undoable = true): void {
+      this._yjudge.ydoc.transact(f, undoable ? this : null);
     }
 
     get disposed(): ISignal<this, void> {
@@ -572,10 +571,7 @@ export namespace JudgeModel {
     private _yjudge: YJudge;
     private _source: Y.Text;
     private _outputs: Y.Array<nbformat.IOutput>;
-    private _changed = new Signal<
-      this,
-      models.CellChange<nbformat.IBaseCellMetadata>
-    >(this);
+    private _changed = new Signal<this, models.CellChange>(this);
     private _isDisposed = false;
     private _disposed = new Signal<this, void>(this);
   }
