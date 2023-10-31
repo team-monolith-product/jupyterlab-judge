@@ -354,7 +354,7 @@ export namespace JudgeModel {
   export class YJudge extends models.YDocument<IJudgeChange> {
     constructor() {
       super();
-      this.version = '1.0.0';
+      this._version = '1.0.0';
       this._problemId = this.ydoc.getText('problem_id');
       this._source = this.ydoc.getText('source');
       this._outputs = this.ydoc.getArray('outputs');
@@ -410,7 +410,11 @@ export namespace JudgeModel {
       this._metadata.set(key, value);
     }
 
-    version: string;
+    get version(): string {
+      return this._version;
+    }
+
+    private _version: string;
     private _ycodeCell: models.ISharedCodeCell;
     private _problemId: Y.Text;
     private _source: Y.Text;
