@@ -35,6 +35,12 @@ test = [
     "pytest-jupyter[server]>=0.6.0"
 ]
 
+[project.entry-points."jupyterlab.locale"]
+jupyterlab_judge = "jupyterlab_judge"
+
+[project.entry-points.jupyter_ydoc]
+judge = "jupyterlab_judge.yjudge:YJudge"
+
 [tool.hatch.version]
 source = "nodejs"
 
@@ -42,7 +48,11 @@ source = "nodejs"
 fields = ["description", "authors", "urls"]
 
 [tool.hatch.build.targets.sdist]
-artifacts = ["jupyterlab_judge/labextension"]
+artifacts = [
+    "jupyterlab_judge/labextension",
+    "jupyterlab_judge/locale/**/*.json",
+    "jupyterlab_judge/locale/**/*.mo",
+]
 exclude = [".github", "binder"]
 
 [tool.hatch.build.targets.wheel.shared-data]
