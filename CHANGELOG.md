@@ -2,6 +2,22 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 1.19.2
+
+([Full Changelog](https://github.com/team-monolith-product/jupyterlab-judge/compare/v1.19.1...d7bf1fbc86c8defefaed7fde160b8c5c42136d69))
+
+### Bugs fixed
+
+- Remove unused dependency [#37](https://github.com/team-monolith-product/jupyterlab-judge/pull/37) ([@paulkim3151](https://github.com/paulkim3151))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/team-monolith-product/jupyterlab-judge/graphs/contributors?from=2023-11-07&to=2023-11-10&type=c))
+
+[@paulkim3151](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3Apaulkim3151+updated%3A2023-11-07..2023-11-10&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 1.19.1
 
 ([Full Changelog](https://github.com/team-monolith-product/jupyterlab-judge/compare/v1.19.0...3ff9bc811c3e36c2675aebebec3c55e7a025db84))
@@ -19,8 +35,6 @@
 ([GitHub contributors page for this release](https://github.com/team-monolith-product/jupyterlab-judge/graphs/contributors?from=2023-10-30&to=2023-11-07&type=c))
 
 [@a3626a](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3Aa3626a+updated%3A2023-10-30..2023-11-07&type=Issues) | [@paulkim3151](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3Apaulkim3151+updated%3A2023-10-30..2023-11-07&type=Issues) | [@sweep-ai](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3Asweep-ai+updated%3A2023-10-30..2023-11-07&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 1.19.0
 
