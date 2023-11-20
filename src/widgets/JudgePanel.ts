@@ -37,7 +37,7 @@ import { SubmissionList } from '../components/SubmissionList';
 import { IKernelConnection } from '@jupyterlab/services/lib/kernel/kernel';
 import { JudgeSignal } from '../tokens';
 import { customJudgeColorSvg } from '@team-monolith/cds';
-import { IJudgeProblemPanel, JudgeProblemPanel } from './JudgePreviewPanel';
+import { IJudgeProblemPanel, JudgeProblemPanel } from './JudgeProblemPanel';
 
 const JudgeColorLabIcon = new LabIcon({
   name: 'jupyterlab-judge:problem-icon',
@@ -122,7 +122,7 @@ export class JudgePanel extends BoxPanel {
     });
     this._editorWidget.addClass('jp-JudgePanel-editor');
 
-    const problemPanel = this.createPreviewPanel();
+    const problemPanel = this.createProblemPanel();
     problemPanel.renderProblem();
     this.model.problemChanged.connect((sender, problem) => {
       problemPanel.renderProblem();
@@ -180,7 +180,7 @@ export class JudgePanel extends BoxPanel {
     return this._context;
   }
 
-  createPreviewPanel(): IJudgeProblemPanel {
+  createProblemPanel(): IJudgeProblemPanel {
     return new JudgeProblemPanel(
       {
         model: this.model,
