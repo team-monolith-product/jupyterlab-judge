@@ -19,11 +19,7 @@ import {
   DocumentWidget,
   IDocumentWidget
 } from '@jupyterlab/docregistry';
-import {
-  IRenderMime,
-  IRenderMimeRegistry,
-  MimeModel
-} from '@jupyterlab/rendermime';
+import { IRenderMimeRegistry } from '@jupyterlab/rendermime';
 import { CodeMirrorEditorFactory } from '@jupyterlab/codemirror';
 import { CommandRegistry } from '@lumino/commands';
 import { OutputArea } from '@jupyterlab/outputarea';
@@ -41,6 +37,7 @@ import { SubmissionList } from '../components/SubmissionList';
 import { IKernelConnection } from '@jupyterlab/services/lib/kernel/kernel';
 import { JudgeSignal } from '../tokens';
 import { customJudgeColorSvg } from '@team-monolith/cds';
+import { IJudgeProblemPanel, JudgeProblemPanel } from './JudgePreviewPanel';
 
 const JudgeColorLabIcon = new LabIcon({
   name: 'jupyterlab-judge:problem-icon',
@@ -110,6 +107,7 @@ export class JudgePanel extends BoxPanel {
     this._trans = this._translator.load(TRANSLATOR_DOMAIN);
     this._submitted = options.submitted;
     this._executed = options.executed;
+    this._rendermime = options.rendermime;
 
     this.id = 'jce-judge-panel';
     this.title.closable = true;
@@ -124,11 +122,10 @@ export class JudgePanel extends BoxPanel {
     });
     this._editorWidget.addClass('jp-JudgePanel-editor');
 
-    this._markdownRenderer = options.rendermime.createRenderer('text/markdown');
-    this._markdownRenderer.addClass('jp-JudgePanel-markdown');
-    this.renderProblem();
+    const problemPanel = this.createPreviewPanel();
+    problemPanel.renderProblem();
     this.model.problemChanged.connect((sender, problem) => {
-      this.renderProblem();
+      problemPanel.renderProblem();
       if (problem?.title) {
         this.title.label = `${problem?.title}.judge`;
       }
@@ -150,7 +147,7 @@ export class JudgePanel extends BoxPanel {
     });
     submissionPanel.addClass('jp-JudgePanel-submissionPanel');
 
-    splitPanel.addWidget(this._markdownRenderer);
+    splitPanel.addWidget(problemPanel);
 
     const rightPanel = new SplitPanel({ orientation: 'vertical', spacing: 0 });
     rightPanel.addClass('jp-JudgePanel-rightPanel');
@@ -183,16 +180,13 @@ export class JudgePanel extends BoxPanel {
     return this._context;
   }
 
-  renderProblem(): void {
-    this._markdownRenderer.renderModel(
-      new MimeModel({
-        data: {
-          // 문제를 불러오지 못했습니다.
-          ['text/markdown']:
-            this.model.problem?.content ??
-            this._trans.__('Problem Not Available.')
-        }
-      })
+  createPreviewPanel(): IJudgeProblemPanel {
+    return new JudgeProblemPanel(
+      {
+        model: this.model,
+        translator: this._translator
+      },
+      this._rendermime
     );
   }
 
@@ -571,7 +565,7 @@ export class JudgePanel extends BoxPanel {
   private _context: DocumentRegistry.IContext<JudgeModel>;
 
   private _editorWidget: CodeEditorWrapper;
-  private _markdownRenderer: IRenderMime.IRenderer;
+  private _rendermime: IRenderMimeRegistry;
   private _terminal: JudgeTerminal.IJudgeTerminal;
 
   private _translator: ITranslator;
