@@ -17,7 +17,7 @@ export class JudgeProblemPanel extends Panel implements IJudgeProblemPanel {
     this._model = options.model;
     this._trans = options.translator.load(TRANSLATOR_DOMAIN);
     this._markdownRenderer = rendermime.createRenderer('text/markdown');
-    this._markdownRenderer.addClass('jp-JudgePanel-markdown');
+    this._markdownRenderer.addClass('jp-JudgePanel-problem');
     this.addWidget(this._markdownRenderer);
   }
 
