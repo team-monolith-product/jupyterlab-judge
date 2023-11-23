@@ -568,7 +568,7 @@ export class JudgePanel extends BoxPanel {
   private _rendermime: IRenderMimeRegistry;
   private _terminal: JudgeTerminal.IJudgeTerminal;
 
-  private _translator: ITranslator;
+  protected _translator: ITranslator;
   private _trans: TranslationBundle;
   private _submitted: Signal<any, JudgeSignal.ISubmissionArgs>;
   private _executed: Signal<any, JudgeSignal.IExecutionArgs>;
