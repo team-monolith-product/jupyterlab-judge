@@ -2,11 +2,25 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.20.0
+
+([Full Changelog](https://github.com/team-monolith-product/jupyterlab-judge/compare/v0.20.0rc5...f50c046562b29ca05f82b2aa820cb78874c96f3e))
+
+### Merged PRs
+
+- Refactor JudgePanel to use JudgeProblemPanel [#38](https://github.com/team-monolith-product/jupyterlab-judge/pull/38) ([@paulkim3151](https://github.com/paulkim3151))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/team-monolith-product/jupyterlab-judge/graphs/contributors?from=2023-11-23&to=2023-11-24&type=c))
+
+[@paulkim3151](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3Apaulkim3151+updated%3A2023-11-23..2023-11-24&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.20.0rc5
 
 No merged PRs
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.20.0rc4
 
