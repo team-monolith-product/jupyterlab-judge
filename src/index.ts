@@ -221,3 +221,4 @@ export { openOrCreateFromId } from './commands';
 export * from './widgets';
 export * from './components';
 export * from './problemProvider';
+export * from './model';
