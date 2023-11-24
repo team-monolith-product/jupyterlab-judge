@@ -4,7 +4,7 @@
     https://jupyterlab.readthedocs.io/en/stable/developer/css.html
 */
 
-.jp-JudgePanel-markdown {
+.jp-JudgePanel-problem {
   padding: 20px;
   box-shadow: none;
   border-top: 0 none;

@@ -2,6 +2,28 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.20.0rc5
+
+No merged PRs
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
+## 0.20.0rc4
+
+No merged PRs
+
+## 0.20.0rc3
+
+No merged PRs
+
+## 0.20.0rc2
+
+No merged PRs
+
+## 0.20.0rc1
+
+No merged PRs
+
 ## 0.19.0
 
 ([Full Changelog](https://github.com/team-monolith-product/jupyterlab-judge/compare/v0.18.3...7da9953ab84b5ebe1e96bbb0fdc41fbe9f7d7ef3))
@@ -15,8 +37,6 @@
 ([GitHub contributors page for this release](https://github.com/team-monolith-product/jupyterlab-judge/graphs/contributors?from=2023-08-23&to=2023-10-10&type=c))
 
 [@a3626a](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3Aa3626a+updated%3A2023-08-23..2023-10-10&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.18.3
 
