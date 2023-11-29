@@ -13,6 +13,7 @@
   border-right: 1px solid var(--jp-border-color0);
   min-width: 200px;
 
+  height: 100%;
   overflow-y: auto;
 }
 
