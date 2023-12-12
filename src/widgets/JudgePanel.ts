@@ -1,8 +1,8 @@
 import {
   Dialog,
   ISessionContext,
+  ISessionContextDialogs,
   SessionContext,
-  sessionContextDialogs,
   showDialog
 } from '@jupyterlab/apputils';
 import { Message } from '@lumino/messaging';
@@ -20,7 +20,6 @@ import {
   IDocumentWidget
 } from '@jupyterlab/docregistry';
 import { IRenderMimeRegistry } from '@jupyterlab/rendermime';
-import { CodeMirrorEditorFactory } from '@jupyterlab/codemirror';
 import { CommandRegistry } from '@lumino/commands';
 import { OutputArea } from '@jupyterlab/outputarea';
 import { KernelMessage } from '@jupyterlab/services';
@@ -80,10 +79,12 @@ export class JudgeKernelReconnectingFailedError extends JudgeError {
 
 export namespace JudgePanel {
   export interface IOptions {
-    editorConfig: Partial<CodeEditor.IConfig>;
+    editorServices: IEditorServices;
+    editorConfig: Pick<CodeEditor.IOptions, 'config'>;
     rendermime: IRenderMimeRegistry;
     context: DocumentRegistry.IContext<JudgeModel>;
     translator: ITranslator;
+    sessionContextDialogs: ISessionContextDialogs;
     submitted: Signal<any, JudgeSignal.ISubmissionArgs>;
     executed: Signal<any, JudgeSignal.IExecutionArgs>;
 
@@ -104,6 +105,7 @@ export class JudgePanel extends BoxPanel {
 
     this._context = options.context;
     this._translator = options.translator;
+    this._sessionContextDialogs = options.sessionContextDialogs;
     this._trans = this._translator.load(TRANSLATOR_DOMAIN);
     this._submitted = options.submitted;
     this._executed = options.executed;
@@ -117,10 +119,12 @@ export class JudgePanel extends BoxPanel {
 
     this._editorWidget = new CodeEditorWrapper({
       model: this.model.codeModel,
-      factory: new CodeMirrorEditorFactory().newInlineEditor,
-      config: { ...options.editorConfig, lineNumbers: true }
+      factory: options.editorServices.factoryService.newInlineEditor,
+      editorOptions: { config: { ...options.editorConfig, lineNumbers: true } }
     });
     this._editorWidget.addClass('jp-JudgePanel-editor');
+    this._editorWidget.node.setAttribute('data-jp-undoer', 'true'); // Activate undo/redo keybindings
+    this._editorWidget.node.setAttribute('data-jp-code-runner', 'true'); // Activate run-code keybinding
 
     const problemPanel = this.createProblemPanel();
     problemPanel.renderProblem();
@@ -252,7 +256,7 @@ export class JudgePanel extends BoxPanel {
 
   public async execute(): Promise<KernelMessage.IExecuteReplyMsg | null> {
     if (this.session.hasNoKernel) {
-      await sessionContextDialogs.selectKernel(this.session);
+      await this._sessionContextDialogs.selectKernel(this.session);
       if (this.session.hasNoKernel) {
         void showDialog({
           title: this._trans.__('Cell not executed due to missing kernel'),
@@ -340,7 +344,7 @@ export class JudgePanel extends BoxPanel {
 
     const oldKernel = this.session.session?.kernel;
     if (!oldKernel) {
-      void sessionContextDialogs.selectKernel(this.session);
+      void this._sessionContextDialogs.selectKernel(this.session);
       this.model.submissionStatus = { type: 'idle' };
       return;
     }
@@ -356,7 +360,7 @@ export class JudgePanel extends BoxPanel {
 
     const kernel = sessionContext.session?.kernel;
     if (!kernel) {
-      void sessionContextDialogs.selectKernel(sessionContext);
+      void this._sessionContextDialogs.selectKernel(sessionContext);
       this.model.submissionStatus = { type: 'idle' };
       return;
     }
@@ -569,6 +573,7 @@ export class JudgePanel extends BoxPanel {
   private _terminal: JudgeTerminal.IJudgeTerminal;
 
   protected _translator: ITranslator;
+  private _sessionContextDialogs: ISessionContextDialogs;
   private _trans: TranslationBundle;
   private _submitted: Signal<any, JudgeSignal.ISubmissionArgs>;
   private _executed: Signal<any, JudgeSignal.IExecutionArgs>;
@@ -603,9 +608,11 @@ export class JudgeDocumentFactory extends ABCWidgetFactory<
    */
   constructor(options: JudgeDocumentFactory.IOptions) {
     super(options.factoryOptions);
+    this._editorServices = options.editorServices;
     this._rendermime = options.rendermime;
     this._commands = options.commands;
     this._editorConfig = options.editorConfig;
+    this._sessionContextDialogs = options.sessionContextDialogs;
     this._judgePanelFactory = options.judgePanelFactory;
     this._judgeSubmissionAreaFactory = options.judgeSubmissionAreaFactory;
     this._judgeTerminalFactory = options.judgeTerminalFactory;
@@ -622,9 +629,11 @@ export class JudgeDocumentFactory extends ABCWidgetFactory<
   ): JudgeDocument {
     const judgePanel = this._judgePanelFactory({
       rendermime: this._rendermime,
+      editorServices: this._editorServices,
       editorConfig: this._editorConfig,
       context,
       translator: this.translator,
+      sessionContextDialogs: this._sessionContextDialogs,
       submitted: this._submitted,
       executed: this._executed,
       judgeSubmissionAreaFactory: this._judgeSubmissionAreaFactory,
@@ -642,9 +651,11 @@ export class JudgeDocumentFactory extends ABCWidgetFactory<
     return widget;
   }
 
+  private _editorServices: IEditorServices;
   private _rendermime: IRenderMimeRegistry;
   private _commands: CommandRegistry;
-  private _editorConfig: Partial<CodeEditor.IConfig>;
+  private _editorConfig: Pick<CodeEditor.IOptions, 'config'>;
+  private _sessionContextDialogs: ISessionContextDialogs;
   private _judgePanelFactory: (options: JudgePanel.IOptions) => JudgePanel;
   private _judgeSubmissionAreaFactory: (
     options: JudgeSubmissionArea.IOptions
@@ -670,7 +681,8 @@ export namespace JudgeDocumentFactory {
     editorServices: IEditorServices;
     rendermime: IRenderMimeRegistry;
     commands: CommandRegistry;
-    editorConfig: Partial<CodeEditor.IConfig>;
+    editorConfig: Pick<CodeEditor.IOptions, 'config'>;
+    sessionContextDialogs: ISessionContextDialogs;
     /**
      * The factory options associated with the factory.
      */

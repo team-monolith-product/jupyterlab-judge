@@ -11,13 +11,14 @@ A simple online judge for Jupyter Lab.
 ![highlights](https://user-images.githubusercontent.com/4434752/174207715-fff3ecb5-0143-41f0-a162-d4b17a517874.gif)
 
 ## Goal
+
 - No additional system for code execution
 - Solve and get result on Jupyter Lab
 - Replaceable backend
 
 ### No Additional System For Code Execution
 
-Typical online judge systems require task manager for code executions. 
+Typical online judge systems require task manager for code executions.
 This project uses kernels to execute codes. Therefore no other system is required.
 However this architecture leads some security risks. It will be explained later.
 
@@ -46,13 +47,11 @@ for the frontend extension.
 
 ### 0.\*.\*
 
-* JupyterLab >= 3.0
+- JupyterLab >= 3.0
 
 ### 1.\*.\*
 
-* JupyterLab >= 4.0
-
-During 4.0 development process pypi `4.0.0a27` and npm `4.0.0-alpha.12` is used. Not actively maintained.
+- JupyterLab >= 4.0
 
 ## Install
 
@@ -91,15 +90,16 @@ jupyter labextension list
 ### Development Environment
 
 In `0.*.*`, you can create Conda environment by executing :
+
 ```
 conda create -n jupyterlab-ext --override-channels --strict-channel-priority -c conda-forge -c nodefaults jupyterlab=3 cookiecutter nodejs jupyter-packaging git
 ```
 
 In `1.*.*`, you can create Conda environment by executing :
+
 ```
-conda create -n jupyterlab4-ext --override-channels --strict-channel-priority -c conda-forge -c nodefaults cookiecutter nodejs jupyter-packaging git
+conda create -n jupyterlab4-ext --override-channels --strict-channel-priority -c conda-forge -c nodefaults jupyterlab=4 nodejs=18 git copier=7 jinja2-time
 conda activate jupyterlab4-ext
-pip install jupyterlab==4.0.0a27
 ```
 
 ### Development install
@@ -152,6 +152,44 @@ In development mode, you will also need to remove the symlink created by `jupyte
 command. To find its location, you can run `jupyter labextension list` to figure out where the `labextensions`
 folder is located. Then you can remove the symlink named `jupyterlab-judge` within that folder.
 
+### Testing the extension
+
+#### Server tests
+
+This extension is using [Pytest](https://docs.pytest.org/) for Python code testing.
+
+Install test dependencies (needed only once):
+
+```sh
+pip install -e ".[test]"
+# Each time you install the Python package, you need to restore the front-end extension link
+jupyter labextension develop . --overwrite
+```
+
+To execute them, run:
+
+```sh
+pytest -vv -r ap --cov jupyterlab_judge
+```
+
+#### Frontend tests
+
+This extension is using [Jest](https://jestjs.io/) for JavaScript code testing.
+
+To execute them, execute:
+
+```sh
+jlpm
+jlpm test
+```
+
+#### Integration tests
+
+This extension uses [Playwright](https://playwright.dev/docs/intro) for the integration tests (aka user level tests).
+More precisely, the JupyterLab helper [Galata](https://github.com/jupyterlab/jupyterlab/tree/master/galata) is used to handle testing the extension in JupyterLab.
+
+More information are provided within the [ui-tests](./ui-tests/README.md) README.
+
 ### Packaging the extension
 
 See [RELEASE](RELEASE.md)
@@ -159,6 +197,7 @@ See [RELEASE](RELEASE.md)
 ### Translate
 
 After adding `trans.__`, execute following code
+
 ```
 jupyterlab-translate update . jupyterlab_judge -l ko_KR
 ```
@@ -166,6 +205,7 @@ jupyterlab-translate update . jupyterlab_judge -l ko_KR
 This will update `jupyterlab_judge.po` file with some errors. (ignore it)
 
 Add your translation to `jupyterlab_judge.po` and execute
+
 ```
 jupyterlab-translate compile . jupyterlab_judge -l ko_KR
 ```
