@@ -255,25 +255,29 @@ export class JudgePanel extends BoxPanel {
   }
 
   public async execute(): Promise<KernelMessage.IExecuteReplyMsg | null> {
-    if (this.session.hasNoKernel) {
-      await this._sessionContextDialogs.selectKernel(this.session);
-      if (this.session.hasNoKernel) {
-        void showDialog({
-          title: this._trans.__('Cell not executed due to missing kernel'),
-          body: this._trans.__(
-            'The cell has not been executed because no kernel selected. Please select a kernel to execute the cell.'
-          ),
-          buttons: [Dialog.okButton({ label: this._trans.__('Ok') })]
-        });
-        return null;
-      }
-    }
-
     if (this.session.pendingInput) {
       void showDialog({
         title: this._trans.__('Cell not executed due to pending input'),
         body: this._trans.__(
           'The cell has not been executed to avoid kernel deadlock as there is another pending input! Submit your pending input and try again.'
+        ),
+        buttons: [Dialog.okButton({ label: this._trans.__('Ok') })]
+      });
+      return null;
+    }
+
+    if (this.session.hasNoKernel) {
+      const shouldSelect = await this.session.startKernel();
+      if (shouldSelect) {
+        await this._sessionContextDialogs.selectKernel(this.session);
+      }
+    }
+
+    if (this.session.hasNoKernel) {
+      void showDialog({
+        title: this._trans.__('Cell not executed due to missing kernel'),
+        body: this._trans.__(
+          'The cell has not been executed because no kernel selected. Please select a kernel to execute the cell.'
         ),
         buttons: [Dialog.okButton({ label: this._trans.__('Ok') })]
       });
