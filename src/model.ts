@@ -19,7 +19,10 @@ import { Contents } from '@jupyterlab/services';
 import { JudgePanel } from './widgets';
 
 export class JudgeModel implements DocumentRegistry.IModel {
-  constructor(problemProvider: IProblemProvider) {
+  constructor(
+    problemProvider: IProblemProvider,
+    options?: DocumentRegistry.IModelOptions
+  ) {
     this.sharedModel = new JudgeModel.YJudge();
     this.sharedModel.changed.connect(
       async (sender, judgeChange: JudgeModel.IJudgeChange) => {
@@ -52,9 +55,16 @@ export class JudgeModel implements DocumentRegistry.IModel {
 
     this._problem = null;
     this._problemProvider = problemProvider;
+
+    this._collaborationEnabled = !!options?.collaborationEnabled;
   }
 
-  readonly collaborative = true;
+  /**
+   * Whether the model is collaborative or not.
+   */
+  get collaborative(): boolean {
+    return this._collaborationEnabled;
+  }
 
   /**
    * A signal emitted when the document content changes.
@@ -267,6 +277,7 @@ export class JudgeModel implements DocumentRegistry.IModel {
     this,
     JudgeModel.SubmissionStatus
   >(this);
+  private _collaborationEnabled: boolean;
 }
 
 export namespace JudgeModel {
@@ -340,7 +351,7 @@ export namespace JudgeModel {
      * @returns The model
      */
     createNew(options?: DocumentRegistry.IModelOptions): JudgeModel {
-      return new JudgeModel(this._problemProviderFactory());
+      return new JudgeModel(this._problemProviderFactory(), options);
     }
 
     private _disposed = false;
