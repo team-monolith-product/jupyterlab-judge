@@ -2,7 +2,7 @@
   "name": "jupyterlab-judge-ui-tests",
   "version": "1.0.0",
   "description": "JupyterLab jupyterlab-judge Integration Tests",
-  "private": true,
+  "private": true,\n    "jest": {\n        "transform": {\n            "^.+\\.tsx?$": "ts-jest",\n            "^.+\\.jsx?$": "ts-jest",\n            "^.+\\.ts?$": "ts-jest/legacy"\n        }\n    }
   "scripts": {
     "start": "jupyter lab --config jupyter_server_test_config.py",
     "test": "jlpm playwright test",
