@@ -25,7 +25,8 @@ export interface IProblemProvider {
   ): Promise<ProblemProvider.IValidateResult>;
   getSubmissions(id: string): Promise<ProblemProvider.ISubmission[]>;
   submit(
-    request: ProblemProvider.ISubmissionRequest
+    request: ProblemProvider.ISubmissionRequest,
+    panel: JudgePanel
   ): Promise<ProblemProvider.ISubmission>;
 }
 

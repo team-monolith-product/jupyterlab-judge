@@ -16,6 +16,7 @@ import { IMapChange } from '@jupyter/ydoc';
 import type { PartialJSONValue } from '@lumino/coreutils';
 import { Awareness } from 'y-protocols/awareness';
 import { Contents } from '@jupyterlab/services';
+import { JudgePanel } from './widgets';
 
 export class JudgeModel implements DocumentRegistry.IModel {
   constructor(problemProvider: IProblemProvider) {
@@ -240,9 +241,10 @@ export class JudgeModel implements DocumentRegistry.IModel {
   }
 
   async submit(
-    request: ProblemProvider.ISubmissionRequest
+    request: ProblemProvider.ISubmissionRequest,
+    panel: JudgePanel
   ): Promise<ProblemProvider.ISubmission> {
-    const submission = await this._problemProvider.submit(request);
+    const submission = await this._problemProvider.submit(request, panel);
     this._submissionsChanged.emit(
       await this._problemProvider.getSubmissions(this.sharedModel.problemId)
     );
