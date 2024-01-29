@@ -42,7 +42,7 @@ cd ..
 
 ```sh
 cd ./ui-tests
-jlpm playwright test
+jlpm test
 ```
 
 Test results will be shown in the terminal. In case of any test failures, the test report
@@ -163,5 +163,5 @@ To update the web browser versions, you must update the package `@playwright/tes
 ```sh
 cd ./ui-tests
 jlpm up "@playwright/test"
-jlpm playwright install
+jlpm install
 ```
