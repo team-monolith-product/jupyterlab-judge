@@ -24,5 +24,8 @@ module.exports = {
   ],
   coverageReporters: ['lcov', 'text'],
   testRegex: 'src/.*/.*.spec.ts[x]?$',
-  transformIgnorePatterns: [`/node_modules/(?!${esModules}).+`]
+  transformIgnorePatterns: [`/node_modules/(?!${esModules}|ts-jest).+`],
+  moduleNameMapper: {
+    'ts-jest/legacy': '<path_to_ts-jest>/legacy.js',
+  },
 };
