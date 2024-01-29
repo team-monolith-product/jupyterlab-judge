@@ -2,6 +2,22 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 1.23.0
+
+([Full Changelog](https://github.com/team-monolith-product/jupyterlab-judge/compare/v1.23.0rc0...e2e16a5d26c010a51241cbada5cbc23a5030bfa2))
+
+### Merged PRs
+
+- fix collaborative logic [#50](https://github.com/team-monolith-product/jupyterlab-judge/pull/50) ([@paulkim3151](https://github.com/paulkim3151))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/team-monolith-product/jupyterlab-judge/graphs/contributors?from=2024-01-29&to=2024-01-29&type=c))
+
+[@paulkim3151](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3Apaulkim3151+updated%3A2024-01-29..2024-01-29&type=Issues) | [@sweep-ai](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3Asweep-ai+updated%3A2024-01-29..2024-01-29&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 1.23.0rc0
 
 ([Full Changelog](https://github.com/team-monolith-product/jupyterlab-judge/compare/v1.22.0))
@@ -11,8 +27,6 @@
 ([GitHub contributors page for this release](https://github.com/team-monolith-product/jupyterlab-judge/graphs/contributors?from=2024-01-29&to=2024-01-29&type=c))
 
 [@sweep-ai](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3Asweep-ai+updated%3A2024-01-29..2024-01-29&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 1.22.0
 
