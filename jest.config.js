@@ -1,4 +1,7 @@
-const jestJupyterLab = require('@jupyterlab/testutils/lib/jest-config');
+module.exports = {
+  preset: 'ts-jest',
+  testEnvironment: 'node',
+};
 
 const esModules = [
   '@codemirror',
@@ -12,7 +15,7 @@ const esModules = [
   'yjs'
 ].join('|');
 
-const baseConfig = jestJupyterLab(__dirname);
+const baseConfig = jestJestConfig(__dirname);
 
 module.exports = {
   ...baseConfig,
