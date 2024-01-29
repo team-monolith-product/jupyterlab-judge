@@ -3,6 +3,7 @@
  */
 
 describe('jupyterlab-judge', () => {
+  import 'ts-jest/legacy';
   it('should be tested', () => {
     expect(1 + 1).toEqual(2);
   });
