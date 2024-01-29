@@ -11,6 +11,10 @@ class RouteHandler(APIHandler):
     @tornado.web.authenticated
     def get(self):
         self.finish(json.dumps({
+            "data": "This is a more meaningful response from the /jupyterlab-judge/get-example endpoint!",
+            "status": "success"
+        }))
+        self.finish(json.dumps({
             "data": "This is /jupyterlab-judge/get-example endpoint!"
         }))
 
