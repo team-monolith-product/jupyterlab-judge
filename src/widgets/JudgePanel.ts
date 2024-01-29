@@ -456,19 +456,22 @@ export class JudgePanel extends BoxPanel {
     await kernel.shutdown();
     kernel.dispose();
 
-    const submission = await this.model.submit({
-      problemId: problem.id,
-      status: status,
-      code,
-      cpuTime:
-        results.map(result => result.cpuTime).reduce((a, b) => a + b, 0) /
-        results.length,
-      acceptedCount: validateResult.acceptedCount,
-      totalCount: validateResult.totalCount,
-      token: validateResult.token,
-      language: 'python',
-      memory: 0
-    });
+    const submission = await this.model.submit(
+      {
+        problemId: problem.id,
+        status: status,
+        code,
+        cpuTime:
+          results.map(result => result.cpuTime).reduce((a, b) => a + b, 0) /
+          results.length,
+        acceptedCount: validateResult.acceptedCount,
+        totalCount: validateResult.totalCount,
+        token: validateResult.token,
+        language: 'python',
+        memory: 0
+      },
+      this
+    );
 
     this.model.submissionStatus = { type: 'idle' };
 
