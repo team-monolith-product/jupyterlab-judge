@@ -2,6 +2,18 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 1.23.0rc0
+
+([Full Changelog](https://github.com/team-monolith-product/jupyterlab-judge/compare/v1.22.0))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/team-monolith-product/jupyterlab-judge/graphs/contributors?from=2024-01-29&to=2024-01-29&type=c))
+
+[@sweep-ai](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3Asweep-ai+updated%3A2024-01-29..2024-01-29&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 1.22.0
 
 ([Full Changelog](https://github.com/team-monolith-product/jupyterlab-judge/compare/v1.21.0...ecaba1ccf106d138c3df7864fc9be9d1e81d9f81))
@@ -15,8 +27,6 @@
 ([GitHub contributors page for this release](https://github.com/team-monolith-product/jupyterlab-judge/graphs/contributors?from=2023-12-12&to=2024-01-29&type=c))
 
 [@a3626a](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3Aa3626a+updated%3A2023-12-12..2024-01-29&type=Issues) | [@sweep-ai](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3Asweep-ai+updated%3A2023-12-12..2024-01-29&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 1.21.0
 
