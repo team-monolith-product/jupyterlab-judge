@@ -23,7 +23,7 @@ import { IRenderMimeRegistry } from '@jupyterlab/rendermime';
 import { CommandRegistry } from '@lumino/commands';
 import { OutputArea } from '@jupyterlab/outputarea';
 import { KernelMessage } from '@jupyterlab/services';
-import { IHeader, IStreamMsg } from '@jupyterlab/services/lib/kernel/messages';
+import { IStreamMsg } from '@jupyterlab/services/lib/kernel/messages';
 import { JudgeModel } from '../model';
 import { ProblemProvider } from '../problemProvider/problemProvider';
 import { ToolbarItems } from '../toolbar';
@@ -37,6 +37,13 @@ import { IKernelConnection } from '@jupyterlab/services/lib/kernel/kernel';
 import { JudgeSignal } from '../tokens';
 import { customJudgeColorSvg } from '@team-monolith/cds';
 import { IJudgeProblemPanel, JudgeProblemPanel } from './JudgeProblemPanel';
+
+function bytesToBase64(bytes: Uint8Array) {
+  const binString = Array.from(bytes, byte => String.fromCodePoint(byte)).join(
+    ''
+  );
+  return btoa(binString);
+}
 
 const JudgeColorLabIcon = new LabIcon({
   name: 'jupyterlab-judge:problem-icon',
@@ -485,35 +492,60 @@ export class JudgePanel extends BoxPanel {
     problem: ProblemProvider.IProblem,
     input: string
   ): Promise<IRunResult> {
+    // Input을 파이썬 커널 메모리에 미리 적재하고
+    // input 함수를 override하여 적재된 input을 사용하도록 합니다.
+
+    const prepareInput = `
+import sys, io
+
+def input():  	
+    r = sys.stdin.readline()  	
+    if not r:  		
+        return ''
+    return r
+
+sys.stdin = io.StringIO()
+`;
+    await kernel.requestExecute(
+      {
+        code: prepareInput,
+        stop_on_error: true
+      },
+      true,
+      {}
+    ).done;
+
+    // 아래 코드를 분리한 이유는 input을 chunking하여
+    // 여러 번에 걸쳐 전송할 수 있도록 하기 위함입니다.
+
+    // Escape 문제를 해결하기 위해 base64로 인코딩합니다.
+    // input을 utf-8로 인코딩합니다.
+    // 인코딩된 input을 base64로 인코딩합니다.
+    // base64로 인코딩된 문자열을 execute_request 로 전송합니다.
+    const uint8array = new TextEncoder().encode(input);
+    const base64EncodedInput = bytesToBase64(uint8array);
+    const pushInput = `
+import base64
+sys.stdin.write(base64.b64decode('${base64EncodedInput}').decode("utf-8"))
+sys.stdin.seek(0)
+`;
+    await kernel.requestExecute(
+      {
+        code: pushInput,
+        stop_on_error: true
+      },
+      true,
+      {}
+    ).done;
+
     const content: KernelMessage.IExecuteRequestMsg['content'] = {
-      code,
+      code: code,
       stop_on_error: true,
       allow_stdin: true
     };
 
-    let inputLinesLeft: string[] = [];
-    if (problem.inputTransferType === 'one_line') {
-      inputLinesLeft = input.split(/\r?\n/);
-    } else {
-      inputLinesLeft = [input];
-    }
-
     const startTime = Date.now();
     const future = kernel.requestExecute(content, true, {});
-    future.onStdin = (
-      msg: KernelMessage.IStdinMessage<KernelMessage.StdinMessageType>
-    ) => {
-      if (msg.header.msg_type === 'input_request') {
-        const currentInputLine = inputLinesLeft.shift();
-        future.sendInputReply(
-          {
-            value: currentInputLine ?? '',
-            status: 'ok'
-          },
-          msg.header as IHeader<'input_request'>
-        );
-      }
-    };
 
     const result: IRunResult = { output: '', status: 'OK', cpuTime: 0 };
     future.onIOPub = (msg: KernelMessage.IIOPubMessage) => {
