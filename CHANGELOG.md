@@ -2,6 +2,23 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 1.24.0
+
+([Full Changelog](https://github.com/team-monolith-product/jupyterlab-judge/compare/v1.23.0...79c3c0c4960119fb18d7d5af68ab1734edb4d1d6))
+
+### Merged PRs
+
+- Implement robust input mechanism [#55](https://github.com/team-monolith-product/jupyterlab-judge/pull/55) ([@a3626a](https://github.com/a3626a))
+- fix: height 100% 추가 [#46](https://github.com/team-monolith-product/jupyterlab-judge/pull/46) ([@a3626a](https://github.com/a3626a))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/team-monolith-product/jupyterlab-judge/graphs/contributors?from=2024-01-29&to=2024-04-05&type=c))
+
+[@a3626a](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3Aa3626a+updated%3A2024-01-29..2024-04-05&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 1.23.0
 
 ([Full Changelog](https://github.com/team-monolith-product/jupyterlab-judge/compare/v1.23.0rc0...e2e16a5d26c010a51241cbada5cbc23a5030bfa2))
@@ -15,8 +32,6 @@
 ([GitHub contributors page for this release](https://github.com/team-monolith-product/jupyterlab-judge/graphs/contributors?from=2024-01-29&to=2024-01-29&type=c))
 
 [@paulkim3151](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3Apaulkim3151+updated%3A2024-01-29..2024-01-29&type=Issues) | [@sweep-ai](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3Asweep-ai+updated%3A2024-01-29..2024-01-29&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 1.23.0rc0
 
