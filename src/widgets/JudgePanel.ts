@@ -567,7 +567,6 @@ sys.stdin.seek(0)
           break;
         }
         case 'error':
-          console.log('error', msg);
           result.status = 'RE';
           break;
         case 'execute_result':
