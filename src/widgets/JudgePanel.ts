@@ -498,15 +498,16 @@ export class JudgePanel extends BoxPanel {
     // Step 1: Override input function
     //         Prepare StringIO for input
     const prepareInput = `
-import sys, io
+import io
+import base64
 
 def input():  	
-    r = sys.stdin.readline()  	
+    r = CODLE_INPUT_STRING_IO.readline()  	
     if not r:  		
         return ''
     return r
 
-sys.stdin = io.StringIO()
+CODLE_INPUT_STRING_IO = io.StringIO()
 `;
     await kernel.requestExecute(
       {
@@ -526,8 +527,7 @@ sys.stdin = io.StringIO()
       const uint8array = new TextEncoder().encode(chunk);
       const base64EncodedInput = bytesToBase64(uint8array);
       const pushInput = `
-import base64
-sys.stdin.write(base64.b64decode('${base64EncodedInput}').decode("utf-8"))
+CODLE_INPUT_STRING_IO.write(base64.b64decode('${base64EncodedInput}').decode("utf-8"))
 `;
       await kernel.requestExecute(
         {
@@ -542,7 +542,7 @@ sys.stdin.write(base64.b64decode('${base64EncodedInput}').decode("utf-8"))
     // Step 3: Seek to the beginning of StringIO
     //         This code is prepended to the user code
     const seekInput = `
-sys.stdin.seek(0)
+CODLE_INPUT_STRING_IO.seek(0)
 `;
 
     const content: KernelMessage.IExecuteRequestMsg['content'] = {
