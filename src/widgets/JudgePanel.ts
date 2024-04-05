@@ -502,7 +502,9 @@ import io
 import base64
 
 def input():  	
-    r = CODLE_INPUT_STRING_IO.readline()  	
+    r = CODLE_INPUT_STRING_IO.${
+      problem.inputTransferType === 'one_line' ? 'readline' : 'read'
+    }()  	
     if not r:  		
         return ''
     return r
