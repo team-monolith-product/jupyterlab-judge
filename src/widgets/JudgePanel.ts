@@ -522,24 +522,31 @@ sys.stdin = io.StringIO()
     // input을 utf-8로 인코딩합니다.
     // 인코딩된 input을 base64로 인코딩합니다.
     // base64로 인코딩된 문자열을 execute_request 로 전송합니다.
-    const uint8array = new TextEncoder().encode(input);
-    const base64EncodedInput = bytesToBase64(uint8array);
-    const pushInput = `
+    const CHUNK_SIZE = 1000000;
+    for (let i = 0; i < input.length; i += CHUNK_SIZE) {
+      const chunk = input.slice(i, i + CHUNK_SIZE);
+      const uint8array = new TextEncoder().encode(chunk);
+      const base64EncodedInput = bytesToBase64(uint8array);
+      const pushInput = `
 import base64
 sys.stdin.write(base64.b64decode('${base64EncodedInput}').decode("utf-8"))
+`;
+      await kernel.requestExecute(
+        {
+          code: pushInput,
+          stop_on_error: true
+        },
+        true,
+        {}
+      ).done;
+    }
+
+    const seekInput = `
 sys.stdin.seek(0)
 `;
-    await kernel.requestExecute(
-      {
-        code: pushInput,
-        stop_on_error: true
-      },
-      true,
-      {}
-    ).done;
 
     const content: KernelMessage.IExecuteRequestMsg['content'] = {
-      code: code,
+      code: seekInput + code,
       stop_on_error: true,
       allow_stdin: true
     };
@@ -560,6 +567,7 @@ sys.stdin.seek(0)
           break;
         }
         case 'error':
+          console.log('error', msg);
           result.status = 'RE';
           break;
         case 'execute_result':
