@@ -492,9 +492,11 @@ export class JudgePanel extends BoxPanel {
     problem: ProblemProvider.IProblem,
     input: string
   ): Promise<IRunResult> {
-    // Input을 파이썬 커널 메모리에 미리 적재하고
-    // input 함수를 override하여 적재된 input을 사용하도록 합니다.
+    // Transfer inputs to python kernel first,
+    // and then run the code with timeout.
 
+    // Step 1: Override input function
+    //         Prepare StringIO for input
     const prepareInput = `
 import sys, io
 
@@ -515,13 +517,9 @@ sys.stdin = io.StringIO()
       {}
     ).done;
 
-    // 아래 코드를 분리한 이유는 input을 chunking하여
-    // 여러 번에 걸쳐 전송할 수 있도록 하기 위함입니다.
-
-    // Escape 문제를 해결하기 위해 base64로 인코딩합니다.
-    // input을 utf-8로 인코딩합니다.
-    // 인코딩된 input을 base64로 인코딩합니다.
-    // base64로 인코딩된 문자열을 execute_request 로 전송합니다.
+    // Step 2: Push input to StringIO
+    //         Encode input to base64 (to avoid escape problem)
+    //         Divide input to chunks (1MB)
     const CHUNK_SIZE = 1000000;
     for (let i = 0; i < input.length; i += CHUNK_SIZE) {
       const chunk = input.slice(i, i + CHUNK_SIZE);
@@ -541,6 +539,8 @@ sys.stdin.write(base64.b64decode('${base64EncodedInput}').decode("utf-8"))
       ).done;
     }
 
+    // Step 3: Seek to the beginning of StringIO
+    //         This code is prepended to the user code
     const seekInput = `
 sys.stdin.seek(0)
 `;
