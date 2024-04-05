@@ -23,7 +23,7 @@ import { IRenderMimeRegistry } from '@jupyterlab/rendermime';
 import { CommandRegistry } from '@lumino/commands';
 import { OutputArea } from '@jupyterlab/outputarea';
 import { KernelMessage } from '@jupyterlab/services';
-import { IHeader, IStreamMsg } from '@jupyterlab/services/lib/kernel/messages';
+import { IStreamMsg } from '@jupyterlab/services/lib/kernel/messages';
 import { JudgeModel } from '../model';
 import { ProblemProvider } from '../problemProvider/problemProvider';
 import { ToolbarItems } from '../toolbar';
@@ -37,6 +37,13 @@ import { IKernelConnection } from '@jupyterlab/services/lib/kernel/kernel';
 import { JudgeSignal } from '../tokens';
 import { customJudgeColorSvg } from '@team-monolith/cds';
 import { IJudgeProblemPanel, JudgeProblemPanel } from './JudgeProblemPanel';
+
+function bytesToBase64(bytes: Uint8Array) {
+  const binString = Array.from(bytes, byte => String.fromCodePoint(byte)).join(
+    ''
+  );
+  return btoa(binString);
+}
 
 const JudgeColorLabIcon = new LabIcon({
   name: 'jupyterlab-judge:problem-icon',
@@ -488,35 +495,69 @@ export class JudgePanel extends BoxPanel {
     problem: ProblemProvider.IProblem,
     input: string
   ): Promise<IRunResult> {
+    // Transfer inputs to python kernel first,
+    // and then run the code with timeout.
+
+    // Step 1: Override input function
+    //         Prepare StringIO for input
+    const prepareInput = `
+import io
+import base64
+
+def input():  	
+    r = JUDGE_INPUT_STRING_IO.${
+      problem.inputTransferType === 'one_line' ? 'readline' : 'read'
+    }()  	
+    if not r:  		
+        return ''
+    return r
+
+JUDGE_INPUT_STRING_IO = io.StringIO()
+`;
+    await kernel.requestExecute(
+      {
+        code: prepareInput,
+        stop_on_error: true
+      },
+      true,
+      {}
+    ).done;
+
+    // Step 2: Push input to StringIO
+    //         Encode input to base64 (to avoid escape problem)
+    //         Divide input to chunks (1MB)
+    const CHUNK_SIZE = 1000000;
+    for (let i = 0; i < input.length; i += CHUNK_SIZE) {
+      const chunk = input.slice(i, i + CHUNK_SIZE);
+      const uint8array = new TextEncoder().encode(chunk);
+      const base64EncodedInput = bytesToBase64(uint8array);
+      const pushInput = `
+JUDGE_INPUT_STRING_IO.write(base64.b64decode('${base64EncodedInput}').decode("utf-8"))
+`;
+      await kernel.requestExecute(
+        {
+          code: pushInput,
+          stop_on_error: true
+        },
+        true,
+        {}
+      ).done;
+    }
+
+    // Step 3: Seek to the beginning of StringIO
+    //         This code is prepended to the user code
+    const seekInput = `
+JUDGE_INPUT_STRING_IO.seek(0)
+`;
+
     const content: KernelMessage.IExecuteRequestMsg['content'] = {
-      code,
+      code: seekInput + code,
       stop_on_error: true,
       allow_stdin: true
     };
 
-    let inputLinesLeft: string[] = [];
-    if (problem.inputTransferType === 'one_line') {
-      inputLinesLeft = input.split(/\r?\n/);
-    } else {
-      inputLinesLeft = [input];
-    }
-
     const startTime = Date.now();
     const future = kernel.requestExecute(content, true, {});
-    future.onStdin = (
-      msg: KernelMessage.IStdinMessage<KernelMessage.StdinMessageType>
-    ) => {
-      if (msg.header.msg_type === 'input_request') {
-        const currentInputLine = inputLinesLeft.shift();
-        future.sendInputReply(
-          {
-            value: currentInputLine ?? '',
-            status: 'ok'
-          },
-          msg.header as IHeader<'input_request'>
-        );
-      }
-    };
 
     const result: IRunResult = { output: '', status: 'OK', cpuTime: 0 };
     future.onIOPub = (msg: KernelMessage.IIOPubMessage) => {
