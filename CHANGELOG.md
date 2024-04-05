@@ -2,6 +2,12 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 1.24.1
+
+No merged PRs
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 1.24.0
 
 ([Full Changelog](https://github.com/team-monolith-product/jupyterlab-judge/compare/v1.23.0...79c3c0c4960119fb18d7d5af68ab1734edb4d1d6))
@@ -16,8 +22,6 @@
 ([GitHub contributors page for this release](https://github.com/team-monolith-product/jupyterlab-judge/graphs/contributors?from=2024-01-29&to=2024-04-05&type=c))
 
 [@a3626a](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3Aa3626a+updated%3A2024-01-29..2024-04-05&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 1.23.0
 
