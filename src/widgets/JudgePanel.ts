@@ -502,14 +502,14 @@ import io
 import base64
 
 def input():  	
-    r = CODLE_INPUT_STRING_IO.${
+    r = JUDGE_INPUT_STRING_IO.${
       problem.inputTransferType === 'one_line' ? 'readline' : 'read'
     }()  	
     if not r:  		
         return ''
     return r
 
-CODLE_INPUT_STRING_IO = io.StringIO()
+JUDGE_INPUT_STRING_IO = io.StringIO()
 `;
     await kernel.requestExecute(
       {
@@ -529,7 +529,7 @@ CODLE_INPUT_STRING_IO = io.StringIO()
       const uint8array = new TextEncoder().encode(chunk);
       const base64EncodedInput = bytesToBase64(uint8array);
       const pushInput = `
-CODLE_INPUT_STRING_IO.write(base64.b64decode('${base64EncodedInput}').decode("utf-8"))
+JUDGE_INPUT_STRING_IO.write(base64.b64decode('${base64EncodedInput}').decode("utf-8"))
 `;
       await kernel.requestExecute(
         {
@@ -544,7 +544,7 @@ CODLE_INPUT_STRING_IO.write(base64.b64decode('${base64EncodedInput}').decode("ut
     // Step 3: Seek to the beginning of StringIO
     //         This code is prepended to the user code
     const seekInput = `
-CODLE_INPUT_STRING_IO.seek(0)
+JUDGE_INPUT_STRING_IO.seek(0)
 `;
 
     const content: KernelMessage.IExecuteRequestMsg['content'] = {
