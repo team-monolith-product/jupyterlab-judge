@@ -504,7 +504,7 @@ export class JudgePanel extends BoxPanel {
 import io
 import base64
 
-def input(prompt):  	
+def input(prompt=None):  	
     r = JUDGE_INPUT_STRING_IO.${
       problem.inputTransferType === 'one_line' ? 'readline' : 'read'
     }()  	
