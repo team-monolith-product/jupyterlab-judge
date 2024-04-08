@@ -2,11 +2,25 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 1.24.2
+
+([Full Changelog](https://github.com/team-monolith-product/jupyterlab-judge/compare/v1.24.1...bb8c572290dcd744d538cf09d98459c85bdbd4ac))
+
+### Merged PRs
+
+- fix: add prompt parameter to input function [#56](https://github.com/team-monolith-product/jupyterlab-judge/pull/56) ([@a3626a](https://github.com/a3626a))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/team-monolith-product/jupyterlab-judge/graphs/contributors?from=2024-04-05&to=2024-04-08&type=c))
+
+[@a3626a](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3Aa3626a+updated%3A2024-04-05..2024-04-08&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 1.24.1
 
 No merged PRs
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 1.24.0
 
