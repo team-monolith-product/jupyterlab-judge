@@ -2,6 +2,22 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 1.24.4
+
+([Full Changelog](https://github.com/team-monolith-product/jupyterlab-judge/compare/v1.24.3...5364c40d9549fb4817110ffe9c841f46209c18ee))
+
+### Merged PRs
+
+- fix: rstrip new line [#58](https://github.com/team-monolith-product/jupyterlab-judge/pull/58) ([@a3626a](https://github.com/a3626a))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/team-monolith-product/jupyterlab-judge/graphs/contributors?from=2024-04-08&to=2024-04-13&type=c))
+
+[@a3626a](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3Aa3626a+updated%3A2024-04-08..2024-04-13&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 1.24.3
 
 ([Full Changelog](https://github.com/team-monolith-product/jupyterlab-judge/compare/v1.24.2...668b1d002a29e4df3e7d9edf181841088dd27f09))
@@ -15,8 +31,6 @@
 ([GitHub contributors page for this release](https://github.com/team-monolith-product/jupyterlab-judge/graphs/contributors?from=2024-04-08&to=2024-04-08&type=c))
 
 [@a3626a](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3Aa3626a+updated%3A2024-04-08..2024-04-08&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 1.24.2
 
