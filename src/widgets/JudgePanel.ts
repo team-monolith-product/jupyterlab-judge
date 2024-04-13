@@ -507,7 +507,7 @@ import base64
 def input(prompt=None):  	
     r = JUDGE_INPUT_STRING_IO.${
       problem.inputTransferType === 'one_line' ? 'readline' : 'read'
-    }()  	
+    }().rstrip('\\n')
     if not r:  		
         return ''
     return r
