@@ -3,7 +3,7 @@
         "domain": "jupyterlab_judge",
         "language": "ko-KR",
         "plural_forms": "nplurals=1; plural=0;",
-        "version": "0.18.3"
+        "version": "1.24.4"
     },
     "Accepted": [
         "\uc815\ub2f5\uc785\ub2c8\ub2e4."
@@ -95,8 +95,17 @@
     "Problem has no test cases.": [
         "\ud14c\uc2a4\ud2b8 \ucf00\uc774\uc2a4\uac00 \ub4f1\ub85d\ub418\uc9c0 \uc54a\uc740 \ubb38\uc81c\uc785\ub2c8\ub2e4."
     ],
+    "Redo": [
+        "\ub2e4\uc2dc\uc2e4\ud589"
+    ],
     "Reset to skeleton code": [
         "\uc2a4\ucf08\ub808\ud1a4 \ucf54\ub4dc \ub418\ub3cc\ub9ac\uae30"
+    ],
+    "Run": [
+        "\uc2e4\ud589"
+    ],
+    "Run All": [
+        "\ubaa8\ub450 \uc2e4\ud589"
     ],
     "Run All Code": [
         "\uc2e4\ud589"
@@ -127,6 +136,12 @@
     ],
     "Time Limit": [
         "\uc2dc\uac04 \ucd08\uacfc"
+    ],
+    "Undo": [
+        "\uc2e4\ud589\ucde8\uc18c"
+    ],
+    "Validation failed. Please try again": [
+        "\ub2f5\uc548 \ud3c9\uac00\uc5d0 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4. \ub2e4\uc2dc \uc2dc\ub3c4\ud574\uc8fc\uc138\uc694."
     ],
     "Wrong": [
         "\ud2c0\ub838\uc2b5\ub2c8\ub2e4."
