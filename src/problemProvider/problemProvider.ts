@@ -22,8 +22,6 @@ export namespace ProblemProvider {
     userId: string;
     status: SubmissionStatus;
     code: string;
-    cpuTime: number;
-    memory: number;
     acceptedCount: number; // 통과한 TC 수
     totalCount: number; // 전체 TC 수
     createdAt: string;

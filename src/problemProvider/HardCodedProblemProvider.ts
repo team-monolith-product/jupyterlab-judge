@@ -94,13 +94,7 @@ export class HardCodedProblemProvider implements IProblemProvider {
       createdAt: new Date().toISOString(),
       acceptedCount: request.details.filter(detail => detail.status === 'AC')
         .length,
-      totalCount: request.details.length,
-      cpuTime:
-        request.details.reduce(
-          (acc, detail) => acc + (detail.cpuTime ?? 0),
-          0
-        ) / request.details.length,
-      memory: 0
+      totalCount: request.details.length
     };
 
     this._idToSubmissions[request.problemId].push(submission);
