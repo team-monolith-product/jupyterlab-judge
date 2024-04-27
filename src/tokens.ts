@@ -22,7 +22,7 @@ export interface IProblemProvider {
   validate(
     id: string,
     outputs: string[]
-  ): Promise<ProblemProvider.IValidateResult>;
+  ): Promise<ProblemProvider.IValidateResult | null>;
   getSubmissions(id: string): Promise<ProblemProvider.ISubmission[]>;
   submit(
     request: ProblemProvider.ISubmissionRequest,

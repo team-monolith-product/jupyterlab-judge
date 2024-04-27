@@ -37,11 +37,41 @@ export namespace ProblemProvider {
     code: string;
     status: SubmissionStatus;
     token: string | null; // to validate status, acceptedCount and totalCount. request null if not required
-    cpuTime: number;
-    memory: number;
     language: 'python';
-    details: {
-      status: SubmissionStatus;
-    }[];
+    details: (
+      | {
+          status: 'WA';
+          answer: string; // outputs from user's code
+          cpuTime: number;
+          memory: number;
+        }
+      | {
+          status: 'TLE'; // Time Limit Exceed
+          cpuTime: number | null; // null if killed
+          memory: number;
+        }
+      | {
+          status: 'AC';
+          cpuTime: number;
+          memory: number;
+        }
+      | {
+          status: 'OLE';
+          cpuTime: number;
+          memory: number;
+        }
+      | {
+          status: 'RE';
+          cpuTime: number;
+          memory: number;
+          errorName: string;
+          errorValue: string;
+        }
+      | {
+          status: 'IE';
+          cpuTime: number;
+          memory: number;
+        }
+    )[];
   }
 }

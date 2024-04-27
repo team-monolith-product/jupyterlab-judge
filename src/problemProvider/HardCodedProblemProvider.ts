@@ -58,27 +58,17 @@ export class HardCodedProblemProvider implements IProblemProvider {
   async validate(
     id: string,
     outputs: string[]
-  ): Promise<ProblemProvider.IValidateResult> {
+  ): Promise<ProblemProvider.IValidateResult | null> {
     const solutions = this.problems[id].outputs;
     if (solutions.length !== outputs.length) {
-      return {
-        token: null,
-        totalCount: solutions.length,
-        acceptedCount: 0
-      };
-    }
-
-    let accepted = 0;
-    for (let i = 0; i < solutions.length; i++) {
-      if (solutions[i].trim() === outputs[i].trim()) {
-        accepted += 1;
-      }
+      return null;
     }
 
     return {
       token: null,
-      totalCount: solutions.length,
-      acceptedCount: accepted
+      results: solutions.map(
+        (solution, i) => solution.trim() === outputs[i].trim()
+      )
     };
   }
   async getProblem(id: string): Promise<ProblemProvider.IProblem | null> {
@@ -104,7 +94,13 @@ export class HardCodedProblemProvider implements IProblemProvider {
       createdAt: new Date().toISOString(),
       acceptedCount: request.details.filter(detail => detail.status === 'AC')
         .length,
-      totalCount: request.details.length
+      totalCount: request.details.length,
+      cpuTime:
+        request.details.reduce(
+          (acc, detail) => acc + (detail.cpuTime ?? 0),
+          0
+        ) / request.details.length,
+      memory: 0
     };
 
     this._idToSubmissions[request.problemId].push(submission);

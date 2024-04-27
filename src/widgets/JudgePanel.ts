@@ -23,7 +23,10 @@ import { IRenderMimeRegistry } from '@jupyterlab/rendermime';
 import { CommandRegistry } from '@lumino/commands';
 import { OutputArea } from '@jupyterlab/outputarea';
 import { KernelMessage } from '@jupyterlab/services';
-import { IStreamMsg } from '@jupyterlab/services/lib/kernel/messages';
+import {
+  IErrorMsg,
+  IStreamMsg
+} from '@jupyterlab/services/lib/kernel/messages';
 import { JudgeModel } from '../model';
 import { ProblemProvider } from '../problemProvider/problemProvider';
 import { ToolbarItems } from '../toolbar';
@@ -50,11 +53,24 @@ const JudgeColorLabIcon = new LabIcon({
   svgstr: customJudgeColorSvg
 });
 
-interface IRunResult {
-  status: 'OK' | 'TLE' | 'OLE' | 'RE';
-  output: string;
-  cpuTime: number;
-}
+type IRunResult =
+  | {
+      status: 'OK' | 'OLE';
+      output: string;
+      cpuTime: number;
+    }
+  | {
+      status: 'RE';
+      output: string;
+      cpuTime: number;
+      errorValue: string;
+      errorName: string;
+    }
+  | {
+      status: 'TLE';
+      output: string;
+      cpuTime: number | null; // null if killed
+    };
 
 export class JudgeError extends Error {
   constructor(message?: string) {
@@ -78,6 +94,13 @@ export class JudgeKernelImplementationError extends JudgeError {
 }
 
 export class JudgeKernelReconnectingFailedError extends JudgeError {
+  constructor(message?: string) {
+    super(message);
+    this.name = this.constructor.name;
+  }
+}
+
+export class ValidationFailedError extends JudgeError {
   constructor(message?: string) {
     super(message);
     this.name = this.constructor.name;
@@ -448,6 +471,13 @@ export class JudgePanel extends BoxPanel {
     const validateResult = await this.model.validate(
       results.map(result => result.output)
     );
+
+    if (validateResult === null) {
+      throw new ValidationFailedError(
+        this._trans.__('Validation failed. Please try again')
+      );
+    }
+
     if (validateResult.results.every(result => result)) {
       status = 'AC';
     } else if (results.some(result => result.status === 'RE')) {
@@ -468,21 +498,46 @@ export class JudgePanel extends BoxPanel {
         problemId: problem.id,
         status: status,
         code,
-        cpuTime:
-          results.map(result => result.cpuTime).reduce((a, b) => a + b, 0) /
-          results.length,
         token: validateResult.token,
         language: 'python',
-        memory: 0,
         details: results.map((result, index) => {
-          return {
-            status:
-              result.status !== 'OK'
-                ? result.status
-                : validateResult.results[index]
-                ? ('AC' as const)
-                : ('WA' as const)
-          };
+          switch (result.status) {
+            case 'OK':
+              if (validateResult.results[index]) {
+                return {
+                  status: 'AC',
+                  cpuTime: result.cpuTime,
+                  memory: 0
+                };
+              } else {
+                return {
+                  status: 'WA',
+                  answer: result.output,
+                  cpuTime: result.cpuTime,
+                  memory: 0
+                };
+              }
+            case 'TLE':
+              return {
+                status: 'TLE',
+                cpuTime: result.cpuTime,
+                memory: 0
+              };
+            case 'OLE':
+              return {
+                status: 'OLE',
+                cpuTime: result.cpuTime,
+                memory: 0
+              };
+            case 'RE':
+              return {
+                status: 'RE',
+                memory: 0,
+                cpuTime: result.cpuTime,
+                errorName: result.errorName,
+                errorValue: result.errorValue
+              };
+          }
         })
       },
       this
@@ -567,7 +622,7 @@ JUDGE_INPUT_STRING_IO.seek(0)
     const startTime = Date.now();
     const future = kernel.requestExecute(content, true, {});
 
-    const result: IRunResult = { output: '', status: 'OK', cpuTime: 0 };
+    let result: IRunResult = { output: '', status: 'OK', cpuTime: 0 };
     future.onIOPub = (msg: KernelMessage.IIOPubMessage) => {
       const msgType = msg.header.msg_type;
 
@@ -579,9 +634,18 @@ JUDGE_INPUT_STRING_IO.seek(0)
           }
           break;
         }
-        case 'error':
-          result.status = 'RE';
+        case 'error': {
+          const msgError = msg as IErrorMsg;
+          console.log(msgError.content.ename);
+          result = {
+            status: 'RE',
+            errorName: msgError.content.ename,
+            errorValue: msgError.content.evalue,
+            output: result.output,
+            cpuTime: 0
+          };
           break;
+        }
         case 'execute_result':
         case 'display_data':
         case 'clear_output':
@@ -605,17 +669,25 @@ JUDGE_INPUT_STRING_IO.seek(0)
       await kernel.interrupt();
 
       // 강제 종료는 당연히 TLE
-      result.status = 'TLE';
+      // result.status = 'TLE';
+      result = {
+        status: 'TLE',
+        output: result.output,
+        cpuTime: null
+      };
     } else {
       // 강제 종료가 아니더라도 TLE 일 수 있습니다.
       // 우리가 시간을 산정하고, TLE를 부여하는 것은 이 cpuTime 기준입니다.
       // 위에서 setTimeout을 하는 것은 다만 커널을 강제종료하기 위한 기준입니다.
       // cpuTime 언제나 0보다 크고 timelimit 이하인 값입니다.
       const cpuTime = Date.now() - startTime;
+      result.cpuTime = cpuTime;
       if (cpuTime > timelimit) {
-        result.status = 'TLE';
-      } else {
-        result.cpuTime = cpuTime;
+        result = {
+          status: 'TLE',
+          output: result.output,
+          cpuTime: cpuTime
+        };
       }
     }
 
