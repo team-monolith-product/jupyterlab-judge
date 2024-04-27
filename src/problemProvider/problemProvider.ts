@@ -33,7 +33,6 @@ export namespace ProblemProvider {
   export interface ISubmissionRequest {
     problemId: string;
     code: string;
-    status: SubmissionStatus;
     token: string | null; // to validate status, acceptedCount and totalCount. request null if not required
     language: 'python';
     details: (

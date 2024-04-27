@@ -86,8 +86,22 @@ export class HardCodedProblemProvider implements IProblemProvider {
       this._idToSubmissions[request.problemId] = [];
     }
 
+    let status: ProblemProvider.SubmissionStatus;
+    if (request.details.every(detail => detail.status === 'AC')) {
+      status = 'AC';
+    } else if (request.details.some(detail => detail.status === 'RE')) {
+      status = 'RE';
+    } else if (request.details.some(detail => detail.status === 'OLE')) {
+      status = 'OLE';
+    } else if (request.details.some(detail => detail.status === 'TLE')) {
+      status = 'TLE';
+    } else {
+      status = 'WA';
+    }
+
     const submission: ProblemProvider.ISubmission = {
       ...request,
+      status,
       id: this._idToSubmissions[request.problemId].length.toString(),
       image: '',
       userId: '',

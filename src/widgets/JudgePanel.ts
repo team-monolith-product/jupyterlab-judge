@@ -467,7 +467,6 @@ export class JudgePanel extends BoxPanel {
       };
     }
 
-    let status: ProblemProvider.SubmissionStatus | null = null;
     const validateResult = await this.model.validate(
       results.map(result => result.output)
     );
@@ -478,25 +477,12 @@ export class JudgePanel extends BoxPanel {
       );
     }
 
-    if (validateResult.results.every(result => result)) {
-      status = 'AC';
-    } else if (results.some(result => result.status === 'RE')) {
-      status = 'RE';
-    } else if (results.some(result => result.status === 'OLE')) {
-      status = 'OLE';
-    } else if (results.some(result => result.status === 'TLE')) {
-      status = 'TLE';
-    } else {
-      status = 'WA';
-    }
-
     await kernel.shutdown();
     kernel.dispose();
 
     const submission = await this.model.submit(
       {
         problemId: problem.id,
-        status: status,
         code,
         token: validateResult.token,
         language: 'python',
@@ -636,7 +622,6 @@ JUDGE_INPUT_STRING_IO.seek(0)
         }
         case 'error': {
           const msgError = msg as IErrorMsg;
-          console.log(msgError.content.ename);
           result = {
             status: 'RE',
             errorName: msgError.content.ename,
