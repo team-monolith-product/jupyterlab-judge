@@ -101,7 +101,10 @@ export class HardCodedProblemProvider implements IProblemProvider {
       id: this._idToSubmissions[request.problemId].length.toString(),
       image: '',
       userId: '',
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
+      acceptedCount: request.details.filter(detail => detail.status === 'AC')
+        .length,
+      totalCount: request.details.length
     };
 
     this._idToSubmissions[request.problemId].push(submission);

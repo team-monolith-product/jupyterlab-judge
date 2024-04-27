@@ -448,7 +448,7 @@ export class JudgePanel extends BoxPanel {
     const validateResult = await this.model.validate(
       results.map(result => result.output)
     );
-    if (validateResult.acceptedCount === validateResult.totalCount) {
+    if (validateResult.results.every(result => result)) {
       status = 'AC';
     } else if (results.some(result => result.status === 'RE')) {
       status = 'RE';
@@ -471,11 +471,19 @@ export class JudgePanel extends BoxPanel {
         cpuTime:
           results.map(result => result.cpuTime).reduce((a, b) => a + b, 0) /
           results.length,
-        acceptedCount: validateResult.acceptedCount,
-        totalCount: validateResult.totalCount,
         token: validateResult.token,
         language: 'python',
-        memory: 0
+        memory: 0,
+        details: results.map((result, index) => {
+          return {
+            status:
+              result.status !== 'OK'
+                ? result.status
+                : validateResult.results[index]
+                ? ('AC' as const)
+                : ('WA' as const)
+          };
+        })
       },
       this
     );

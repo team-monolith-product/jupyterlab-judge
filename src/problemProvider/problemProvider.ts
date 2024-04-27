@@ -11,8 +11,7 @@ export namespace ProblemProvider {
 
   export interface IValidateResult {
     token: string | null; // null if token is not issued. (or not required by problem provider)
-    totalCount: number;
-    acceptedCount: number;
+    results: boolean[];
   }
 
   export type SubmissionStatus = 'WA' | 'TLE' | 'AC' | 'OLE' | 'RE' | 'IE';
@@ -37,11 +36,12 @@ export namespace ProblemProvider {
     problemId: string;
     code: string;
     status: SubmissionStatus;
-    acceptedCount: number; // 통과한 TC 수
-    totalCount: number; // 전체 TC 수
     token: string | null; // to validate status, acceptedCount and totalCount. request null if not required
     cpuTime: number;
     memory: number;
     language: 'python';
+    details: {
+      status: SubmissionStatus;
+    }[];
   }
 }
