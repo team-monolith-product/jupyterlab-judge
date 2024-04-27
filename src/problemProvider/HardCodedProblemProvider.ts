@@ -58,27 +58,17 @@ export class HardCodedProblemProvider implements IProblemProvider {
   async validate(
     id: string,
     outputs: string[]
-  ): Promise<ProblemProvider.IValidateResult> {
+  ): Promise<ProblemProvider.IValidateResult | null> {
     const solutions = this.problems[id].outputs;
     if (solutions.length !== outputs.length) {
-      return {
-        token: null,
-        totalCount: solutions.length,
-        acceptedCount: 0
-      };
-    }
-
-    let accepted = 0;
-    for (let i = 0; i < solutions.length; i++) {
-      if (solutions[i].trim() === outputs[i].trim()) {
-        accepted += 1;
-      }
+      return null;
     }
 
     return {
       token: null,
-      totalCount: solutions.length,
-      acceptedCount: accepted
+      results: solutions.map(
+        (solution, i) => solution.trim() === outputs[i].trim()
+      )
     };
   }
   async getProblem(id: string): Promise<ProblemProvider.IProblem | null> {
@@ -96,12 +86,29 @@ export class HardCodedProblemProvider implements IProblemProvider {
       this._idToSubmissions[request.problemId] = [];
     }
 
+    let status: ProblemProvider.SubmissionStatus;
+    if (request.details.every(detail => detail.status === 'AC')) {
+      status = 'AC';
+    } else if (request.details.some(detail => detail.status === 'RE')) {
+      status = 'RE';
+    } else if (request.details.some(detail => detail.status === 'OLE')) {
+      status = 'OLE';
+    } else if (request.details.some(detail => detail.status === 'TLE')) {
+      status = 'TLE';
+    } else {
+      status = 'WA';
+    }
+
     const submission: ProblemProvider.ISubmission = {
       ...request,
+      status,
       id: this._idToSubmissions[request.problemId].length.toString(),
       image: '',
       userId: '',
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
+      acceptedCount: request.details.filter(detail => detail.status === 'AC')
+        .length,
+      totalCount: request.details.length
     };
 
     this._idToSubmissions[request.problemId].push(submission);

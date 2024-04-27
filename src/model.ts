@@ -243,7 +243,9 @@ export class JudgeModel implements DocumentRegistry.IModel {
     return await this._problemProvider.getTestCases(this.sharedModel.problemId);
   }
 
-  async validate(outputs: string[]): Promise<ProblemProvider.IValidateResult> {
+  async validate(
+    outputs: string[]
+  ): Promise<ProblemProvider.IValidateResult | null> {
     return await this._problemProvider.validate(
       this.sharedModel.problemId,
       outputs
