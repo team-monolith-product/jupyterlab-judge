@@ -33,7 +33,11 @@ export async function requestAPI<T>(
     throw new ServerConnection.ResponseError(response, data.message || data);
   }
   if (data.length > 0) {
-    data = JSON.parse(data);
+    try {
+      data = JSON.parse(data);
+    } catch {
+      return data;
+    }
   }
 
   return data;
