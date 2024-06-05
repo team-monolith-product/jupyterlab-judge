@@ -29,15 +29,17 @@ export async function requestAPI<T>(
   }
 
   let data: any = await response.text();
-  if (!response.ok) {
-    throw new ServerConnection.ResponseError(response, data.message || data);
-  }
+
   if (data.length > 0) {
     try {
       data = JSON.parse(data);
     } catch {
-      return data;
+      // not JSON; do nothing
     }
+  }
+
+  if (!response.ok) {
+    throw new ServerConnection.ResponseError(response, data.message || data);
   }
 
   return data;
