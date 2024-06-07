@@ -2,6 +2,22 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 1.26.0
+
+([Full Changelog](https://github.com/team-monolith-product/jupyterlab-judge/compare/v1.25.0...3f2ecaa9ab61746a3e0ed92d8eac60a7fec05819))
+
+### Merged PRs
+
+- Remove console log for non-JSON response body during parsing [#60](https://github.com/team-monolith-product/jupyterlab-judge/pull/60) ([@paulkim3151](https://github.com/paulkim3151))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/team-monolith-product/jupyterlab-judge/graphs/contributors?from=2024-04-27&to=2024-06-07&type=c))
+
+[@paulkim3151](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3Apaulkim3151+updated%3A2024-04-27..2024-06-07&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 1.25.0
 
 ([Full Changelog](https://github.com/team-monolith-product/jupyterlab-judge/compare/v1.24.4...a3a41129d26ebdb55328d0b60762e47e0d50cb1c))
@@ -15,8 +31,6 @@
 ([GitHub contributors page for this release](https://github.com/team-monolith-product/jupyterlab-judge/graphs/contributors?from=2024-04-13&to=2024-04-27&type=c))
 
 [@a3626a](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3Aa3626a+updated%3A2024-04-13..2024-04-27&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 1.24.4
 
