@@ -40,6 +40,8 @@ import { IKernelConnection } from '@jupyterlab/services/lib/kernel/kernel';
 import { JudgeSignal } from '../tokens';
 import { customJudgeColorSvg } from '@team-monolith/cds';
 import { IJudgeProblemPanel, JudgeProblemPanel } from './JudgeProblemPanel';
+import { IControlButtonProps } from '../components';
+import { ReactNode } from 'react';
 
 function bytesToBase64(bytes: Uint8Array) {
   const binString = Array.from(bytes, byte => String.fromCodePoint(byte)).join(
@@ -125,6 +127,7 @@ export namespace JudgePanel {
       options: JudgeTerminal.IOptions
     ) => JudgeTerminal.IJudgeTerminal;
     submissionListFactory: (options: SubmissionList.IOptions) => JSX.Element;
+    controlButtonFactory: (props: IControlButtonProps) => ReactNode;
   }
 }
 
@@ -177,7 +180,8 @@ export class JudgePanel extends BoxPanel {
       panel: this,
       model: this.model,
       translator: this._translator,
-      submissionListFactory: options.submissionListFactory
+      submissionListFactory: options.submissionListFactory,
+      controlButtonFactory: options.controlButtonFactory
     });
     submissionPanel.addClass('jp-JudgePanel-submissionPanel');
 
@@ -730,6 +734,7 @@ export class JudgeDocumentFactory extends ABCWidgetFactory<
     this._judgeSubmissionAreaFactory = options.judgeSubmissionAreaFactory;
     this._judgeTerminalFactory = options.judgeTerminalFactory;
     this._submissionListFactory = options.submissionListFactory;
+    this._controlButtonFactory = options.controlButtonFactory;
     this._submitted = options.submitted;
     this._executed = options.executed;
   }
@@ -751,7 +756,8 @@ export class JudgeDocumentFactory extends ABCWidgetFactory<
       executed: this._executed,
       judgeSubmissionAreaFactory: this._judgeSubmissionAreaFactory,
       judgeTerminalFactory: this._judgeTerminalFactory,
-      submissionListFactory: this._submissionListFactory
+      submissionListFactory: this._submissionListFactory,
+      controlButtonFactory: this._controlButtonFactory
     });
 
     judgePanel.title.icon = JudgeColorLabIcon;
@@ -779,6 +785,7 @@ export class JudgeDocumentFactory extends ABCWidgetFactory<
   private _submissionListFactory: (
     options: SubmissionList.IOptions
   ) => JSX.Element;
+  private _controlButtonFactory: (props: IControlButtonProps) => ReactNode;
   private _submitted: Signal<any, JudgeSignal.ISubmissionArgs>;
   private _executed: Signal<any, JudgeSignal.IExecutionArgs>;
 }
@@ -811,6 +818,7 @@ export namespace JudgeDocumentFactory {
       options: JudgeTerminal.IOptions
     ) => JudgeTerminal.IJudgeTerminal;
     submissionListFactory: (options: SubmissionList.IOptions) => JSX.Element;
+    controlButtonFactory: (props: IControlButtonProps) => ReactNode;
     submitted: Signal<any, JudgeSignal.ISubmissionArgs>;
     executed: Signal<any, JudgeSignal.IExecutionArgs>;
   }

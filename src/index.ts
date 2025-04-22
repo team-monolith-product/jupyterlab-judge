@@ -25,6 +25,7 @@ import { ISettingRegistry } from '@jupyterlab/settingregistry';
 import { JSONObject } from '@lumino/coreutils';
 import { JudgeModel } from './model';
 import {
+  IControlButtonFactory,
   IJudgePanelFactory,
   IJudgeSignal,
   IJudgeSubmissionAreaFactory,
@@ -38,6 +39,7 @@ import { Signal } from '@lumino/signaling';
 import { JudgeSubmissionArea } from './widgets/JudgeSubmissionArea';
 import { JudgeTerminal } from './widgets/JudgeTerminal';
 import { SubmissionListImpl } from './components/SubmissionList';
+import { ControlButtonImpl } from './components';
 
 /**
  * A signal that emits whenever a submission is submitted.
@@ -85,6 +87,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
     IJudgeSubmissionAreaFactory,
     IJudgeTerminalFactory,
     ISubmissionListFactory,
+    IControlButtonFactory,
     IProblemProvider,
     ISettingRegistry,
     ILayoutRestorer
@@ -102,6 +105,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
     judgeSubmissionAreaFactory: IJudgeSubmissionAreaFactory | null,
     judgeTerminalFactory: IJudgeTerminalFactory | null,
     submissionListFactory: ISubmissionListFactory | null,
+    controlButtonFactory: IControlButtonFactory | null,
     problemProvider: IProblemProvider | null,
     settingRegistry: ISettingRegistry | null,
     restorer: ILayoutRestorer | null
@@ -143,6 +147,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
         judgeTerminalFactory ??
         ((options: JudgeTerminal.IOptions) => new JudgeTerminal(options)),
       submissionListFactory: submissionListFactory ?? SubmissionListImpl,
+      controlButtonFactory: controlButtonFactory ?? ControlButtonImpl,
       submitted,
       executed,
       factoryOptions: {

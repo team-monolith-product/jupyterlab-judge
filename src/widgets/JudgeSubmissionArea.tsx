@@ -4,7 +4,7 @@ import {
   nullTranslator,
   TranslationBundle
 } from '@jupyterlab/translation';
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { SubmissionArea } from '../components/SubmissionArea';
 import {
@@ -14,6 +14,7 @@ import {
 import { TRANSLATOR_DOMAIN } from '../constants';
 import { JudgeModel } from '../model';
 import { JudgePanel } from './JudgePanel';
+import { ControlButtonImpl, IControlButtonProps } from '../components';
 
 export const transContext = React.createContext<TranslationBundle>(
   nullTranslator.load(TRANSLATOR_DOMAIN)
@@ -21,8 +22,10 @@ export const transContext = React.createContext<TranslationBundle>(
 
 export const factoryContext = React.createContext<{
   submissionListFactory: (props: SubmissionList.IOptions) => JSX.Element;
+  controlButtonFactory: (props: IControlButtonProps) => ReactNode;
 }>({
-  submissionListFactory: SubmissionListImpl
+  submissionListFactory: SubmissionListImpl,
+  controlButtonFactory: ControlButtonImpl
 });
 
 export namespace JudgeSubmissionArea {
@@ -31,6 +34,7 @@ export namespace JudgeSubmissionArea {
     model: JudgeModel;
     translator: ITranslator;
     submissionListFactory: (props: SubmissionList.IOptions) => JSX.Element;
+    controlButtonFactory: (props: IControlButtonProps) => ReactNode;
   }
 }
 
@@ -43,6 +47,7 @@ export class JudgeSubmissionArea extends ReactWidget {
   private _submissionListFactory: (
     props: SubmissionList.IOptions
   ) => JSX.Element;
+  private _controlButtonFactory: (props: IControlButtonProps) => ReactNode;
 
   constructor(options: JudgeSubmissionArea.IOptions) {
     super();
@@ -51,12 +56,16 @@ export class JudgeSubmissionArea extends ReactWidget {
     this._model = options.model;
     this._trans = options.translator.load(TRANSLATOR_DOMAIN);
     this._submissionListFactory = options.submissionListFactory;
+    this._controlButtonFactory = options.controlButtonFactory;
   }
 
   render(): JSX.Element {
     return (
       <factoryContext.Provider
-        value={{ submissionListFactory: this._submissionListFactory }}
+        value={{
+          submissionListFactory: this._submissionListFactory,
+          controlButtonFactory: this._controlButtonFactory
+        }}
       >
         <transContext.Provider value={this._trans}>
           <QueryClientProvider client={this.queryClient}>

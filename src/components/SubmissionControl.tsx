@@ -1,17 +1,24 @@
 import styled from '@emotion/styled';
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, ReactNode } from 'react';
 import {
   JudgeError,
   JudgeKernelNotConnectedError,
   JudgePanel
 } from '../widgets/JudgePanel';
-import { transContext } from '../widgets/JudgeSubmissionArea';
+import { factoryContext, transContext } from '../widgets/JudgeSubmissionArea';
+
+export interface IControlButtonProps {
+  onClick: () => Promise<void>;
+  disabled?: boolean;
+  children: ReactNode;
+}
 
 export function SubmissionControl(props: {
   className?: string;
   panel: JudgePanel;
 }): JSX.Element {
   const trans = useContext(transContext);
+  const { controlButtonFactory: ControlButton } = useContext(factoryContext);
   const [inProgress, setInProgress] = useState(false);
 
   return (
@@ -53,7 +60,7 @@ const ControlContainer = styled.div`
   background: var(--jp-layout-color2);
 `;
 
-const ControlButton = styled.button`
+export const ControlButtonImpl = styled.button`
   display: block;
   margin-top: 12px;
   margin-left: 20px;
