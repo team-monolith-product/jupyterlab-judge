@@ -41,7 +41,6 @@ import { JudgeSignal } from '../tokens';
 import { customJudgeColorSvg } from '@team-monolith/cds';
 import { IJudgeProblemPanel, JudgeProblemPanel } from './JudgeProblemPanel';
 import { IControlButtonProps } from '../components';
-import { ReactNode } from 'react';
 
 function bytesToBase64(bytes: Uint8Array) {
   const binString = Array.from(bytes, byte => String.fromCodePoint(byte)).join(
@@ -127,7 +126,7 @@ export namespace JudgePanel {
       options: JudgeTerminal.IOptions
     ) => JudgeTerminal.IJudgeTerminal;
     submissionListFactory: (options: SubmissionList.IOptions) => JSX.Element;
-    controlButtonFactory: (props: IControlButtonProps) => ReactNode;
+    controlButtonFactory: (props: IControlButtonProps) => JSX.Element;
   }
 }
 
@@ -785,7 +784,7 @@ export class JudgeDocumentFactory extends ABCWidgetFactory<
   private _submissionListFactory: (
     options: SubmissionList.IOptions
   ) => JSX.Element;
-  private _controlButtonFactory: (props: IControlButtonProps) => ReactNode;
+  private _controlButtonFactory: (props: IControlButtonProps) => JSX.Element;
   private _submitted: Signal<any, JudgeSignal.ISubmissionArgs>;
   private _executed: Signal<any, JudgeSignal.IExecutionArgs>;
 }
@@ -818,7 +817,7 @@ export namespace JudgeDocumentFactory {
       options: JudgeTerminal.IOptions
     ) => JudgeTerminal.IJudgeTerminal;
     submissionListFactory: (options: SubmissionList.IOptions) => JSX.Element;
-    controlButtonFactory: (props: IControlButtonProps) => ReactNode;
+    controlButtonFactory: (props: IControlButtonProps) => JSX.Element;
     submitted: Signal<any, JudgeSignal.ISubmissionArgs>;
     executed: Signal<any, JudgeSignal.IExecutionArgs>;
   }

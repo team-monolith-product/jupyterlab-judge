@@ -4,7 +4,7 @@ import {
   nullTranslator,
   TranslationBundle
 } from '@jupyterlab/translation';
-import React, { ReactNode } from 'react';
+import React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { SubmissionArea } from '../components/SubmissionArea';
 import {
@@ -22,7 +22,7 @@ export const transContext = React.createContext<TranslationBundle>(
 
 export const factoryContext = React.createContext<{
   submissionListFactory: (props: SubmissionList.IOptions) => JSX.Element;
-  controlButtonFactory: (props: IControlButtonProps) => ReactNode;
+  controlButtonFactory: (props: IControlButtonProps) => JSX.Element;
 }>({
   submissionListFactory: SubmissionListImpl,
   controlButtonFactory: ControlButtonImpl
@@ -34,7 +34,7 @@ export namespace JudgeSubmissionArea {
     model: JudgeModel;
     translator: ITranslator;
     submissionListFactory: (props: SubmissionList.IOptions) => JSX.Element;
-    controlButtonFactory: (props: IControlButtonProps) => ReactNode;
+    controlButtonFactory: (props: IControlButtonProps) => JSX.Element;
   }
 }
 
@@ -47,7 +47,7 @@ export class JudgeSubmissionArea extends ReactWidget {
   private _submissionListFactory: (
     props: SubmissionList.IOptions
   ) => JSX.Element;
-  private _controlButtonFactory: (props: IControlButtonProps) => ReactNode;
+  private _controlButtonFactory: (props: IControlButtonProps) => JSX.Element;
 
   constructor(options: JudgeSubmissionArea.IOptions) {
     super();

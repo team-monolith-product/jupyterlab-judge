@@ -9,7 +9,6 @@ import { JudgeSubmissionArea } from './widgets/JudgeSubmissionArea';
 import { JudgeTerminal } from './widgets/JudgeTerminal';
 import { CodeEditor } from '@jupyterlab/codeeditor';
 import { IControlButtonProps } from './components';
-import { ReactNode } from 'react';
 
 /**
  * The Problem Provider token.
@@ -67,7 +66,7 @@ export const IControlButtonFactory = new Token<ISubmissionListFactory | null>(
   `${PLUGIN_ID}:IControlButtonFactory`
 );
 
-export type IControlButtonFactory = (props: IControlButtonProps) => ReactNode;
+export type IControlButtonFactory = (props: IControlButtonProps) => JSX.Element;
 
 export const IJudgeSignal = new Token<IJudgeSignal>(
   `${PLUGIN_ID}:IJudgeSignal`

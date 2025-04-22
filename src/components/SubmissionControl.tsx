@@ -7,12 +7,6 @@ import {
 } from '../widgets/JudgePanel';
 import { factoryContext, transContext } from '../widgets/JudgeSubmissionArea';
 
-export interface IControlButtonProps {
-  onClick: () => Promise<void>;
-  disabled?: boolean;
-  children: ReactNode;
-}
-
 export function SubmissionControl(props: {
   className?: string;
   panel: JudgePanel;
@@ -60,7 +54,22 @@ const ControlContainer = styled.div`
   background: var(--jp-layout-color2);
 `;
 
-export const ControlButtonImpl = styled.button`
+export interface IControlButtonProps {
+  onClick: () => Promise<void>;
+  disabled?: boolean;
+  children: ReactNode;
+}
+
+export function ControlButtonImpl(props: IControlButtonProps): JSX.Element {
+  const { children, onClick, disabled } = props;
+  return (
+    <ControlButton onClick={onClick} disabled={disabled}>
+      {children}
+    </ControlButton>
+  );
+}
+
+const ControlButton = styled.button`
   display: block;
   margin-top: 12px;
   margin-left: 20px;
