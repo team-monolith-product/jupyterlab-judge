@@ -2,11 +2,15 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
-## 1.26.1rc0
+## 1.26.1rc1
 
 No merged PRs
 
 <!-- <END NEW CHANGELOG ENTRY> -->
+
+## 1.26.1rc0
+
+No merged PRs
 
 ## 1.26.0
 
