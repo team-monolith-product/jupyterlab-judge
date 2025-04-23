@@ -62,11 +62,13 @@ export type ISubmissionListFactory = (
   options: SubmissionList.IOptions
 ) => JSX.Element;
 
-export const IControlButtonFactory = new Token<ISubmissionListFactory | null>(
+export const IControlButtonFactory = new Token<IControlButtonFactory>(
   `${PLUGIN_ID}:IControlButtonFactory`
 );
 
-export type IControlButtonFactory = (props: IControlButtonProps) => JSX.Element;
+export type IControlButtonFactory =
+  | ((props: IControlButtonProps) => JSX.Element)
+  | null;
 
 export const IJudgeSignal = new Token<IJudgeSignal>(
   `${PLUGIN_ID}:IJudgeSignal`
