@@ -2,6 +2,22 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 1.27.0
+
+([Full Changelog](https://github.com/team-monolith-product/jupyterlab-judge/compare/v1.26.1rc1...1fce051261ee4615ac99b695937c19d6acf51393))
+
+### Merged PRs
+
+- Add `controlButtonFactory` Token [#61](https://github.com/team-monolith-product/jupyterlab-judge/pull/61) ([@paulkim3151](https://github.com/paulkim3151))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/team-monolith-product/jupyterlab-judge/graphs/contributors?from=2025-04-22&to=2025-04-24&type=c))
+
+[@paulkim3151](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3Apaulkim3151+updated%3A2025-04-22..2025-04-24&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 1.26.0
 
 ([Full Changelog](https://github.com/team-monolith-product/jupyterlab-judge/compare/v1.25.0...3f2ecaa9ab61746a3e0ed92d8eac60a7fec05819))
@@ -15,8 +31,6 @@
 ([GitHub contributors page for this release](https://github.com/team-monolith-product/jupyterlab-judge/graphs/contributors?from=2024-04-27&to=2024-06-07&type=c))
 
 [@paulkim3151](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3Apaulkim3151+updated%3A2024-04-27..2024-06-07&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 1.25.0
 
