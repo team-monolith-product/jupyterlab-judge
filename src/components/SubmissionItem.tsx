@@ -12,7 +12,14 @@ export function SubmissionItem(props: {
 }): JSX.Element {
   const trans = useContext(transContext);
 
-  const createdAtText = Time.formatHuman(new Date(props.submission.createdAt));
+  // "formatHuman" has a bug that it does not handle future dates correctly.
+  // https://github.com/jupyterlab/jupyterlab/issues/16254
+  const createdDate = new Date(props.submission.createdAt);
+  const now = new Date();
+  const createdAtText =
+    createdDate.getTime() > now.getTime()
+      ? Time.formatHuman(now) // If the date is in the future, use current time
+      : Time.formatHuman(createdDate);
   const createdAtTitle = Time.format(new Date(props.submission.createdAt));
 
   return (
