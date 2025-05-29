@@ -2,6 +2,22 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 1.27.1
+
+([Full Changelog](https://github.com/team-monolith-product/jupyterlab-judge/compare/v1.27.0...e7585edbefe9316b88857113f8a5be4044fdb615))
+
+### Bugs fixed
+
+- Handle future dates correctly in createdAtText formatting [#62](https://github.com/team-monolith-product/jupyterlab-judge/pull/62) ([@paulkim3151](https://github.com/paulkim3151))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/team-monolith-product/jupyterlab-judge/graphs/contributors?from=2025-04-24&to=2025-05-29&type=c))
+
+[@paulkim3151](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3Apaulkim3151+updated%3A2025-04-24..2025-05-29&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 1.27.0
 
 ([Full Changelog](https://github.com/team-monolith-product/jupyterlab-judge/compare/v1.26.1rc1...1fce051261ee4615ac99b695937c19d6acf51393))
@@ -15,8 +31,6 @@
 ([GitHub contributors page for this release](https://github.com/team-monolith-product/jupyterlab-judge/graphs/contributors?from=2025-04-22&to=2025-04-24&type=c))
 
 [@paulkim3151](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3Apaulkim3151+updated%3A2025-04-22..2025-04-24&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 1.26.0
 
