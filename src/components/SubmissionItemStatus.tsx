@@ -23,7 +23,7 @@ export function SubmissionItemStatus(props: {
       title = `(${props.acceptedCount}/${props.totalCount})`;
       break;
     case 'RE':
-      content = `🚫 ${trans.__('Error')}`;
+      content = `🚫 ${trans.__('Coding Error')}`;
       break;
     case 'TLE':
       content = `🕓 ${trans.__('Time Limit')}`;

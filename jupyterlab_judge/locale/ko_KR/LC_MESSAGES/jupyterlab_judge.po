@@ -84,8 +84,8 @@ msgid "Wrong"
 msgstr "틀렸습니다."
 
 #: src/components/SubmissionItemStatus.tsx:26
-msgid "Error"
-msgstr "내 코드 오류"
+msgid "Coding Error"
+msgstr "코딩 오류"
 
 #: src/components/SubmissionItemStatus.tsx:29
 msgid "Time Limit"
