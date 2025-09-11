@@ -470,6 +470,16 @@ export class JudgePanel extends BoxPanel {
       };
     }
 
+    // restrict the size of outputs to 1MB
+    const outputs = results.map(result => result.output);
+    const jsonString = JSON.stringify(outputs);
+    const sizeInBytes = new Blob([jsonString]).size;
+    if (sizeInBytes > 1024 * 1024) {
+      throw new JudgeError(
+        this._trans.__('Output is too large to be submitted.')
+      );
+    }
+
     const validateResult = await this.model.validate(
       results.map(result => result.output)
     );
