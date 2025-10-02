@@ -3,7 +3,7 @@ import { JudgeOutputArea } from './JudgeOutputArea';
 import { LabIcon, runIcon, stopIcon } from '@jupyterlab/ui-components';
 import { TRANSLATOR_DOMAIN } from '../constants';
 import { JudgePanel } from './JudgePanel';
-import cornerUpLeftDoubleFillSvg from '../icons/corner-up-left-double-fill.svg';
+import cornerUpLeftDoubleFillSvg from '../../style/icons/corner-up-left-double-fill.svg';
 
 const resetIcon = new LabIcon({
   name: 'judge-icon:reset',
