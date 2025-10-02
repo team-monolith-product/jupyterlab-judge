@@ -38,7 +38,7 @@ import { JudgeSubmissionArea } from './JudgeSubmissionArea';
 import { SubmissionList } from '../components/SubmissionList';
 import { IKernelConnection } from '@jupyterlab/services/lib/kernel/kernel';
 import { JudgeSignal } from '../tokens';
-import { customJudgeColorSvg } from '@team-monolith/cds';
+import { textEditorIcon } from '@jupyterlab/ui-components';
 import { IJudgeProblemPanel, JudgeProblemPanel } from './JudgeProblemPanel';
 import { IControlButtonProps } from '../components';
 
@@ -48,11 +48,6 @@ function bytesToBase64(bytes: Uint8Array) {
   );
   return btoa(binString);
 }
-
-const JudgeColorLabIcon = new LabIcon({
-  name: 'jupyterlab-judge:problem-icon',
-  svgstr: customJudgeColorSvg
-});
 
 type IRunResult =
   | {
@@ -119,6 +114,7 @@ export namespace JudgePanel {
     submitted: Signal<any, JudgeSignal.ISubmissionArgs>;
     executed: Signal<any, JudgeSignal.IExecutionArgs>;
 
+    panelTitleIcon?: LabIcon;
     judgeSubmissionAreaFactory: (
       options: JudgeSubmissionArea.IOptions
     ) => Widget;
@@ -195,6 +191,8 @@ export class JudgePanel extends BoxPanel {
     splitPanel.addWidget(rightPanel);
 
     this.addWidget(splitPanel);
+
+    this.title.icon = options.panelTitleIcon ?? textEditorIcon;
 
     if (!this.session.isReady) {
       void this.session.initialize();
@@ -759,7 +757,6 @@ export class JudgeDocumentFactory extends ABCWidgetFactory<
       controlButtonFactory: this._controlButtonFactory
     });
 
-    judgePanel.title.icon = JudgeColorLabIcon;
     const widget = new JudgeDocument({
       content: judgePanel,
       context,
