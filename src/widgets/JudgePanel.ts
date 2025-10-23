@@ -469,7 +469,7 @@ export class JudgePanel extends BoxPanel {
     }
 
     const validateResult = await this.model.validate(
-      results.map(result => result.output)
+      results.map(result => (result.status === 'OK' ? result.output : null))
     );
 
     if (validateResult === null) {
