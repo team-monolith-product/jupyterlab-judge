@@ -2,6 +2,22 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 1.28.1
+
+([Full Changelog](https://github.com/team-monolith-product/jupyterlab-judge/compare/v1.28.0...542b499ad4d290bca7a96b6cc4f36fde0457dc1d))
+
+### Merged PRs
+
+- Pass null to validate for non-ok status [#66](https://github.com/team-monolith-product/jupyterlab-judge/pull/66) ([@a3626a](https://github.com/a3626a))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/team-monolith-product/jupyterlab-judge/graphs/contributors?from=2025-10-02&to=2025-10-23&type=c))
+
+[@a3626a](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3Aa3626a+updated%3A2025-10-02..2025-10-23&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 1.28.0
 
 ([Full Changelog](https://github.com/team-monolith-product/jupyterlab-judge/compare/v1.28.0rc1...74c698462b6fc6d6939a3eeb7c3c4228979e4ff8))
@@ -15,8 +31,6 @@
 ([GitHub contributors page for this release](https://github.com/team-monolith-product/jupyterlab-judge/graphs/contributors?from=2025-10-02&to=2025-10-02&type=c))
 
 [@paulkim3151](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3Apaulkim3151+updated%3A2025-10-02..2025-10-02&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 1.27.2
 
