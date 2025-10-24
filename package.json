@@ -31,6 +31,7 @@
     },
     "scripts": {
         "build": "jlpm build:lib && jlpm build:labextension:dev",
+        "build:check": "tsc --noEmit",
         "build:labextension": "jupyter labextension build .",
         "build:labextension:dev": "jupyter labextension build --development True .",
         "build:lib": "tsc --sourceMap",
