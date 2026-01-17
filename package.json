@@ -124,7 +124,7 @@
         "@jupyterlab/ui-components": "~4.1.8"
     },
     "devDependencies": {
-        "@jupyterlab/builder": "~4.1.8",
+        "@jupyterlab/builder": "^4.5.2",
         "@jupyterlab/testutils": "~4.1.8",
         "@types/jest": "^29.2.0",
         "@types/json-schema": "^7.0.11",
