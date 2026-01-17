@@ -2,11 +2,29 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 1.29.0
+
+([Full Changelog](https://github.com/team-monolith-product/jupyterlab-judge/compare/v1.28.10...6ab154dcc6e8f2bfdb3fccf47452a322f6ef8000))
+
+### Merged PRs
+
+- fix: update builder [#69](https://github.com/team-monolith-product/jupyterlab-judge/pull/69) ([@a3626a](https://github.com/a3626a))
+- Upgrade to 4.1.8 [#68](https://github.com/team-monolith-product/jupyterlab-judge/pull/68) ([@a3626a](https://github.com/a3626a))
+
+### Contributors to this release
+
+The following people contributed discussions, new ideas, code and documentation contributions, and review.
+See [our definition of contributors](https://github-activity.readthedocs.io/en/latest/#how-does-this-tool-define-contributions-in-the-reports).
+
+([GitHub contributors page for this release](https://github.com/team-monolith-product/jupyterlab-judge/graphs/contributors?from=2025-12-03&to=2026-01-17&type=c))
+
+@a3626a ([activity](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3Aa3626a+updated%3A2025-12-03..2026-01-17&type=Issues))
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 1.28.10
 
 No merged PRs
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 1.28.9
 
