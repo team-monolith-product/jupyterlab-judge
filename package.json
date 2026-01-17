@@ -80,8 +80,8 @@
         "@jupyterlab/services": "~7.1.8",
         "@jupyterlab/settingregistry": "~4.1.8",
         "@jupyterlab/translation": "~4.1.8",
+        "@tanstack/react-query": "^4.36.1",
         "@types/codemirror": "~5.60.5",
-        "react-query": "~3.39.0",
         "snakecase-keys": "^4.0.2"
     },
     "resolutions": {
