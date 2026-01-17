@@ -85,6 +85,22 @@ the frontend extension, check the frontend extension is installed:
 jupyter labextension list
 ```
 
+## Upgrading JupyterLab Version
+
+### Referencing Official Extension Template
+
+1. Check https://github.com/jupyterlab/extension-template for target version branch/tag
+2. Compare package.json (devDependencies, jupyterlab settings, build tools)
+
+### Resolving Dependency Version Mismatch
+
+Transitive dependencies may conflict with JupyterLab's pinned versions.
+
+1. Fetch yarn.lock: `https://raw.githubusercontent.com/jupyterlab/jupyterlab/v{VERSION}/yarn.lock`
+2. Find problematic package versions in the lock file
+3. Add `resolutions` to package.json with exact versions
+4. Clean install and build test
+
 ## Contributing
 
 ### Development Environment
