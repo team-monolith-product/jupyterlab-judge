@@ -1,25 +1,13 @@
 import { expect, test } from './fixture';
-import { createJudgeFile } from './util';
-
-const COMMAND_OPEN = 'jupyterlab-judge:plugin:open';
+import { openJudgeFile, submitWithKernelSelection } from './util';
 
 test.describe('Judge Submission', () => {
   test('should have submit button', async ({ page, tmpPath }) => {
     const filePath = `${tmpPath}/덧셈.judge`;
-
-    await createJudgeFile(page, filePath, {
+    await openJudgeFile(page, filePath, {
       problem_id: '1',
       code: 'a, b = map(int, input().split())\nprint(a + b)'
     });
-
-    await page.evaluate(
-      async ({ commandId, path }) => {
-        await (window as any).jupyterapp.commands.execute(commandId, { path });
-      },
-      { commandId: COMMAND_OPEN, path: filePath }
-    );
-
-    await expect(page.locator('.jp-JudgePanel')).toBeVisible();
 
     const submitButton = page.locator('button', { hasText: /Submit|제출/ });
     await expect(submitButton).toBeVisible();
@@ -27,107 +15,39 @@ test.describe('Judge Submission', () => {
 
   test('should show progress during submission', async ({ page, tmpPath }) => {
     const filePath = `${tmpPath}/덧셈.judge`;
-
-    await createJudgeFile(page, filePath, {
+    await openJudgeFile(page, filePath, {
       problem_id: '1',
       code: 'a, b = map(int, input().split())\nprint(a + b)'
     });
 
-    await page.evaluate(
-      async ({ commandId, path }) => {
-        await (window as any).jupyterapp.commands.execute(commandId, { path });
-      },
-      { commandId: COMMAND_OPEN, path: filePath }
-    );
+    await submitWithKernelSelection(page);
 
-    await expect(page.locator('.jp-JudgePanel')).toBeVisible();
-
-    // Click submit button (first time triggers kernel selection)
     const submitButton = page.locator('button', { hasText: /Submit|제출/ });
-    await submitButton.click();
-
-    // Handle kernel selection dialog
-    const selectKernelButton = page.locator('.jp-Dialog button', {
-      hasText: 'Select'
-    });
-    await selectKernelButton.waitFor({ state: 'visible' });
-    await selectKernelButton.click();
-
-    // Click submit again after kernel selection
-    await submitButton.click();
-
-    // During submission, button should be disabled
     await expect(submitButton).toBeDisabled();
   });
 
   test('should show AC for correct answer', async ({ page, tmpPath }) => {
     const filePath = `${tmpPath}/덧셈.judge`;
-
-    await createJudgeFile(page, filePath, {
+    await openJudgeFile(page, filePath, {
       problem_id: '1',
       code: 'a, b = map(int, input().split())\nprint(a + b)'
     });
 
-    await page.evaluate(
-      async ({ commandId, path }) => {
-        await (window as any).jupyterapp.commands.execute(commandId, { path });
-      },
-      { commandId: COMMAND_OPEN, path: filePath }
-    );
+    await submitWithKernelSelection(page);
 
-    await expect(page.locator('.jp-JudgePanel')).toBeVisible();
-
-    // Click submit button (first time triggers kernel selection)
-    const submitButton = page.locator('button', { hasText: /Submit|제출/ });
-    await submitButton.click();
-
-    // Handle kernel selection dialog
-    const selectKernelButton = page.locator('.jp-Dialog button', {
-      hasText: 'Select'
-    });
-    await selectKernelButton.waitFor({ state: 'visible' });
-    await selectKernelButton.click();
-
-    // Click submit again after kernel selection
-    await submitButton.click();
-
-    // Wait for submission to complete - check for Accepted status
     const submissionArea = page.locator('.jp-JudgePanel-submissionPanel');
     await expect(submissionArea).toContainText(/Accepted|👍/, { timeout: 30000 });
   });
 
   test('should show WA for wrong answer', async ({ page, tmpPath }) => {
     const filePath = `${tmpPath}/덧셈.judge`;
-
-    await createJudgeFile(page, filePath, {
+    await openJudgeFile(page, filePath, {
       problem_id: '1',
-      code: 'a, b = map(int, input().split())\nprint(a - b)' // Wrong: subtraction
+      code: 'a, b = map(int, input().split())\nprint(a - b)'
     });
 
-    await page.evaluate(
-      async ({ commandId, path }) => {
-        await (window as any).jupyterapp.commands.execute(commandId, { path });
-      },
-      { commandId: COMMAND_OPEN, path: filePath }
-    );
+    await submitWithKernelSelection(page);
 
-    await expect(page.locator('.jp-JudgePanel')).toBeVisible();
-
-    // Click submit button (first time triggers kernel selection)
-    const submitButton = page.locator('button', { hasText: /Submit|제출/ });
-    await submitButton.click();
-
-    // Handle kernel selection dialog
-    const selectKernelButton = page.locator('.jp-Dialog button', {
-      hasText: 'Select'
-    });
-    await selectKernelButton.waitFor({ state: 'visible' });
-    await selectKernelButton.click();
-
-    // Click submit again after kernel selection
-    await submitButton.click();
-
-    // Wait for submission to complete - check for Wrong status
     const submissionArea = page.locator('.jp-JudgePanel-submissionPanel');
     await expect(submissionArea).toContainText(/Wrong|❌/, { timeout: 30000 });
   });
@@ -137,40 +57,16 @@ test.describe('Judge Submission', () => {
     tmpPath
   }) => {
     const filePath = `${tmpPath}/덧셈.judge`;
-
-    await createJudgeFile(page, filePath, {
+    await openJudgeFile(page, filePath, {
       problem_id: '1',
       code: 'a, b = map(int, input().split())\nprint(a + b)'
     });
 
-    await page.evaluate(
-      async ({ commandId, path }) => {
-        await (window as any).jupyterapp.commands.execute(commandId, { path });
-      },
-      { commandId: COMMAND_OPEN, path: filePath }
-    );
+    await submitWithKernelSelection(page);
 
-    await expect(page.locator('.jp-JudgePanel')).toBeVisible();
-
-    // Click submit button (first time triggers kernel selection)
-    const submitButton = page.locator('button', { hasText: /Submit|제출/ });
-    await submitButton.click();
-
-    // Handle kernel selection dialog
-    const selectKernelButton = page.locator('.jp-Dialog button', {
-      hasText: 'Select'
-    });
-    await selectKernelButton.waitFor({ state: 'visible' });
-    await selectKernelButton.click();
-
-    // Click submit again after kernel selection
-    await submitButton.click();
-
-    // Wait for submission to complete
     const submissionArea = page.locator('.jp-JudgePanel-submissionPanel');
     await expect(submissionArea).toContainText(/Accepted|👍/, { timeout: 30000 });
 
-    // Verify submission area shows history (list item should exist)
     const historyItem = page.locator('.jp-JudgePanel-submissionPanel li');
     await expect(historyItem.first()).toBeVisible();
   });

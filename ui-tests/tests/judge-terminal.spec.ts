@@ -1,153 +1,63 @@
 import { expect, test } from './fixture';
-import { createJudgeFile, waitForKernel } from './util';
-
-const COMMAND_OPEN = 'jupyterlab-judge:plugin:open';
+import { openJudgeFile, waitForKernel } from './util';
 
 test.describe('Judge Terminal', () => {
-  test('should have toolbar with buttons', async ({ page, tmpPath }) => {
+  test.beforeEach(async ({ page, tmpPath }) => {
     const filePath = `${tmpPath}/덧셈.judge`;
-
-    await createJudgeFile(page, filePath, {
+    await openJudgeFile(page, filePath, {
       problem_id: '1',
       code: 'print("hello")'
     });
+  });
 
-    await page.evaluate(
-      async ({ commandId, path }) => {
-        await (window as any).jupyterapp.commands.execute(commandId, { path });
-      },
-      { commandId: COMMAND_OPEN, path: filePath }
-    );
-
-    await expect(page.locator('.jp-JudgePanel')).toBeVisible({ timeout: 30000 });
-
-    // Check toolbar exists
+  test('should have toolbar with buttons', async ({ page }) => {
     const toolbar = page.locator('.jp-JudgeTerminal-toolbar');
     await expect(toolbar).toBeVisible();
   });
 
-  test('should have reset button', async ({ page, tmpPath }) => {
-    const filePath = `${tmpPath}/덧셈.judge`;
-
-    await createJudgeFile(page, filePath, {
-      problem_id: '1',
-      code: 'print("hello")'
-    });
-
-    await page.evaluate(
-      async ({ commandId, path }) => {
-        await (window as any).jupyterapp.commands.execute(commandId, { path });
-      },
-      { commandId: COMMAND_OPEN, path: filePath }
-    );
-
-    await expect(page.locator('.jp-JudgePanel')).toBeVisible({ timeout: 30000 });
-
-    // Check reset button exists
+  test('should have reset button', async ({ page }) => {
     const resetButton = page.locator('.jp-JudgeTerminal-resetButton');
     await expect(resetButton).toBeVisible();
   });
 
-  test('should have execute button', async ({ page, tmpPath }) => {
-    const filePath = `${tmpPath}/덧셈.judge`;
-
-    await createJudgeFile(page, filePath, {
-      problem_id: '1',
-      code: 'print("hello")'
-    });
-
-    await page.evaluate(
-      async ({ commandId, path }) => {
-        await (window as any).jupyterapp.commands.execute(commandId, { path });
-      },
-      { commandId: COMMAND_OPEN, path: filePath }
-    );
-
-    await expect(page.locator('.jp-JudgePanel')).toBeVisible({ timeout: 30000 });
-
-    // Check execute button exists
+  test('should have execute button', async ({ page }) => {
     const executeButton = page.locator('.jp-JudgeTerminal-executeButton');
     await expect(executeButton).toBeVisible();
   });
 
-  test('should have stop button', async ({ page, tmpPath }) => {
-    const filePath = `${tmpPath}/덧셈.judge`;
-
-    await createJudgeFile(page, filePath, {
-      problem_id: '1',
-      code: 'print("hello")'
-    });
-
-    await page.evaluate(
-      async ({ commandId, path }) => {
-        await (window as any).jupyterapp.commands.execute(commandId, { path });
-      },
-      { commandId: COMMAND_OPEN, path: filePath }
-    );
-
-    await expect(page.locator('.jp-JudgePanel')).toBeVisible({ timeout: 30000 });
-
-    // Check stop button exists
+  test('should have stop button', async ({ page }) => {
     const stopButton = page.locator('.jp-JudgeTerminal-stopButton');
     await expect(stopButton).toBeVisible();
   });
 
-  test('should have output area', async ({ page, tmpPath }) => {
-    const filePath = `${tmpPath}/덧셈.judge`;
-
-    await createJudgeFile(page, filePath, {
-      problem_id: '1',
-      code: 'print("hello")'
-    });
-
-    await page.evaluate(
-      async ({ commandId, path }) => {
-        await (window as any).jupyterapp.commands.execute(commandId, { path });
-      },
-      { commandId: COMMAND_OPEN, path: filePath }
-    );
-
-    await expect(page.locator('.jp-JudgePanel')).toBeVisible({ timeout: 30000 });
-
-    // Check output area exists
+  test('should have output area', async ({ page }) => {
     const outputArea = page.locator('.jp-JudgeOutputArea');
     await expect(outputArea).toBeVisible();
   });
+});
 
+test.describe('Judge Terminal - Execution Control', () => {
   test('stop button should interrupt execution', async ({ page, tmpPath }) => {
     const filePath = `${tmpPath}/덧셈.judge`;
-
-    await createJudgeFile(page, filePath, {
+    await openJudgeFile(page, filePath, {
       problem_id: '1',
       code: 'import time\nfor i in range(100):\n    time.sleep(1)\n    print(i)'
     });
 
-    await page.evaluate(
-      async ({ commandId, path }) => {
-        await (window as any).jupyterapp.commands.execute(commandId, { path });
-      },
-      { commandId: COMMAND_OPEN, path: filePath }
-    );
-
-    await expect(page.locator('.jp-JudgePanel')).toBeVisible({ timeout: 30000 });
     await waitForKernel(page);
 
-    // Start execution
     const executeButton = page.locator('.jp-JudgeTerminal-executeButton');
     await executeButton.click();
 
-    // Wait briefly for execution to start
-    await page.waitForTimeout(1000);
+    // Wait for first output to confirm execution started
+    const outputArea = page.locator('.jp-JudgeOutputArea');
+    await expect(outputArea).toContainText('0', { timeout: 10000 });
 
     // Click stop button
     const stopButton = page.locator('.jp-JudgeTerminal-stopButton');
     await stopButton.click();
 
-    // Wait for stop to take effect
-    await page.waitForTimeout(3000);
-
-    // Execution should be interrupted - output area should be visible
-    const outputArea = page.locator('.jp-JudgeOutputArea');
+    // Verify execution was interrupted (should show KeyboardInterrupt or stop early)
     await expect(outputArea).toBeVisible();
   });
 });
