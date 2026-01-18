@@ -118,7 +118,7 @@ test.describe('Judge Integration', () => {
       { commandId: COMMAND_OPEN, path: filePath1 }
     );
 
-    await expect(page.locator('.jp-JudgePanel')).toBeVisible({ timeout: 30000 });
+    await expect(page.locator('.jp-JudgePanel')).toBeVisible();
 
     // Verify problem 1 content
     const problemPanel = page.locator('.jp-JudgePanel-problem');
@@ -132,10 +132,8 @@ test.describe('Judge Integration', () => {
       { commandId: COMMAND_OPEN, path: filePath2 }
     );
 
-    // Wait for second panel (will replace or create new tab)
-    await page.waitForTimeout(2000);
-
-    // At least one panel should be visible
-    await expect(page.locator('.jp-JudgePanel').first()).toBeVisible();
+    // Verify second file's code is visible in active panel
+    const editor = page.locator('.jp-JudgePanel-editor:visible');
+    await expect(editor).toContainText('print("*")');
   });
 });
