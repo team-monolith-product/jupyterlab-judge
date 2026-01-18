@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { UseSignal } from '@jupyterlab/apputils';
 import React, { useContext } from 'react';
-import { useQuery, useQueryClient } from 'react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { JudgeModel } from '../model';
 import { ProblemProvider } from '../problemProvider/problemProvider';
 import { factoryContext, transContext } from '../widgets/JudgeSubmissionArea';

@@ -5,7 +5,7 @@ import {
   TranslationBundle
 } from '@jupyterlab/translation';
 import React from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { SubmissionArea } from '../components/SubmissionArea';
 import {
   SubmissionList,
