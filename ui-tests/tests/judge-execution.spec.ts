@@ -1,4 +1,4 @@
-import { expect, test } from '@jupyterlab/galata';
+import { expect, test } from './fixture';
 import { createJudgeFile, waitForKernel } from './util';
 
 const COMMAND_OPEN = 'jupyterlab-judge:plugin:open';
