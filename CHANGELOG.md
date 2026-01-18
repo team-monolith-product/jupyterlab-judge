@@ -2,6 +2,25 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 1.29.1
+
+([Full Changelog](https://github.com/team-monolith-product/jupyterlab-judge/compare/v1.29.0...72d11ed74ec4f5448ad857edc14a9fe22193e4a1))
+
+### Merged PRs
+
+- feat: upgrade react-query from v3 to @tanstack/react-query v4 [#70](https://github.com/team-monolith-product/jupyterlab-judge/pull/70) ([@a3626a](https://github.com/a3626a), [@claude](https://github.com/claude))
+
+### Contributors to this release
+
+The following people contributed discussions, new ideas, code and documentation contributions, and review.
+See [our definition of contributors](https://github-activity.readthedocs.io/en/latest/#how-does-this-tool-define-contributions-in-the-reports).
+
+([GitHub contributors page for this release](https://github.com/team-monolith-product/jupyterlab-judge/graphs/contributors?from=2026-01-17&to=2026-01-18&type=c))
+
+@a3626a ([activity](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3Aa3626a+updated%3A2026-01-17..2026-01-18&type=Issues)) | @claude ([activity](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3Aclaude+updated%3A2026-01-17..2026-01-18&type=Issues))
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 1.29.0
 
 ([Full Changelog](https://github.com/team-monolith-product/jupyterlab-judge/compare/v1.28.10...6ab154dcc6e8f2bfdb3fccf47452a322f6ef8000))
@@ -19,8 +38,6 @@ See [our definition of contributors](https://github-activity.readthedocs.io/en/l
 ([GitHub contributors page for this release](https://github.com/team-monolith-product/jupyterlab-judge/graphs/contributors?from=2025-12-03&to=2026-01-17&type=c))
 
 @a3626a ([activity](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3Aa3626a+updated%3A2025-12-03..2026-01-17&type=Issues))
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 1.28.10
 
