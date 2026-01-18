@@ -14,8 +14,6 @@ test.describe('Judge Editor', () => {
       code: 'print("initial code")'
     });
 
-    await page.goto();
-
     await page.evaluate(
       async ({ commandId, path }) => {
         await (window as any).jupyterapp.commands.execute(commandId, { path });
@@ -42,8 +40,6 @@ test.describe('Judge Editor', () => {
       code: 'print("initial code")'
     });
 
-    await page.goto();
-
     await page.evaluate(
       async ({ commandId, path }) => {
         await (window as any).jupyterapp.commands.execute(commandId, { path });
@@ -65,8 +61,6 @@ test.describe('Judge Editor', () => {
       problem_id: '1',
       code: 'print("initial code")'
     });
-
-    await page.goto();
 
     await page.evaluate(
       async ({ commandId, path }) => {
@@ -108,8 +102,6 @@ test.describe('Judge Editor', () => {
       problem_id: '1',
       code: 'print("initial code")'
     });
-
-    await page.goto();
 
     await page.evaluate(
       async ({ commandId, path }) => {
@@ -164,8 +156,6 @@ test.describe('Judge Editor', () => {
       problem_id: '1',
       code: 'print("initial code")'
     });
-
-    await page.goto();
 
     await page.evaluate(
       async ({ commandId, path }) => {

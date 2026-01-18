@@ -12,8 +12,6 @@ test.describe('Judge Submission', () => {
       code: 'a, b = map(int, input().split())\nprint(a + b)'
     });
 
-    await page.goto();
-
     await page.evaluate(
       async ({ commandId, path }) => {
         await (window as any).jupyterapp.commands.execute(commandId, { path });
@@ -34,8 +32,6 @@ test.describe('Judge Submission', () => {
       problem_id: '1',
       code: 'a, b = map(int, input().split())\nprint(a + b)'
     });
-
-    await page.goto();
 
     await page.evaluate(
       async ({ commandId, path }) => {
@@ -72,8 +68,6 @@ test.describe('Judge Submission', () => {
       code: 'a, b = map(int, input().split())\nprint(a + b)'
     });
 
-    await page.goto();
-
     await page.evaluate(
       async ({ commandId, path }) => {
         await (window as any).jupyterapp.commands.execute(commandId, { path });
@@ -109,8 +103,6 @@ test.describe('Judge Submission', () => {
       problem_id: '1',
       code: 'a, b = map(int, input().split())\nprint(a - b)' // Wrong: subtraction
     });
-
-    await page.goto();
 
     await page.evaluate(
       async ({ commandId, path }) => {
@@ -150,8 +142,6 @@ test.describe('Judge Submission', () => {
       problem_id: '1',
       code: 'a, b = map(int, input().split())\nprint(a + b)'
     });
-
-    await page.goto();
 
     await page.evaluate(
       async ({ commandId, path }) => {

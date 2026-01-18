@@ -12,8 +12,6 @@ test.describe('Judge Panel Structure', () => {
       code: 'print("hello")'
     });
 
-    await page.goto();
-
     await page.evaluate(
       async ({ commandId, path }) => {
         await (window as any).jupyterapp.commands.execute(commandId, { path });
@@ -31,8 +29,6 @@ test.describe('Judge Panel Structure', () => {
       problem_id: '1',
       code: 'print("hello")'
     });
-
-    await page.goto();
 
     await page.evaluate(
       async ({ commandId, path }) => {
@@ -57,8 +53,6 @@ test.describe('Judge Panel Structure', () => {
       code: 'print("hello")'
     });
 
-    await page.goto();
-
     await page.evaluate(
       async ({ commandId, path }) => {
         await (window as any).jupyterapp.commands.execute(commandId, { path });
@@ -79,8 +73,6 @@ test.describe('Judge Panel Structure', () => {
       problem_id: '1',
       code: 'print("hello")'
     });
-
-    await page.goto();
 
     await page.evaluate(
       async ({ commandId, path }) => {
@@ -103,8 +95,6 @@ test.describe('Judge Panel Structure', () => {
       code: 'print("hello")'
     });
 
-    await page.goto();
-
     await page.evaluate(
       async ({ commandId, path }) => {
         await (window as any).jupyterapp.commands.execute(commandId, { path });
@@ -126,8 +116,6 @@ test.describe('Judge Panel Structure', () => {
       code: 'print("hello")'
     });
 
-    await page.goto();
-
     await page.evaluate(
       async ({ commandId, path }) => {
         await (window as any).jupyterapp.commands.execute(commandId, { path });
@@ -148,8 +136,6 @@ test.describe('Judge Panel Structure', () => {
       problem_id: '1',
       code: 'print("hello")'
     });
-
-    await page.goto();
 
     await page.evaluate(
       async ({ commandId, path }) => {

@@ -12,8 +12,6 @@ test.describe('Judge Terminal', () => {
       code: 'print("hello")'
     });
 
-    await page.goto();
-
     await page.evaluate(
       async ({ commandId, path }) => {
         await (window as any).jupyterapp.commands.execute(commandId, { path });
@@ -35,8 +33,6 @@ test.describe('Judge Terminal', () => {
       problem_id: '1',
       code: 'print("hello")'
     });
-
-    await page.goto();
 
     await page.evaluate(
       async ({ commandId, path }) => {
@@ -60,8 +56,6 @@ test.describe('Judge Terminal', () => {
       code: 'print("hello")'
     });
 
-    await page.goto();
-
     await page.evaluate(
       async ({ commandId, path }) => {
         await (window as any).jupyterapp.commands.execute(commandId, { path });
@@ -83,8 +77,6 @@ test.describe('Judge Terminal', () => {
       problem_id: '1',
       code: 'print("hello")'
     });
-
-    await page.goto();
 
     await page.evaluate(
       async ({ commandId, path }) => {
@@ -108,8 +100,6 @@ test.describe('Judge Terminal', () => {
       code: 'print("hello")'
     });
 
-    await page.goto();
-
     await page.evaluate(
       async ({ commandId, path }) => {
         await (window as any).jupyterapp.commands.execute(commandId, { path });
@@ -131,8 +121,6 @@ test.describe('Judge Terminal', () => {
       problem_id: '1',
       code: 'import time\nfor i in range(100):\n    time.sleep(1)\n    print(i)'
     });
-
-    await page.goto();
 
     await page.evaluate(
       async ({ commandId, path }) => {

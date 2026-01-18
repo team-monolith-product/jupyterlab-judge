@@ -12,8 +12,6 @@ test.describe('Judge Integration', () => {
       code: 'a, b = map(int, input().split())\nprint(a + b)'
     });
 
-    await page.goto();
-
     // Step 1: Open the judge panel
     await page.evaluate(
       async ({ commandId, path }) => {
@@ -54,8 +52,6 @@ test.describe('Judge Integration', () => {
       problem_id: '1',
       code: 'print(undefined_variable)' // Code with error
     });
-
-    await page.goto();
 
     // Open panel
     await page.evaluate(
@@ -113,8 +109,6 @@ test.describe('Judge Integration', () => {
       problem_id: '1',
       code: 'print("*")'
     });
-
-    await page.goto();
 
     // Open first file
     await page.evaluate(

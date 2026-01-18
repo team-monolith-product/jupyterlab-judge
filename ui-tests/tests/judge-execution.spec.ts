@@ -12,8 +12,6 @@ test.describe('Judge Code Execution', () => {
       code: 'print("Hello Judge")'
     });
 
-    await page.goto();
-
     await page.evaluate(
       async ({ commandId, path }) => {
         await (window as any).jupyterapp.commands.execute(commandId, { path });
@@ -35,8 +33,6 @@ test.describe('Judge Code Execution', () => {
       problem_id: '1',
       code: 'print("Hello Judge")'
     });
-
-    await page.goto();
 
     await page.evaluate(
       async ({ commandId, path }) => {
@@ -67,8 +63,6 @@ test.describe('Judge Code Execution', () => {
       code: 'print("Hello Judge")'
     });
 
-    await page.goto();
-
     await page.evaluate(
       async ({ commandId, path }) => {
         await (window as any).jupyterapp.commands.execute(commandId, { path });
@@ -94,8 +88,6 @@ test.describe('Judge Code Execution', () => {
       code: 'raise ValueError("Test Error")'
     });
 
-    await page.goto();
-
     await page.evaluate(
       async ({ commandId, path }) => {
         await (window as any).jupyterapp.commands.execute(commandId, { path });
@@ -120,8 +112,6 @@ test.describe('Judge Code Execution', () => {
       problem_id: '1',
       code: 'import time; time.sleep(2); print("done")'
     });
-
-    await page.goto();
 
     await page.evaluate(
       async ({ commandId, path }) => {
@@ -150,8 +140,6 @@ test.describe('Judge Code Execution', () => {
       problem_id: '1',
       code: 'print("done")'
     });
-
-    await page.goto();
 
     await page.evaluate(
       async ({ commandId, path }) => {
