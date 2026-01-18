@@ -400,62 +400,68 @@ export class JudgePanel extends BoxPanel {
       return;
     }
 
+    // Wait for kernel to be ready by awaiting kernel.info (health check)
+    // This ensures the kernel can respond to requests
+    const KERNEL_INFO_TIMEOUT = 20000;
+    const timeoutSymbol = Symbol('timeout');
+
+    try {
+      await Promise.race([
+        kernel.info,
+        new Promise<never>((_, reject) =>
+          setTimeout(() => reject(timeoutSymbol), KERNEL_INFO_TIMEOUT)
+        )
+      ]);
+    } catch (e) {
+      // Timeout error: classify based on connection status
+      if (e === timeoutSymbol) {
+        if (kernel.connectionStatus === 'connecting') {
+          // Network problem: check reconnect attempts for detailed classification
+          const reconnectAttempt: number | undefined = (kernel as any)
+            ._reconnectAttempt;
+
+          if (reconnectAttempt === undefined) {
+            throw new JudgeKernelImplementationError(
+              this._trans.__(
+                'Kernel is still connecting. Please check your network.'
+              )
+            );
+          } else if (reconnectAttempt > 0) {
+            throw new JudgeKernelReconnectingFailedError(
+              this._trans.__(
+                'Kernel is still connecting. Please check your network.'
+              )
+            );
+          } else {
+            throw new JudgeKernelNotConnectedError(
+              this._trans.__(
+                'Kernel is still connecting. Please check your network.'
+              )
+            );
+          }
+        }
+        // Connected but not responding
+        throw new JudgeError(
+          this._trans.__('Kernel is not responding. Please try again.')
+        );
+      }
+
+      // kernel.info rejected (e.g., 'Kernel info reply errored')
+      if (typeof e === 'string') {
+        throw new JudgeError(
+          this._trans.__('Kernel returned an error. Please try again.')
+        );
+      }
+
+      // Unexpected error: rethrow
+      throw e;
+    }
+
     this.model.submissionStatus = {
       type: 'progress',
       runCount: 0,
       totalCount: testCases.length
     };
-
-    // Wait until kernelDisplayStatus is idle
-    // Check every second up to 20s
-    // Just uses busy loop, no signal
-    for (let i = 0; i < 20; i++) {
-      if (sessionContext.kernelDisplayStatus === 'idle') {
-        break;
-      }
-      await new Promise(resolve => setTimeout(resolve, 1000));
-    }
-
-    if (sessionContext.kernelDisplayStatus !== 'idle') {
-      // Many issues have been reported here
-      if (sessionContext.kernelDisplayStatus === 'connecting') {
-        // Network problem:
-        // Allow undefined reconnectAttempt, for custom or unexpected IKernelConnection implementation
-        const reconnectAttempt: number | undefined = (kernel as any)
-          ._reconnectAttempt;
-
-        if (reconnectAttempt === undefined) {
-          // This case must be reported
-          throw new JudgeKernelImplementationError(
-            this._trans.__(
-              'Kernel is still connecting. Please check your network.'
-            )
-          );
-        } else if (reconnectAttempt > 0) {
-          // This have some chance to be a server side problem
-          throw new JudgeKernelReconnectingFailedError(
-            this._trans.__(
-              'Kernel is still connecting. Please check your network.'
-            )
-          );
-        } else if (reconnectAttempt === 0) {
-          // This is likely a client side network problem
-          throw new JudgeKernelNotConnectedError(
-            this._trans.__(
-              'Kernel is still connecting. Please check your network.'
-            )
-          );
-        }
-      } else {
-        // Kernel problem
-        console.warn(
-          `Kernel is still ${sessionContext.kernelDisplayStatus} after 20s`
-        );
-        throw new JudgeError(
-          this._trans.__('Kernel is not responding. Please try again.')
-        );
-      }
-    }
 
     const results: IRunResult[] = [];
     for (const testCase of testCases) {
