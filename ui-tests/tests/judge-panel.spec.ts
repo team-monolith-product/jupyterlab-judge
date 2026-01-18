@@ -1,25 +1,16 @@
 import { expect, test } from '@jupyterlab/galata';
+import { createJudgeFile } from './util';
 
 const COMMAND_OPEN = 'jupyterlab-judge:plugin:open';
 
 test.describe('Judge Panel Structure', () => {
-  test('should open panel via open command', async ({
-    request,
-    page,
-    tmpPath
-  }) => {
-    const judgeContent = JSON.stringify({
-      problem_id: '1',
-      code: 'print("hello")',
-      judge_format: 1
-    });
-
+  test('should open panel via open command', async ({ page, tmpPath }) => {
     const filePath = `${tmpPath}/덧셈.judge`;
 
-    const response = await request.put(`/api/contents/${filePath}`, {
-      data: { type: 'file', format: 'text', content: judgeContent }
+    await createJudgeFile(page, filePath, {
+      problem_id: '1',
+      code: 'print("hello")'
     });
-    expect(response.ok()).toBeTruthy();
 
     await page.goto();
 
@@ -33,19 +24,13 @@ test.describe('Judge Panel Structure', () => {
     await expect(page.locator('.jp-JudgePanel')).toBeVisible({ timeout: 30000 });
   });
 
-  test('should have three-panel layout', async ({ request, page, tmpPath }) => {
-    const judgeContent = JSON.stringify({
-      problem_id: '1',
-      code: 'print("hello")',
-      judge_format: 1
-    });
-
+  test('should have three-panel layout', async ({ page, tmpPath }) => {
     const filePath = `${tmpPath}/덧셈.judge`;
 
-    const response = await request.put(`/api/contents/${filePath}`, {
-      data: { type: 'file', format: 'text', content: judgeContent }
+    await createJudgeFile(page, filePath, {
+      problem_id: '1',
+      code: 'print("hello")'
     });
-    expect(response.ok()).toBeTruthy();
 
     await page.goto();
 
@@ -64,19 +49,13 @@ test.describe('Judge Panel Structure', () => {
     await expect(page.locator('.jp-JudgePanel-rightPanel')).toBeVisible();
   });
 
-  test('should display problem panel', async ({ request, page, tmpPath }) => {
-    const judgeContent = JSON.stringify({
-      problem_id: '1',
-      code: 'print("hello")',
-      judge_format: 1
-    });
-
+  test('should display problem panel', async ({ page, tmpPath }) => {
     const filePath = `${tmpPath}/덧셈.judge`;
 
-    const response = await request.put(`/api/contents/${filePath}`, {
-      data: { type: 'file', format: 'text', content: judgeContent }
+    await createJudgeFile(page, filePath, {
+      problem_id: '1',
+      code: 'print("hello")'
     });
-    expect(response.ok()).toBeTruthy();
 
     await page.goto();
 
@@ -93,19 +72,13 @@ test.describe('Judge Panel Structure', () => {
     await expect(problemPanel).toBeVisible();
   });
 
-  test('should display code editor', async ({ request, page, tmpPath }) => {
-    const judgeContent = JSON.stringify({
-      problem_id: '1',
-      code: 'print("hello")',
-      judge_format: 1
-    });
-
+  test('should display code editor', async ({ page, tmpPath }) => {
     const filePath = `${tmpPath}/덧셈.judge`;
 
-    const response = await request.put(`/api/contents/${filePath}`, {
-      data: { type: 'file', format: 'text', content: judgeContent }
+    await createJudgeFile(page, filePath, {
+      problem_id: '1',
+      code: 'print("hello")'
     });
-    expect(response.ok()).toBeTruthy();
 
     await page.goto();
 
@@ -122,19 +95,13 @@ test.describe('Judge Panel Structure', () => {
     await expect(codeEditor).toBeVisible();
   });
 
-  test('should display terminal area', async ({ request, page, tmpPath }) => {
-    const judgeContent = JSON.stringify({
-      problem_id: '1',
-      code: 'print("hello")',
-      judge_format: 1
-    });
-
+  test('should display terminal area', async ({ page, tmpPath }) => {
     const filePath = `${tmpPath}/덧셈.judge`;
 
-    const response = await request.put(`/api/contents/${filePath}`, {
-      data: { type: 'file', format: 'text', content: judgeContent }
+    await createJudgeFile(page, filePath, {
+      problem_id: '1',
+      code: 'print("hello")'
     });
-    expect(response.ok()).toBeTruthy();
 
     await page.goto();
 
@@ -151,19 +118,13 @@ test.describe('Judge Panel Structure', () => {
     await expect(terminal).toBeVisible();
   });
 
-  test('should display submission area', async ({ request, page, tmpPath }) => {
-    const judgeContent = JSON.stringify({
-      problem_id: '1',
-      code: 'print("hello")',
-      judge_format: 1
-    });
-
+  test('should display submission area', async ({ page, tmpPath }) => {
     const filePath = `${tmpPath}/덧셈.judge`;
 
-    const response = await request.put(`/api/contents/${filePath}`, {
-      data: { type: 'file', format: 'text', content: judgeContent }
+    await createJudgeFile(page, filePath, {
+      problem_id: '1',
+      code: 'print("hello")'
     });
-    expect(response.ok()).toBeTruthy();
 
     await page.goto();
 
@@ -180,19 +141,13 @@ test.describe('Judge Panel Structure', () => {
     await expect(submissionPanel).toBeVisible();
   });
 
-  test('should show problem content', async ({ request, page, tmpPath }) => {
-    const judgeContent = JSON.stringify({
-      problem_id: '1',
-      code: 'print("hello")',
-      judge_format: 1
-    });
-
+  test('should show problem content', async ({ page, tmpPath }) => {
     const filePath = `${tmpPath}/덧셈.judge`;
 
-    const response = await request.put(`/api/contents/${filePath}`, {
-      data: { type: 'file', format: 'text', content: judgeContent }
+    await createJudgeFile(page, filePath, {
+      problem_id: '1',
+      code: 'print("hello")'
     });
-    expect(response.ok()).toBeTruthy();
 
     await page.goto();
 

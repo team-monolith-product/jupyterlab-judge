@@ -1,27 +1,18 @@
 import { expect, test } from '@jupyterlab/galata';
+import { createJudgeFile } from './util';
 
 const COMMAND_OPEN = 'jupyterlab-judge:plugin:open';
 const COMMAND_UNDO = 'jupyterlab-judge:plugin:undo';
 const COMMAND_REDO = 'jupyterlab-judge:plugin:redo';
 
 test.describe('Judge Editor', () => {
-  test('should display CodeMirror editor', async ({
-    request,
-    page,
-    tmpPath
-  }) => {
-    const judgeContent = JSON.stringify({
-      problem_id: '1',
-      code: 'print("initial code")',
-      judge_format: 1
-    });
-
+  test('should display CodeMirror editor', async ({ page, tmpPath }) => {
     const filePath = `${tmpPath}/덧셈.judge`;
 
-    const response = await request.put(`/api/contents/${filePath}`, {
-      data: { type: 'file', format: 'text', content: judgeContent }
+    await createJudgeFile(page, filePath, {
+      problem_id: '1',
+      code: 'print("initial code")'
     });
-    expect(response.ok()).toBeTruthy();
 
     await page.goto();
 
@@ -43,19 +34,13 @@ test.describe('Judge Editor', () => {
     await expect(cmContent).toBeVisible();
   });
 
-  test('should load code from file', async ({ request, page, tmpPath }) => {
-    const judgeContent = JSON.stringify({
-      problem_id: '1',
-      code: 'print("initial code")',
-      judge_format: 1
-    });
-
+  test('should load code from file', async ({ page, tmpPath }) => {
     const filePath = `${tmpPath}/덧셈.judge`;
 
-    const response = await request.put(`/api/contents/${filePath}`, {
-      data: { type: 'file', format: 'text', content: judgeContent }
+    await createJudgeFile(page, filePath, {
+      problem_id: '1',
+      code: 'print("initial code")'
     });
-    expect(response.ok()).toBeTruthy();
 
     await page.goto();
 
@@ -73,19 +58,13 @@ test.describe('Judge Editor', () => {
     await expect(editor).toContainText('print("initial code")');
   });
 
-  test('should support undo via command', async ({ request, page, tmpPath }) => {
-    const judgeContent = JSON.stringify({
-      problem_id: '1',
-      code: 'print("initial code")',
-      judge_format: 1
-    });
-
+  test('should support undo via command', async ({ page, tmpPath }) => {
     const filePath = `${tmpPath}/덧셈.judge`;
 
-    const response = await request.put(`/api/contents/${filePath}`, {
-      data: { type: 'file', format: 'text', content: judgeContent }
+    await createJudgeFile(page, filePath, {
+      problem_id: '1',
+      code: 'print("initial code")'
     });
-    expect(response.ok()).toBeTruthy();
 
     await page.goto();
 
@@ -122,19 +101,13 @@ test.describe('Judge Editor', () => {
     await expect(editor).not.toContainText('# added line');
   });
 
-  test('should support redo via command', async ({ request, page, tmpPath }) => {
-    const judgeContent = JSON.stringify({
-      problem_id: '1',
-      code: 'print("initial code")',
-      judge_format: 1
-    });
-
+  test('should support redo via command', async ({ page, tmpPath }) => {
     const filePath = `${tmpPath}/덧셈.judge`;
 
-    const response = await request.put(`/api/contents/${filePath}`, {
-      data: { type: 'file', format: 'text', content: judgeContent }
+    await createJudgeFile(page, filePath, {
+      problem_id: '1',
+      code: 'print("initial code")'
     });
-    expect(response.ok()).toBeTruthy();
 
     await page.goto();
 
@@ -184,19 +157,13 @@ test.describe('Judge Editor', () => {
     await expect(editor).toContainText('# added line');
   });
 
-  test('should reset to skeleton code', async ({ request, page, tmpPath }) => {
-    const judgeContent = JSON.stringify({
-      problem_id: '1',
-      code: 'print("initial code")',
-      judge_format: 1
-    });
-
+  test('should reset to skeleton code', async ({ page, tmpPath }) => {
     const filePath = `${tmpPath}/덧셈.judge`;
 
-    const response = await request.put(`/api/contents/${filePath}`, {
-      data: { type: 'file', format: 'text', content: judgeContent }
+    await createJudgeFile(page, filePath, {
+      problem_id: '1',
+      code: 'print("initial code")'
     });
-    expect(response.ok()).toBeTruthy();
 
     await page.goto();
 

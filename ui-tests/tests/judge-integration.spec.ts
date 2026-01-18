@@ -1,35 +1,16 @@
 import { expect, test } from '@jupyterlab/galata';
+import { createJudgeFile, waitForKernel } from './util';
 
 const COMMAND_OPEN = 'jupyterlab-judge:plugin:open';
 
-// Helper to wait for kernel to be ready
-async function waitForKernel(page: any) {
-  // Wait for kernel by checking the status bar or allowing time for initialization
-  try {
-    await page.waitForSelector('.jp-Toolbar-kernelStatus[data-status="idle"]', {
-      timeout: 5000
-    });
-  } catch {
-    // If status bar not found, wait for session to initialize
-    await page.waitForTimeout(5000);
-  }
-}
-
 test.describe('Judge Integration', () => {
-  test('complete problem 1 workflow', async ({ request, page, tmpPath }) => {
-    // Setup: Create judge file with correct solution
-    const judgeContent = JSON.stringify({
-      problem_id: '1',
-      code: 'a, b = map(int, input().split())\nprint(a + b)',
-      judge_format: 1
-    });
-
+  test('complete problem 1 workflow', async ({ page, tmpPath }) => {
     const filePath = `${tmpPath}/덧셈.judge`;
 
-    const response = await request.put(`/api/contents/${filePath}`, {
-      data: { type: 'file', format: 'text', content: judgeContent }
+    await createJudgeFile(page, filePath, {
+      problem_id: '1',
+      code: 'a, b = map(int, input().split())\nprint(a + b)'
     });
-    expect(response.ok()).toBeTruthy();
 
     await page.goto();
 
@@ -66,20 +47,13 @@ test.describe('Judge Integration', () => {
     await expect(submissionArea).toContainText(/Accepted|👍/, { timeout: 60000 });
   });
 
-  test('error recovery flow', async ({ request, page, tmpPath }) => {
-    // Setup: Start with code that has an error
-    const judgeContent = JSON.stringify({
-      problem_id: '1',
-      code: 'print(undefined_variable)', // Code with error
-      judge_format: 1
-    });
-
+  test('error recovery flow', async ({ page, tmpPath }) => {
     const filePath = `${tmpPath}/덧셈.judge`;
 
-    const response = await request.put(`/api/contents/${filePath}`, {
-      data: { type: 'file', format: 'text', content: judgeContent }
+    await createJudgeFile(page, filePath, {
+      problem_id: '1',
+      code: 'print(undefined_variable)' // Code with error
     });
-    expect(response.ok()).toBeTruthy();
 
     await page.goto();
 
@@ -126,37 +100,19 @@ test.describe('Judge Integration', () => {
     await expect(submissionArea).toContainText(/Accepted|👍/, { timeout: 60000 });
   });
 
-  test('multiple panels can be opened', async ({ request, page, tmpPath }) => {
-    // Setup: Create two different judge files (same problem, different paths)
-    const judgeContent1 = JSON.stringify({
-      problem_id: '1',
-      code: 'a, b = map(int, input().split())\nprint(a + b)',
-      judge_format: 1
-    });
-
-    const judgeContent2 = JSON.stringify({
-      problem_id: '1',
-      code: 'print("*")',
-      judge_format: 1
-    });
-
+  test('multiple panels can be opened', async ({ page, tmpPath }) => {
     const filePath1 = `${tmpPath}/덧셈.judge`;
     const filePath2 = `${tmpPath}/sub/덧셈.judge`;
 
-    // Create directory first
-    await request.put(`/api/contents/${tmpPath}/sub`, {
-      data: { type: 'directory' }
+    await createJudgeFile(page, filePath1, {
+      problem_id: '1',
+      code: 'a, b = map(int, input().split())\nprint(a + b)'
     });
 
-    const response1 = await request.put(`/api/contents/${filePath1}`, {
-      data: { type: 'file', format: 'text', content: judgeContent1 }
+    await createJudgeFile(page, filePath2, {
+      problem_id: '1',
+      code: 'print("*")'
     });
-    expect(response1.ok()).toBeTruthy();
-
-    const response2 = await request.put(`/api/contents/${filePath2}`, {
-      data: { type: 'file', format: 'text', content: judgeContent2 }
-    });
-    expect(response2.ok()).toBeTruthy();
 
     await page.goto();
 

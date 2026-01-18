@@ -1,38 +1,16 @@
 import { expect, test } from '@jupyterlab/galata';
+import { createJudgeFile, waitForKernel } from './util';
 
 const COMMAND_OPEN = 'jupyterlab-judge:plugin:open';
 
-// Helper to wait for kernel to be ready
-async function waitForKernel(page: any) {
-  // Wait for kernel by checking the status bar or allowing time for initialization
-  try {
-    await page.waitForSelector('.jp-Toolbar-kernelStatus[data-status="idle"]', {
-      timeout: 5000
-    });
-  } catch {
-    // If status bar not found, wait for session to initialize
-    await page.waitForTimeout(5000);
-  }
-}
-
 test.describe('Judge Terminal', () => {
-  test('should have toolbar with buttons', async ({
-    request,
-    page,
-    tmpPath
-  }) => {
-    const judgeContent = JSON.stringify({
-      problem_id: '1',
-      code: 'print("hello")',
-      judge_format: 1
-    });
-
+  test('should have toolbar with buttons', async ({ page, tmpPath }) => {
     const filePath = `${tmpPath}/덧셈.judge`;
 
-    const response = await request.put(`/api/contents/${filePath}`, {
-      data: { type: 'file', format: 'text', content: judgeContent }
+    await createJudgeFile(page, filePath, {
+      problem_id: '1',
+      code: 'print("hello")'
     });
-    expect(response.ok()).toBeTruthy();
 
     await page.goto();
 
@@ -50,19 +28,13 @@ test.describe('Judge Terminal', () => {
     await expect(toolbar).toBeVisible();
   });
 
-  test('should have reset button', async ({ request, page, tmpPath }) => {
-    const judgeContent = JSON.stringify({
-      problem_id: '1',
-      code: 'print("hello")',
-      judge_format: 1
-    });
-
+  test('should have reset button', async ({ page, tmpPath }) => {
     const filePath = `${tmpPath}/덧셈.judge`;
 
-    const response = await request.put(`/api/contents/${filePath}`, {
-      data: { type: 'file', format: 'text', content: judgeContent }
+    await createJudgeFile(page, filePath, {
+      problem_id: '1',
+      code: 'print("hello")'
     });
-    expect(response.ok()).toBeTruthy();
 
     await page.goto();
 
@@ -80,19 +52,13 @@ test.describe('Judge Terminal', () => {
     await expect(resetButton).toBeVisible();
   });
 
-  test('should have execute button', async ({ request, page, tmpPath }) => {
-    const judgeContent = JSON.stringify({
-      problem_id: '1',
-      code: 'print("hello")',
-      judge_format: 1
-    });
-
+  test('should have execute button', async ({ page, tmpPath }) => {
     const filePath = `${tmpPath}/덧셈.judge`;
 
-    const response = await request.put(`/api/contents/${filePath}`, {
-      data: { type: 'file', format: 'text', content: judgeContent }
+    await createJudgeFile(page, filePath, {
+      problem_id: '1',
+      code: 'print("hello")'
     });
-    expect(response.ok()).toBeTruthy();
 
     await page.goto();
 
@@ -110,19 +76,13 @@ test.describe('Judge Terminal', () => {
     await expect(executeButton).toBeVisible();
   });
 
-  test('should have stop button', async ({ request, page, tmpPath }) => {
-    const judgeContent = JSON.stringify({
-      problem_id: '1',
-      code: 'print("hello")',
-      judge_format: 1
-    });
-
+  test('should have stop button', async ({ page, tmpPath }) => {
     const filePath = `${tmpPath}/덧셈.judge`;
 
-    const response = await request.put(`/api/contents/${filePath}`, {
-      data: { type: 'file', format: 'text', content: judgeContent }
+    await createJudgeFile(page, filePath, {
+      problem_id: '1',
+      code: 'print("hello")'
     });
-    expect(response.ok()).toBeTruthy();
 
     await page.goto();
 
@@ -140,19 +100,13 @@ test.describe('Judge Terminal', () => {
     await expect(stopButton).toBeVisible();
   });
 
-  test('should have output area', async ({ request, page, tmpPath }) => {
-    const judgeContent = JSON.stringify({
-      problem_id: '1',
-      code: 'print("hello")',
-      judge_format: 1
-    });
-
+  test('should have output area', async ({ page, tmpPath }) => {
     const filePath = `${tmpPath}/덧셈.judge`;
 
-    const response = await request.put(`/api/contents/${filePath}`, {
-      data: { type: 'file', format: 'text', content: judgeContent }
+    await createJudgeFile(page, filePath, {
+      problem_id: '1',
+      code: 'print("hello")'
     });
-    expect(response.ok()).toBeTruthy();
 
     await page.goto();
 
@@ -170,23 +124,13 @@ test.describe('Judge Terminal', () => {
     await expect(outputArea).toBeVisible();
   });
 
-  test('stop button should interrupt execution', async ({
-    request,
-    page,
-    tmpPath
-  }) => {
-    const judgeContent = JSON.stringify({
-      problem_id: '1',
-      code: 'import time\nfor i in range(100):\n    time.sleep(1)\n    print(i)',
-      judge_format: 1
-    });
-
+  test('stop button should interrupt execution', async ({ page, tmpPath }) => {
     const filePath = `${tmpPath}/덧셈.judge`;
 
-    const response = await request.put(`/api/contents/${filePath}`, {
-      data: { type: 'file', format: 'text', content: judgeContent }
+    await createJudgeFile(page, filePath, {
+      problem_id: '1',
+      code: 'import time\nfor i in range(100):\n    time.sleep(1)\n    print(i)'
     });
-    expect(response.ok()).toBeTruthy();
 
     await page.goto();
 

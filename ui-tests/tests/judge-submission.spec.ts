@@ -1,21 +1,16 @@
 import { expect, test } from '@jupyterlab/galata';
+import { createJudgeFile } from './util';
 
 const COMMAND_OPEN = 'jupyterlab-judge:plugin:open';
 
 test.describe('Judge Submission', () => {
-  test('should have submit button', async ({ page, request, tmpPath }) => {
-    const judgeContent = JSON.stringify({
-      problem_id: '1',
-      code: 'a, b = map(int, input().split())\nprint(a + b)',
-      judge_format: 1
-    });
-
+  test('should have submit button', async ({ page, tmpPath }) => {
     const filePath = `${tmpPath}/덧셈.judge`;
 
-    const response = await request.put(`/api/contents/${filePath}`, {
-      data: { type: 'file', format: 'text', content: judgeContent }
+    await createJudgeFile(page, filePath, {
+      problem_id: '1',
+      code: 'a, b = map(int, input().split())\nprint(a + b)'
     });
-    expect(response.ok()).toBeTruthy();
 
     await page.goto();
 
@@ -32,23 +27,13 @@ test.describe('Judge Submission', () => {
     await expect(submitButton).toBeVisible();
   });
 
-  test('should show progress during submission', async ({
-    page,
-    request,
-    tmpPath
-  }) => {
-    const judgeContent = JSON.stringify({
-      problem_id: '1',
-      code: 'a, b = map(int, input().split())\nprint(a + b)',
-      judge_format: 1
-    });
-
+  test('should show progress during submission', async ({ page, tmpPath }) => {
     const filePath = `${tmpPath}/덧셈.judge`;
 
-    const response = await request.put(`/api/contents/${filePath}`, {
-      data: { type: 'file', format: 'text', content: judgeContent }
+    await createJudgeFile(page, filePath, {
+      problem_id: '1',
+      code: 'a, b = map(int, input().split())\nprint(a + b)'
     });
-    expect(response.ok()).toBeTruthy();
 
     await page.goto();
 
@@ -79,23 +64,13 @@ test.describe('Judge Submission', () => {
     await expect(submitButton).toBeDisabled();
   });
 
-  test('should show AC for correct answer', async ({
-    page,
-    request,
-    tmpPath
-  }) => {
-    const judgeContent = JSON.stringify({
-      problem_id: '1',
-      code: 'a, b = map(int, input().split())\nprint(a + b)',
-      judge_format: 1
-    });
-
+  test('should show AC for correct answer', async ({ page, tmpPath }) => {
     const filePath = `${tmpPath}/덧셈.judge`;
 
-    const response = await request.put(`/api/contents/${filePath}`, {
-      data: { type: 'file', format: 'text', content: judgeContent }
+    await createJudgeFile(page, filePath, {
+      problem_id: '1',
+      code: 'a, b = map(int, input().split())\nprint(a + b)'
     });
-    expect(response.ok()).toBeTruthy();
 
     await page.goto();
 
@@ -127,23 +102,13 @@ test.describe('Judge Submission', () => {
     await expect(submissionArea).toContainText(/Accepted|👍/, { timeout: 30000 });
   });
 
-  test('should show WA for wrong answer', async ({
-    page,
-    request,
-    tmpPath
-  }) => {
-    const judgeContent = JSON.stringify({
-      problem_id: '1',
-      code: 'a, b = map(int, input().split())\nprint(a - b)', // Wrong: subtraction
-      judge_format: 1
-    });
-
+  test('should show WA for wrong answer', async ({ page, tmpPath }) => {
     const filePath = `${tmpPath}/덧셈.judge`;
 
-    const response = await request.put(`/api/contents/${filePath}`, {
-      data: { type: 'file', format: 'text', content: judgeContent }
+    await createJudgeFile(page, filePath, {
+      problem_id: '1',
+      code: 'a, b = map(int, input().split())\nprint(a - b)' // Wrong: subtraction
     });
-    expect(response.ok()).toBeTruthy();
 
     await page.goto();
 
@@ -177,21 +142,14 @@ test.describe('Judge Submission', () => {
 
   test('should display submission history after submit', async ({
     page,
-    request,
     tmpPath
   }) => {
-    const judgeContent = JSON.stringify({
-      problem_id: '1',
-      code: 'a, b = map(int, input().split())\nprint(a + b)',
-      judge_format: 1
-    });
-
     const filePath = `${tmpPath}/덧셈.judge`;
 
-    const response = await request.put(`/api/contents/${filePath}`, {
-      data: { type: 'file', format: 'text', content: judgeContent }
+    await createJudgeFile(page, filePath, {
+      problem_id: '1',
+      code: 'a, b = map(int, input().split())\nprint(a + b)'
     });
-    expect(response.ok()).toBeTruthy();
 
     await page.goto();
 
