@@ -305,9 +305,7 @@ export namespace JudgeModel {
     judge_format: number;
   }
 
-  export class JudgeModelFactory
-    implements DocumentRegistry.IModelFactory<JudgeModel>
-  {
+  export class JudgeModelFactory implements DocumentRegistry.IModelFactory<JudgeModel> {
     constructor(options: { problemProviderFactory: () => IProblemProvider }) {
       this._problemProviderFactory = options.problemProviderFactory;
     }
@@ -361,8 +359,7 @@ export namespace JudgeModel {
   }
 
   export interface IJudgeChange
-    extends models.SourceChange,
-      models.DocumentChange {
+    extends models.SourceChange, models.DocumentChange {
     problemIdChange?: string;
   }
 

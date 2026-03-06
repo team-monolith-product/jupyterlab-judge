@@ -30,7 +30,9 @@ export function SubmissionListSignalWrapper(props: {
             {(_model, _submissions) => {
               const problemId = problem?.id ?? null;
               if (problemId) {
-                queryClient.invalidateQueries({ queryKey: ['submissions', problemId] });
+                queryClient.invalidateQueries({
+                  queryKey: ['submissions', problemId]
+                });
               }
               return (
                 <UseSignal

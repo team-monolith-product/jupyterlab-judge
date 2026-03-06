@@ -36,7 +36,9 @@ test.describe('Judge Submission', () => {
     await submitWithKernelSelection(page);
 
     const submissionArea = page.locator('.jp-JudgePanel-submissionPanel');
-    await expect(submissionArea).toContainText(/Accepted|👍/, { timeout: 30000 });
+    await expect(submissionArea).toContainText(/Accepted|👍/, {
+      timeout: 30000
+    });
   });
 
   test('should show WA for wrong answer', async ({ page, tmpPath }) => {
@@ -65,7 +67,9 @@ test.describe('Judge Submission', () => {
     await submitWithKernelSelection(page);
 
     const submissionArea = page.locator('.jp-JudgePanel-submissionPanel');
-    await expect(submissionArea).toContainText(/Accepted|👍/, { timeout: 30000 });
+    await expect(submissionArea).toContainText(/Accepted|👍/, {
+      timeout: 30000
+    });
 
     const historyItem = page.locator('.jp-JudgePanel-submissionPanel li');
     await expect(historyItem.first()).toBeVisible();
