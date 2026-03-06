@@ -29,7 +29,9 @@ test.describe('Judge Integration', () => {
 
     // Verify accepted result
     const submissionArea = page.locator('.jp-JudgePanel-submissionPanel');
-    await expect(submissionArea).toContainText(/Accepted|👍/, { timeout: 60000 });
+    await expect(submissionArea).toContainText(/Accepted|👍/, {
+      timeout: 60000
+    });
   });
 
   test('error recovery flow', async ({ page, tmpPath }) => {
@@ -58,7 +60,9 @@ test.describe('Judge Integration', () => {
     await submitButton.click();
 
     const submissionArea = page.locator('.jp-JudgePanel-submissionPanel');
-    await expect(submissionArea).toContainText(/Accepted|👍/, { timeout: 60000 });
+    await expect(submissionArea).toContainText(/Accepted|👍/, {
+      timeout: 60000
+    });
   });
 
   test('multiple panels can be opened', async ({ page, tmpPath }) => {

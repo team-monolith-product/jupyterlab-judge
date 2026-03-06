@@ -2,7 +2,10 @@ import { expect, test } from './fixture';
 import { openJudgeFile, waitForKernel, executeCodeAndWait } from './util';
 
 test.describe('Judge Code Execution', () => {
-  test('should show placeholder before execution', async ({ page, tmpPath }) => {
+  test('should show placeholder before execution', async ({
+    page,
+    tmpPath
+  }) => {
     const filePath = `${tmpPath}/덧셈.judge`;
     await openJudgeFile(page, filePath, {
       problem_id: '1',

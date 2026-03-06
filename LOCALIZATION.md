@@ -37,7 +37,7 @@ export const myPlugin: JupyterFrontEndPlugin<void> = {
 };
 ```
 
-### Step 3: Apply trans.__() in Code (Use English)
+### Step 3: Apply trans.\_\_() in Code (Use English)
 
 Write strings in English and wrap them with `trans.__()`.
 

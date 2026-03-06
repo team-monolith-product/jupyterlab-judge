@@ -123,5 +123,7 @@ export async function executeUndoRedo(
       : 'jupyterlab-judge:plugin:redo';
   await executeCommand(page, { commandId });
   // Wait for editor state to update
-  await page.locator('.jp-JudgePanel-editor .cm-content').waitFor({ state: 'visible' });
+  await page
+    .locator('.jp-JudgePanel-editor .cm-content')
+    .waitFor({ state: 'visible' });
 }
