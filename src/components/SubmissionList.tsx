@@ -30,7 +30,7 @@ export function SubmissionListSignalWrapper(props: {
             {(_model, _submissions) => {
               const problemId = problem?.id ?? null;
               if (problemId) {
-                queryClient.invalidateQueries(['submissions', problemId]);
+                queryClient.invalidateQueries({ queryKey: ['submissions', problemId] });
               }
               return (
                 <UseSignal
@@ -88,10 +88,10 @@ export function SubmissionListImpl(
     );
   }
 
-  const { data, isLoading } = useQuery<ProblemProvider.ISubmission[]>(
-    ['submissions', props.problemId],
-    props.getSubmissions
-  );
+  const { data, isLoading } = useQuery<ProblemProvider.ISubmission[]>({
+    queryKey: ['submissions', props.problemId],
+    queryFn: props.getSubmissions
+  });
   if (isLoading) {
     return (
       <SubmissionListError className={props.className}>
