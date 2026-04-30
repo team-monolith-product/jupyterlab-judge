@@ -31,25 +31,14 @@ import {
   IJudgeSubmissionAreaFactory,
   IJudgeTerminalFactory,
   IProblemProvider,
-  ISubmissionListFactory,
-  JudgeSignal
+  ISubmissionListFactory
 } from './tokens';
 import { HardCodedProblemProvider } from './problemProvider/HardCodedProblemProvider';
-import { Signal } from '@lumino/signaling';
 import { JudgeSubmissionArea } from './widgets/JudgeSubmissionArea';
 import { JudgeTerminal } from './widgets/JudgeTerminal';
 import { SubmissionListImpl } from './components/SubmissionList';
 import { ControlButtonImpl } from './components';
-
-/**
- * A signal that emits whenever a submission is submitted.
- */
-const submitted = new Signal<any, JudgeSignal.ISubmissionArgs>({});
-
-/**
- * A signal that emits when code is executed.
- */
-const executed = new Signal<any, JudgeSignal.IExecutionArgs>({});
+import { submitted, executed, opened } from './judgeSignal';
 
 const signal: JupyterFrontEndPlugin<IJudgeSignal> = {
   id: `${PLUGIN_ID}:IJudgeSignal`,
@@ -61,6 +50,9 @@ const signal: JupyterFrontEndPlugin<IJudgeSignal> = {
       },
       get executed() {
         return executed;
+      },
+      get opened() {
+        return opened;
       }
     };
   },

@@ -10,6 +10,7 @@ import { JudgeModel } from './model';
 import { JUDGE_HIDDEN_FOLDER_NAME, PLUGIN_ID } from './constants';
 import { IProblemProvider } from './tokens';
 import { IDocumentWidget } from '@jupyterlab/docregistry';
+import { opened } from './judgeSignal';
 
 /**
  * The command IDs used by the fileeditor plugin.
@@ -121,7 +122,14 @@ export async function openOrCreateFromId(
       name: directoryId,
       type: 'directory'
     });
-    return await openOrCreate(problemProvider, docManager, path, problemId);
+    const widget = await openOrCreate(
+      problemProvider,
+      docManager,
+      path,
+      problemId
+    );
+    opened.emit({ problemId });
+    return widget;
   }
 }
 
