@@ -15,7 +15,7 @@ import {
   JudgePanel
 } from './widgets/JudgePanel';
 import { CodeEditor, IEditorServices } from '@jupyterlab/codeeditor';
-import { addCommands, addMenuItems, CommandIDs } from './commands';
+import { addCommands, addMenuItems, CommandIDs, opened } from './commands';
 import { IRenderMimeRegistry } from '@jupyterlab/rendermime';
 import { IDocumentManager } from '@jupyterlab/docmanager';
 import { IMainMenu } from '@jupyterlab/mainmenu';
@@ -50,11 +50,6 @@ const submitted = new Signal<any, JudgeSignal.ISubmissionArgs>({});
  * A signal that emits when code is executed.
  */
 const executed = new Signal<any, JudgeSignal.IExecutionArgs>({});
-
-/**
- * A signal that emits whenever a problem is opened via openOrCreateFromId.
- */
-const opened = new Signal<any, JudgeSignal.IOpenedArgs>({});
 
 const signal: JupyterFrontEndPlugin<IJudgeSignal> = {
   id: `${PLUGIN_ID}:IJudgeSignal`,
@@ -200,8 +195,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
       trans,
       docManager,
       tracker,
-      problemProviderWithDefault,
-      opened
+      problemProviderWithDefault
     );
     addMenuItems(menu, tracker, trans);
 

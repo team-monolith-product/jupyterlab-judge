@@ -28,6 +28,11 @@ export namespace CommandIDs {
 }
 
 /**
+ * A signal that emits whenever a problem is opened via openOrCreateFromId.
+ */
+export const opened = new Signal<any, JudgeSignal.IOpenedArgs>({});
+
+/**
  * Wrapper function for adding the default File Editor commands
  */
 export function addCommands(
@@ -35,8 +40,7 @@ export function addCommands(
   trans: TranslationBundle,
   docManager: IDocumentManager,
   tracker: WidgetTracker<JudgeDocument>,
-  problemProvider: IProblemProvider,
-  opened: Signal<any, JudgeSignal.IOpenedArgs>
+  problemProvider: IProblemProvider
 ): void {
   commands.addCommand(CommandIDs.open, {
     execute: async (args: any) => {
@@ -51,8 +55,7 @@ export function addCommands(
         await openOrCreateFromId(
           problemProvider,
           docManager,
-          args.problemId as string,
-          opened
+          args.problemId as string
         );
       }
     },
@@ -107,8 +110,7 @@ export function addCommands(
 export async function openOrCreateFromId(
   problemProvider: IProblemProvider,
   docManager: IDocumentManager,
-  problemId: string,
-  opened: Signal<any, JudgeSignal.IOpenedArgs>
+  problemId: string
 ): Promise<IDocumentWidget | undefined> {
   const problem = await problemProvider.getProblem(problemId);
   if (problem) {
