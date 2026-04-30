@@ -51,6 +51,11 @@ const submitted = new Signal<any, JudgeSignal.ISubmissionArgs>({});
  */
 const executed = new Signal<any, JudgeSignal.IExecutionArgs>({});
 
+/**
+ * A signal that emits whenever a problem is opened via openOrCreateFromId.
+ */
+const opened = new Signal<any, JudgeSignal.IOpenedArgs>({});
+
 const signal: JupyterFrontEndPlugin<IJudgeSignal> = {
   id: `${PLUGIN_ID}:IJudgeSignal`,
   provides: IJudgeSignal,
@@ -61,6 +66,9 @@ const signal: JupyterFrontEndPlugin<IJudgeSignal> = {
       },
       get executed() {
         return executed;
+      },
+      get opened() {
+        return opened;
       }
     };
   },
@@ -192,7 +200,8 @@ const plugin: JupyterFrontEndPlugin<void> = {
       trans,
       docManager,
       tracker,
-      problemProviderWithDefault
+      problemProviderWithDefault,
+      opened
     );
     addMenuItems(menu, tracker, trans);
 

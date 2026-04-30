@@ -8,8 +8,9 @@ import { ServerConnection } from '@jupyterlab/services';
 import { IMainMenu } from '@jupyterlab/mainmenu';
 import { JudgeModel } from './model';
 import { JUDGE_HIDDEN_FOLDER_NAME, PLUGIN_ID } from './constants';
-import { IProblemProvider } from './tokens';
+import { IProblemProvider, JudgeSignal } from './tokens';
 import { IDocumentWidget } from '@jupyterlab/docregistry';
+import { Signal } from '@lumino/signaling';
 
 /**
  * The command IDs used by the fileeditor plugin.
@@ -34,7 +35,8 @@ export function addCommands(
   trans: TranslationBundle,
   docManager: IDocumentManager,
   tracker: WidgetTracker<JudgeDocument>,
-  problemProvider: IProblemProvider
+  problemProvider: IProblemProvider,
+  opened: Signal<any, JudgeSignal.IOpenedArgs>
 ): void {
   commands.addCommand(CommandIDs.open, {
     execute: async (args: any) => {
@@ -49,7 +51,8 @@ export function addCommands(
         await openOrCreateFromId(
           problemProvider,
           docManager,
-          args.problemId as string
+          args.problemId as string,
+          opened
         );
       }
     },
@@ -104,7 +107,8 @@ export function addCommands(
 export async function openOrCreateFromId(
   problemProvider: IProblemProvider,
   docManager: IDocumentManager,
-  problemId: string
+  problemId: string,
+  opened: Signal<any, JudgeSignal.IOpenedArgs>
 ): Promise<IDocumentWidget | undefined> {
   const problem = await problemProvider.getProblem(problemId);
   if (problem) {
@@ -121,7 +125,14 @@ export async function openOrCreateFromId(
       name: directoryId,
       type: 'directory'
     });
-    return await openOrCreate(problemProvider, docManager, path, problemId);
+    const widget = await openOrCreate(
+      problemProvider,
+      docManager,
+      path,
+      problemId
+    );
+    opened.emit({ problemId });
+    return widget;
   }
 }
 
