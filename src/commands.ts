@@ -8,9 +8,9 @@ import { ServerConnection } from '@jupyterlab/services';
 import { IMainMenu } from '@jupyterlab/mainmenu';
 import { JudgeModel } from './model';
 import { JUDGE_HIDDEN_FOLDER_NAME, PLUGIN_ID } from './constants';
-import { IProblemProvider, JudgeSignal } from './tokens';
+import { IProblemProvider } from './tokens';
 import { IDocumentWidget } from '@jupyterlab/docregistry';
-import { Signal } from '@lumino/signaling';
+import { opened } from './judgeSignal';
 
 /**
  * The command IDs used by the fileeditor plugin.
@@ -26,11 +26,6 @@ export namespace CommandIDs {
   export const run = `${PLUGIN_ID}:plugin:run`;
   export const runAll = `${PLUGIN_ID}:plugin:run-all`;
 }
-
-/**
- * A signal that emits whenever a problem is opened via openOrCreateFromId.
- */
-export const opened = new Signal<any, JudgeSignal.IOpenedArgs>({});
 
 /**
  * Wrapper function for adding the default File Editor commands
