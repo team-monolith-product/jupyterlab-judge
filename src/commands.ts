@@ -122,14 +122,7 @@ export async function openOrCreateFromId(
       name: directoryId,
       type: 'directory'
     });
-    const widget = await openOrCreate(
-      problemProvider,
-      docManager,
-      path,
-      problemId
-    );
-    opened.emit({ problemId });
-    return widget;
+    return openOrCreate(problemProvider, docManager, path, problemId);
   }
 }
 
@@ -155,6 +148,7 @@ async function openOrCreate(
     }
     throw e;
   } finally {
+    opened.emit({ problemId });
     // eslint-disable-next-line no-unsafe-finally
     return docManager.openOrReveal(path);
   }
