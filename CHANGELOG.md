@@ -2,6 +2,25 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 1.30.0rc1
+
+([Full Changelog](https://github.com/team-monolith-product/jupyterlab-judge/compare/v1.29.1...d3ddbd05d3d27a2f6ef0414ba371706856c43476))
+
+### Merged PRs
+
+- TASK-5508 저지문제 열기시 signal [#72](https://github.com/team-monolith-product/jupyterlab-judge/pull/72) ([@shcshcshc](https://github.com/shcshcshc))
+
+### Contributors to this release
+
+The following people contributed discussions, new ideas, code and documentation contributions, and review.
+See [our definition of contributors](https://github-activity.readthedocs.io/en/latest/use/#how-does-this-tool-define-contributions-in-the-reports).
+
+([GitHub contributors page for this release](https://github.com/team-monolith-product/jupyterlab-judge/graphs/contributors?from=2026-01-18&to=2026-04-30&type=c))
+
+@shcshcshc ([activity](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3Ashcshcshc+updated%3A2026-01-18..2026-04-30&type=Issues))
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 1.29.1
 
 ([Full Changelog](https://github.com/team-monolith-product/jupyterlab-judge/compare/v1.29.0...72d11ed74ec4f5448ad857edc14a9fe22193e4a1))
@@ -18,8 +37,6 @@ See [our definition of contributors](https://github-activity.readthedocs.io/en/l
 ([GitHub contributors page for this release](https://github.com/team-monolith-product/jupyterlab-judge/graphs/contributors?from=2026-01-17&to=2026-01-18&type=c))
 
 @a3626a ([activity](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3Aa3626a+updated%3A2026-01-17..2026-01-18&type=Issues)) | @claude ([activity](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3Aclaude+updated%3A2026-01-17..2026-01-18&type=Issues))
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 1.29.0
 

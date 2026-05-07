@@ -77,6 +77,7 @@ export const IJudgeSignal = new Token<IJudgeSignal>(
 export interface IJudgeSignal {
   readonly submitted: ISignal<any, JudgeSignal.ISubmissionArgs>;
   readonly executed: ISignal<any, JudgeSignal.IExecutionArgs>;
+  readonly opened: ISignal<any, JudgeSignal.IOpenedArgs>;
 }
 
 export namespace JudgeSignal {
@@ -90,5 +91,9 @@ export namespace JudgeSignal {
     widget: JudgePanel;
     cell: CodeEditor.IModel;
     success: boolean;
+  }
+
+  export interface IOpenedArgs {
+    problemId: string;
   }
 }
