@@ -411,6 +411,12 @@ export namespace JudgeModel {
     set source(value: string) {
       this._ycodeCell.setSource(value);
     }
+    getSource(): string {
+      return this.source;
+    }
+    setSource(value: string): void {
+      this.source = value;
+    }
 
     getMetadata(): {
       [x: string]: any;
@@ -451,6 +457,8 @@ export namespace JudgeModel {
     readonly id = '';
     readonly cell_type = 'code';
     readonly execution_count = 0;
+    // 채점 실행 상태는 judge 자체 플로우가 관리하므로 인터페이스 준수용으로만 둠.
+    executionState: models.IExecutionState = 'idle';
     readonly isStandalone = true;
     readonly notebook = null;
     readonly metadata = {};
@@ -468,6 +476,11 @@ export namespace JudgeModel {
       this.transact(() => {
         this._outputs.delete(0, this._outputs.length);
         this._outputs.insert(0, outputs);
+      }, false);
+    }
+    clearOutputs(origin: any): void {
+      this.transact(() => {
+        this._outputs.delete(0, this._outputs.length);
       }, false);
     }
     updateOutputs(start: number, end: number, outputs: IOutput[]): void {
@@ -529,16 +542,21 @@ export namespace JudgeModel {
     private _outputsObserver = (
       event: Y.YArrayEvent<nbformat.IOutput>
     ): void => {
+      // AIDEV-NOTE: ydoc 3 의 outputsChange 델타 타입은 Y.Map 래핑을 전제하지만,
+      // lab 4.4 CodeCellModel 은 plain object 를 하위호환 처리('toJSON' in output 분기)
+      // 하므로 저장 구조는 유지하고 타입만 맞춥니다. lab 다음 메이저에서 Y.Map 필수 예정.
       this._changed.emit({
-        outputsChange: event.changes.delta as models.Delta<IOutput[]>
+        outputsChange: event.changes.delta as unknown as models.Delta<
+          Y.Map<any>
+        >
       });
     };
 
-    undo(): void {
-      this._yjudge.undo();
+    undo(): boolean {
+      return this._yjudge.undo();
     }
-    redo(): void {
-      this._yjudge.redo();
+    redo(): boolean {
+      return this._yjudge.redo();
     }
     canUndo(): boolean {
       return this._yjudge.canUndo();
