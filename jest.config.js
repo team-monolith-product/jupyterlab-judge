@@ -2,8 +2,12 @@ const jestJupyterLab = require('@jupyterlab/testutils/lib/jest-config');
 
 const esModules = [
   '@codemirror',
-  '@jupyter/ydoc',
+  // lab 4.4 의 cells 가 ESM 전용 @jupyter/react-components 를 의존해
+  // @jupyter/ 전체와 그 하위 의존(fast, exenv-es6)을 변환 대상에 포함함.
+  '@jupyter/',
   '@jupyterlab/',
+  '@microsoft/fast',
+  'exenv-es6',
   'lib0',
   'nanoid',
   'vscode-ws-jsonrpc',
