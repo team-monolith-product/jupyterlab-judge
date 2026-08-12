@@ -542,9 +542,9 @@ export namespace JudgeModel {
     private _outputsObserver = (
       event: Y.YArrayEvent<nbformat.IOutput>
     ): void => {
-      // AIDEV-NOTE: ydoc 3 의 outputsChange 델타 타입은 Y.Map 래핑을 전제하지만,
-      // lab 4.4 CodeCellModel 은 plain object 를 하위호환 처리('toJSON' in output 분기)
-      // 하므로 저장 구조는 유지하고 타입만 맞춥니다. lab 다음 메이저에서 Y.Map 필수 예정.
+      // ydoc 3 의 outputsChange 델타 타입은 Y.Map 래핑을 전제하나, lab 4.4
+      // CodeCellModel 이 plain object 를 하위호환 처리('toJSON' in output 분기)
+      // 하므로 저장 구조는 유지하고 타입만 맞춤. lab 다음 메이저에서 Y.Map 필수 예정.
       this._changed.emit({
         outputsChange: event.changes.delta as unknown as models.Delta<
           Y.Map<any>
