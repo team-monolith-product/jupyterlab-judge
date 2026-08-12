@@ -58,6 +58,9 @@ cd ui-tests && jlpm install && jlpm test
 
 - 주석은 코드 설명이 아닌 비즈니스 배경·기술적 세부·숨은 실패 시나리오
   중심으로 작성합니다.
+- ydoc 시그니처를 미러링하는 지점(`transact`·outputs 메서드의
+  `origin: any` 등)은 `any` 금지 규칙의 예외 — upstream d.ts 와의
+  대조성을 우선합니다.
 - 커밋은 conventional commits(영어)로 작성하고, AI 생성 커밋은 `[AI]`
   태그를 붙입니다.
 - lint·포맷은 package.json 의 eslint/prettier/stylelint 설정을 따릅니다.
