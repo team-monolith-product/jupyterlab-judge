@@ -57,8 +57,7 @@ cd ui-tests && jlpm install && jlpm test
 ## 3. 코딩 표준 (이 레포 특칙)
 
 - 주석은 코드 설명이 아닌 비즈니스 배경·기술적 세부·숨은 실패 시나리오
-  중심으로 작성합니다. `AIDEV-*` 앵커 주석은 사용하지 않습니다
-  (기존 앵커를 발견하면 일반 주석으로 정리).
+  중심으로 작성합니다.
 - 커밋은 conventional commits(영어)로 작성하고, AI 생성 커밋은 `[AI]`
   태그를 붙입니다.
 - lint·포맷은 package.json 의 eslint/prettier/stylelint 설정을 따릅니다.
