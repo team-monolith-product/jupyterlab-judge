@@ -63,6 +63,48 @@ describe('JudgeModel × lab CodeCellModel 접합부', () => {
     expect(model.outputAreaModel.length).toBe(0);
   });
 
+  it('연속 stream 출력 병합이 공유 모델까지 동기화된다 (이중 반영 없이)', () => {
+    // lab 은 같은 이름의 연속 stream 을 한 출력으로 병합하며, 이때
+    // ISharedCodeCell 밖의 appendStreamOutput/removeStreamOutput 을 직접 호출함.
+    model.outputAreaModel.add({
+      output_type: 'stream',
+      name: 'stdout',
+      text: '1\n'
+    });
+    model.outputAreaModel.add({
+      output_type: 'stream',
+      name: 'stdout',
+      text: '2\n'
+    });
+
+    expect(model.outputAreaModel.length).toBe(1);
+    expect(
+      (model.outputAreaModel.get(0).toJSON() as { text?: unknown }).text
+    ).toBe('1\n2\n');
+
+    const outputs = model.sharedModel.yCodeCell.getOutputs();
+    expect(outputs).toHaveLength(1);
+    expect(outputs[0].text).toBe('1\n2\n');
+  });
+
+  it('appendStreamOutput/removeStreamOutput 이 ydoc 3 시맨틱을 따른다', () => {
+    const cell = model.sharedModel.yCodeCell as unknown as {
+      setOutputs(outputs: unknown[]): void;
+      getOutputs(): { text?: unknown }[];
+      appendStreamOutput(index: number, text: string, origin?: unknown): void;
+      removeStreamOutput(index: number, start: number, origin?: unknown): void;
+    };
+    cell.setOutputs([
+      { output_type: 'stream', name: 'stdout', text: 'abcdef' }
+    ]);
+
+    cell.appendStreamOutput(0, 'gh', 'silent-change');
+    expect(cell.getOutputs()[0].text).toBe('abcdefgh');
+
+    cell.removeStreamOutput(0, 3, 'silent-change');
+    expect(cell.getOutputs()[0].text).toBe('abc');
+  });
+
   it('undo/redo 가 boolean 을 반환하며 source 를 복원한다', () => {
     model.source = 'first';
     // 500ms 내 연속 편집은 한 undo 항목으로 병합되므로 캡처를 끊어 분리함.

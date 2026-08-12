@@ -472,24 +472,80 @@ export namespace JudgeModel {
     getOutputs(): IOutput[] {
       return this._outputs.toArray();
     }
-    setOutputs(outputs: IOutput[]): void {
-      this.transact(() => {
-        this._outputs.delete(0, this._outputs.length);
-        this._outputs.insert(0, outputs);
-      }, false);
+    setOutputs(outputs: IOutput[], origin: any = null): void {
+      this.transact(
+        () => {
+          this._outputs.delete(0, this._outputs.length);
+          this._outputs.insert(0, outputs);
+        },
+        false,
+        origin
+      );
     }
-    clearOutputs(origin: any): void {
-      this.transact(() => {
-        this._outputs.delete(0, this._outputs.length);
-      }, false);
+    clearOutputs(origin: any = null): void {
+      this.transact(
+        () => {
+          this._outputs.delete(0, this._outputs.length);
+        },
+        false,
+        origin
+      );
     }
-    updateOutputs(start: number, end: number, outputs: IOutput[]): void {
+    updateOutputs(
+      start: number,
+      end: number,
+      outputs: IOutput[],
+      origin: any = null
+    ): void {
       const fin =
         end < this._outputs.length ? end - start : this._outputs.length - start;
-      this.transact(() => {
-        this._outputs.delete(start, fin);
-        this._outputs.insert(start, outputs);
-      }, false);
+      this.transact(
+        () => {
+          this._outputs.delete(start, fin);
+          this._outputs.insert(start, outputs);
+        },
+        false,
+        origin
+      );
+    }
+    // lab 4.4 CodeCellModel 이 stream 출력 병합 시 ISharedCodeCell 밖의
+    // concrete YCodeCell 메서드 두 개를 직접 호출하므로 ydoc 3 시맨틱을
+    // 미러링함. plain object 저장이라 해당 요소 교체로 텍스트를 갱신함.
+    removeStreamOutput(index: number, start: number, origin: any = null): void {
+      this.transact(
+        () => {
+          const output = this._outputs.get(index) as nbformat.IStream;
+          if (!output || output.output_type !== 'stream') {
+            return;
+          }
+          const text = Array.isArray(output.text)
+            ? output.text.join('')
+            : String(output.text ?? '');
+          this._outputs.delete(index, 1);
+          this._outputs.insert(index, [
+            { ...output, text: text.slice(0, start) }
+          ]);
+        },
+        false,
+        origin
+      );
+    }
+    appendStreamOutput(index: number, text: string, origin: any = null): void {
+      this.transact(
+        () => {
+          const output = this._outputs.get(index) as nbformat.IStream;
+          if (!output || output.output_type !== 'stream') {
+            return;
+          }
+          const prevText = Array.isArray(output.text)
+            ? output.text.join('')
+            : String(output.text ?? '');
+          this._outputs.delete(index, 1);
+          this._outputs.insert(index, [{ ...output, text: prevText + text }]);
+        },
+        false,
+        origin
+      );
     }
     toJSON(): IBaseCell {
       throw new Error('Method not implemented.');
@@ -542,6 +598,11 @@ export namespace JudgeModel {
     private _outputsObserver = (
       event: Y.YArrayEvent<nbformat.IOutput>
     ): void => {
+      // 'silent-change' origin 은 lab 이 자기 OutputAreaModel 에 이미 반영한
+      // 변경의 에코 — 재발화하면 스트림 텍스트가 이중 반영되므로 차단함.
+      if (event.transaction.origin === 'silent-change') {
+        return;
+      }
       // ydoc 3 의 outputsChange 델타 타입은 Y.Map 래핑을 전제하나, lab 4.4
       // CodeCellModel 이 plain object 를 하위호환 처리('toJSON' in output 분기)
       // 하므로 저장 구조는 유지하고 타입만 맞춤. lab 다음 메이저에서 Y.Map 필수 예정.
@@ -567,8 +628,8 @@ export namespace JudgeModel {
     clearUndoHistory(): void {
       this._yjudge.clearUndoHistory();
     }
-    transact(f: () => void, undoable = true): void {
-      this._yjudge.ydoc.transact(f, undoable ? this : null);
+    transact(f: () => void, undoable = true, origin: any = null): void {
+      this._yjudge.ydoc.transact(f, origin ?? (undoable ? this : null));
     }
 
     get disposed(): ISignal<this, void> {
