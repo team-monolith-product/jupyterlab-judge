@@ -1,8 +1,8 @@
 # AGENTS.md — jupyterlab-judge
 
 AI 에이전트와 개발자를 위한 작업 지침입니다. 코딩 철학·리뷰 문화는
-[jce-codle-react 의 AGENTS.md](https://github.com/team-monolith-product/jce-codle-react/blob/main/AGENTS.md)를
-따르며, 이 문서는 이 레포에 특화된 규칙만 담습니다.
+jce-codle-react 레포의 AGENTS.md 를 따르며, 이 문서는 이 레포에 특화된
+규칙만 담습니다.
 
 ## 0. 개요
 
