@@ -1,7 +1,6 @@
 # AGENTS.md — jupyterlab-judge
 
-Coding philosophy and review culture follow the AGENTS.md of the
-jce-codle-react repo (team-internal). This document holds only the
+Working guide for AI agents and developers. This document holds only the
 discipline that code cannot express. For everything else:
 
 - What this extension is, how to build and test it: [README.md](README.md)
