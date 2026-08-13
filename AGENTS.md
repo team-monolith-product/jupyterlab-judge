@@ -7,13 +7,11 @@ discipline that code cannot express. For everything else:
 - Integration tests (Galata): [ui-tests/README.md](ui-tests/README.md)
 - Releasing: [RELEASE.md](RELEASE.md)
 
-## Cross-repo constraints
+## Extension points
 
-- The production `IProblemProvider` is injected by jcejlext; the bundled
-  `HardCodedProblemProvider` is a fallback used in standalone development
-  and Galata tests.
-- Keep the JupyterLab version aligned with the hub image pin
-  (jce-js-dockerfile `jupyterlab4/requirements-server.txt`).
+- `IProblemProvider` is meant to be provided by the embedding application;
+  the bundled `HardCodedProblemProvider` is a fallback used for standalone
+  development and Galata tests.
 
 ## Versioning discipline
 
