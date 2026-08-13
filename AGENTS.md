@@ -19,10 +19,7 @@ discipline that code cannot express. For everything else:
   resolutions to the matrix measured from the target lab version's monorepo
   tag — never guess sub-package versions.
 - When bumping lab, check whether `@jupyter/ydoc` requires a major bump
-  alongside (follow what `@jupyterlab/cells` requires). `src/model.ts`
-  implements the ydoc interfaces, and lab also calls concrete methods
-  beyond those interfaces — a clean tsc run does not prove the contract.
-  Expect `model.ts` to break first, and verify it at runtime.
+  alongside (follow what `@jupyterlab/cells` requires).
 
 ## Workflow gates
 
