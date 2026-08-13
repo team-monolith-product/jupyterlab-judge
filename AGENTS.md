@@ -25,6 +25,7 @@ discipline that code cannot express. For everything else:
   implements the ydoc interfaces, and lab also calls concrete methods
   beyond those interfaces — a clean tsc run does not prove the contract.
   Expect `model.ts` to break first, and verify it at runtime.
+
 ## Workflow gates
 
 - Before push: `jlpm build:check`, `jlpm test`, and `jlpm lint:check` must
