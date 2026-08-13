@@ -9,9 +9,9 @@ discipline that code cannot express. For everything else:
 
 ## Cross-repo constraints
 
-- The production `IProblemProvider` is injected by jcejlext;
-  `HardCodedProblemProvider` exists only for standalone development and
-  Galata tests.
+- The production `IProblemProvider` is injected by jcejlext; the bundled
+  `HardCodedProblemProvider` is a fallback used in standalone development
+  and Galata tests.
 - Keep the JupyterLab version aligned with the hub image pin
   (jce-js-dockerfile `jupyterlab4/requirements-server.txt`).
 
@@ -25,9 +25,6 @@ discipline that code cannot express. For everything else:
   implements the ydoc interfaces, and lab also calls concrete methods
   beyond those interfaces — a clean tsc run does not prove the contract.
   Expect `model.ts` to break first, and verify it at runtime.
-- Never bump `version` in `package.json` manually — jupyter-releaser does
-  it at release time.
-
 ## Workflow gates
 
 - Before push: `jlpm build:check`, `jlpm test`, and `jlpm lint:check` must
@@ -43,6 +40,3 @@ discipline that code cannot express. For everything else:
   commits with `[AI]`.
 - Write PR titles and descriptions in English — the repo is public and
   merged PR titles land verbatim in the released CHANGELOG.
-- Mirroring ydoc signatures (`origin: any` in `transact` and the outputs
-  methods) is the one exception to the no-`any` rule — diffability against
-  the upstream d.ts takes priority.
