@@ -457,7 +457,8 @@ export namespace JudgeModel {
     readonly id = '';
     readonly cell_type = 'code';
     readonly execution_count = 0;
-    // 채점 실행 상태는 judge 자체 플로우가 관리하므로 인터페이스 준수용으로만 둠.
+    // Judge's own grading flow manages execution state; this property
+    // exists only to satisfy the ydoc 3 interface.
     executionState: models.IExecutionState = 'idle';
     readonly isStandalone = true;
     readonly notebook = null;
@@ -508,9 +509,10 @@ export namespace JudgeModel {
         origin
       );
     }
-    // lab 4.4 CodeCellModel 이 stream 출력 병합 시 ISharedCodeCell 밖의
-    // concrete YCodeCell 메서드 두 개를 직접 호출하므로 ydoc 3 시맨틱을
-    // 미러링함. plain object 저장이라 해당 요소 교체로 텍스트를 갱신함.
+    // On stream output merge, lab 4.4 CodeCellModel calls two concrete
+    // YCodeCell methods that are not part of ISharedCodeCell, so we mirror
+    // the ydoc 3 semantics here. Outputs are stored as plain objects, so
+    // the text is updated by replacing the element.
     removeStreamOutput(index: number, start: number, origin: any = null): void {
       this.transact(
         () => {
@@ -598,14 +600,16 @@ export namespace JudgeModel {
     private _outputsObserver = (
       event: Y.YArrayEvent<nbformat.IOutput>
     ): void => {
-      // 'silent-change' origin 은 lab 이 자기 OutputAreaModel 에 이미 반영한
-      // 변경의 에코 — 재발화하면 스트림 텍스트가 이중 반영되므로 차단함.
+      // A 'silent-change' origin is an echo of a change lab has already
+      // applied to its OutputAreaModel — re-emitting it would double-apply
+      // stream text.
       if (event.transaction.origin === 'silent-change') {
         return;
       }
-      // ydoc 3 의 outputsChange 델타 타입은 Y.Map 래핑을 전제하나, lab 4.4
-      // CodeCellModel 이 plain object 를 하위호환 처리('toJSON' in output 분기)
-      // 하므로 저장 구조는 유지하고 타입만 맞춤. lab 다음 메이저에서 Y.Map 필수 예정.
+      // ydoc 3 types the outputsChange delta as Y.Map-wrapped, but lab 4.4
+      // CodeCellModel still handles plain objects for backward compatibility
+      // (the `'toJSON' in output` branch), so we keep the storage shape and
+      // only align the type. Y.Map becomes mandatory in the next lab major.
       this._changed.emit({
         outputsChange: event.changes.delta as unknown as models.Delta<
           Y.Map<any>

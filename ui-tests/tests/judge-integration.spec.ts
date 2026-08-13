@@ -49,7 +49,8 @@ test.describe('Judge Integration', () => {
     // Fix the error - clear and write correct code
     const cmContent = page.locator('.jp-JudgePanel-editor .cm-content');
     await cmContent.click();
-    // macOS CodeMirror 는 Ctrl+a 가 줄 이동이라 전체 선택이 되지 않음.
+    // On macOS, CodeMirror maps Ctrl+A to cursor-to-line-start, not
+    // select-all.
     await page.keyboard.press('ControlOrMeta+a');
     await page.keyboard.press('Backspace');
     await page.keyboard.insertText(

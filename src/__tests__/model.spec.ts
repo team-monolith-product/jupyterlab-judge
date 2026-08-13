@@ -1,7 +1,8 @@
 /**
- * 커스텀 공유 모델(YJudge/YCodeCell)이 JupyterLab 의 실제 CodeCellModel /
- * OutputAreaModel 과 맞물리는 접합부를 검증합니다. lab 버전 업그레이드 시
- * 이 접합부가 가장 먼저 깨지는 지점이라 회귀망 역할을 합니다.
+ * Verifies the custom shared model (YJudge/YCodeCell) against JupyterLab's
+ * real CodeCellModel / OutputAreaModel at their seam. This seam is the
+ * first thing to break on a lab upgrade, so this suite is the regression
+ * net for it.
  */
 import { JudgeModel } from '../model';
 import { IProblemProvider } from '../tokens';
@@ -16,14 +17,14 @@ function stubProvider(): IProblemProvider {
   };
 }
 
-describe('JudgeModel × lab CodeCellModel 접합부', () => {
+describe('JudgeModel x lab CodeCellModel seam', () => {
   let model: JudgeModel;
 
   beforeEach(() => {
     model = new JudgeModel(stubProvider());
   });
 
-  it('source 가 공유 모델을 거쳐 CodeCellModel 로 양방향 전파된다', () => {
+  it('propagates source through the shared model to CodeCellModel in both directions', () => {
     model.source = 'print(1)';
     expect(model.codeModel.sharedModel.getSource()).toBe('print(1)');
 
@@ -31,7 +32,7 @@ describe('JudgeModel × lab CodeCellModel 접합부', () => {
     expect(model.source).toBe('print(2)');
   });
 
-  it('source 변경이 contentChanged 와 dirty 를 발화한다', () => {
+  it('emits contentChanged and sets dirty on source change', () => {
     const contentChanged = jest.fn();
     model.contentChanged.connect(contentChanged);
 
@@ -41,7 +42,7 @@ describe('JudgeModel × lab CodeCellModel 접합부', () => {
     expect(model.dirty).toBe(true);
   });
 
-  it('setOutputs 의 plain object 출력이 OutputAreaModel 에 반영된다', () => {
+  it('reflects plain object outputs into OutputAreaModel via setOutputs', () => {
     const stream = {
       output_type: 'stream',
       name: 'stdout',
@@ -54,7 +55,7 @@ describe('JudgeModel × lab CodeCellModel 접합부', () => {
     expect(model.outputAreaModel.get(0).toJSON()).toMatchObject(stream);
   });
 
-  it('clearOutputs 가 OutputAreaModel 을 비운다', () => {
+  it('empties OutputAreaModel via clearOutputs', () => {
     model.sharedModel.yCodeCell.setOutputs([
       { output_type: 'stream', name: 'stdout', text: 'a' }
     ]);
@@ -63,9 +64,9 @@ describe('JudgeModel × lab CodeCellModel 접합부', () => {
     expect(model.outputAreaModel.length).toBe(0);
   });
 
-  it('연속 stream 출력 병합이 공유 모델까지 동기화된다 (이중 반영 없이)', () => {
-    // lab 은 같은 이름의 연속 stream 을 한 출력으로 병합하며, 이때
-    // ISharedCodeCell 밖의 appendStreamOutput/removeStreamOutput 을 직접 호출함.
+  it('syncs merged consecutive stream outputs to the shared model without double apply', () => {
+    // lab merges consecutive same-name streams into one output and calls
+    // appendStreamOutput/removeStreamOutput outside ISharedCodeCell.
     model.outputAreaModel.add({
       output_type: 'stream',
       name: 'stdout',
@@ -87,7 +88,7 @@ describe('JudgeModel × lab CodeCellModel 접합부', () => {
     expect(outputs[0].text).toBe('1\n2\n');
   });
 
-  it('appendStreamOutput/removeStreamOutput 이 ydoc 3 시맨틱을 따른다', () => {
+  it('follows ydoc 3 semantics in appendStreamOutput/removeStreamOutput', () => {
     const cell = model.sharedModel.yCodeCell as unknown as {
       setOutputs(outputs: unknown[]): void;
       getOutputs(): { text?: unknown }[];
@@ -105,9 +106,10 @@ describe('JudgeModel × lab CodeCellModel 접합부', () => {
     expect(cell.getOutputs()[0].text).toBe('abc');
   });
 
-  it('undo/redo 가 boolean 을 반환하며 source 를 복원한다', () => {
+  it('returns booleans from undo/redo and restores source', () => {
     model.source = 'first';
-    // 500ms 내 연속 편집은 한 undo 항목으로 병합되므로 캡처를 끊어 분리함.
+    // Consecutive edits within 500ms merge into one undo item, so stop
+    // capturing to split them.
     model.sharedModel.undoManager.stopCapturing();
     model.source = 'second';
 
@@ -118,7 +120,7 @@ describe('JudgeModel × lab CodeCellModel 접합부', () => {
     expect(model.source).toBe('second');
   });
 
-  it('fromString/toString 이 파일 포맷을 왕복 보존한다', () => {
+  it('round-trips the file format through fromString/toString', () => {
     const content = '{"problem_id":"7","code":"a, b = 1, 2","judge_format":1}';
 
     model.fromString(content);
@@ -129,7 +131,7 @@ describe('JudgeModel × lab CodeCellModel 접합부', () => {
     expect(JSON.parse(model.toString())).toEqual(JSON.parse(content));
   });
 
-  it('problemId 변경 시 provider 조회 후 problemChanged 를 발화한다', async () => {
+  it('emits problemChanged after the provider lookup when problemId changes', async () => {
     const provider = stubProvider();
     const problem = { id: '9', skeletonCode: '' };
     (provider.getProblem as jest.Mock).mockResolvedValue(problem);
@@ -144,7 +146,7 @@ describe('JudgeModel × lab CodeCellModel 접합부', () => {
     expect(provider.getProblem).toHaveBeenCalledWith('9');
   });
 
-  it('executionState 를 읽고 쓸 수 있다 (ydoc 3 인터페이스 준수)', () => {
+  it('reads and writes executionState (ydoc 3 interface compliance)', () => {
     expect(model.sharedModel.yCodeCell.executionState).toBe('idle');
     model.sharedModel.yCodeCell.executionState = 'running';
     expect(model.sharedModel.yCodeCell.executionState).toBe('running');
