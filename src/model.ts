@@ -411,6 +411,12 @@ export namespace JudgeModel {
     set source(value: string) {
       this._ycodeCell.setSource(value);
     }
+    getSource(): string {
+      return this.source;
+    }
+    setSource(value: string): void {
+      this.source = value;
+    }
 
     getMetadata(): {
       [x: string]: any;
@@ -451,6 +457,9 @@ export namespace JudgeModel {
     readonly id = '';
     readonly cell_type = 'code';
     readonly execution_count = 0;
+    // Judge's own grading flow manages execution state; this property
+    // exists only to satisfy the ydoc 3 interface.
+    executionState: models.IExecutionState = 'idle';
     readonly isStandalone = true;
     readonly notebook = null;
     readonly metadata = {};
@@ -464,19 +473,81 @@ export namespace JudgeModel {
     getOutputs(): IOutput[] {
       return this._outputs.toArray();
     }
-    setOutputs(outputs: IOutput[]): void {
-      this.transact(() => {
-        this._outputs.delete(0, this._outputs.length);
-        this._outputs.insert(0, outputs);
-      }, false);
+    setOutputs(outputs: IOutput[], origin: any = null): void {
+      this.transact(
+        () => {
+          this._outputs.delete(0, this._outputs.length);
+          this._outputs.insert(0, outputs);
+        },
+        false,
+        origin
+      );
     }
-    updateOutputs(start: number, end: number, outputs: IOutput[]): void {
+    clearOutputs(origin: any = null): void {
+      this.transact(
+        () => {
+          this._outputs.delete(0, this._outputs.length);
+        },
+        false,
+        origin
+      );
+    }
+    updateOutputs(
+      start: number,
+      end: number,
+      outputs: IOutput[],
+      origin: any = null
+    ): void {
       const fin =
         end < this._outputs.length ? end - start : this._outputs.length - start;
-      this.transact(() => {
-        this._outputs.delete(start, fin);
-        this._outputs.insert(start, outputs);
-      }, false);
+      this.transact(
+        () => {
+          this._outputs.delete(start, fin);
+          this._outputs.insert(start, outputs);
+        },
+        false,
+        origin
+      );
+    }
+    // On stream output merge, lab 4.4 CodeCellModel calls two concrete
+    // YCodeCell methods that are not part of ISharedCodeCell, so we mirror
+    // the ydoc 3 semantics here. Outputs are stored as plain objects, so
+    // the text is updated by replacing the element.
+    removeStreamOutput(index: number, start: number, origin: any = null): void {
+      this.transact(
+        () => {
+          const output = this._outputs.get(index) as nbformat.IStream;
+          if (!output || output.output_type !== 'stream') {
+            return;
+          }
+          const text = Array.isArray(output.text)
+            ? output.text.join('')
+            : String(output.text ?? '');
+          this._outputs.delete(index, 1);
+          this._outputs.insert(index, [
+            { ...output, text: text.slice(0, start) }
+          ]);
+        },
+        false,
+        origin
+      );
+    }
+    appendStreamOutput(index: number, text: string, origin: any = null): void {
+      this.transact(
+        () => {
+          const output = this._outputs.get(index) as nbformat.IStream;
+          if (!output || output.output_type !== 'stream') {
+            return;
+          }
+          const prevText = Array.isArray(output.text)
+            ? output.text.join('')
+            : String(output.text ?? '');
+          this._outputs.delete(index, 1);
+          this._outputs.insert(index, [{ ...output, text: prevText + text }]);
+        },
+        false,
+        origin
+      );
     }
     toJSON(): IBaseCell {
       throw new Error('Method not implemented.');
@@ -529,16 +600,28 @@ export namespace JudgeModel {
     private _outputsObserver = (
       event: Y.YArrayEvent<nbformat.IOutput>
     ): void => {
+      // A 'silent-change' origin is an echo of a change lab has already
+      // applied to its OutputAreaModel — re-emitting it would double-apply
+      // stream text.
+      if (event.transaction.origin === 'silent-change') {
+        return;
+      }
+      // ydoc 3 types the outputsChange delta as Y.Map-wrapped, but lab 4.4
+      // CodeCellModel still handles plain objects for backward compatibility
+      // (the `'toJSON' in output` branch), so we keep the storage shape and
+      // only align the type. Y.Map becomes mandatory in the next lab major.
       this._changed.emit({
-        outputsChange: event.changes.delta as models.Delta<IOutput[]>
+        outputsChange: event.changes.delta as unknown as models.Delta<
+          Y.Map<any>
+        >
       });
     };
 
-    undo(): void {
-      this._yjudge.undo();
+    undo(): boolean {
+      return this._yjudge.undo();
     }
-    redo(): void {
-      this._yjudge.redo();
+    redo(): boolean {
+      return this._yjudge.redo();
     }
     canUndo(): boolean {
       return this._yjudge.canUndo();
@@ -549,8 +632,8 @@ export namespace JudgeModel {
     clearUndoHistory(): void {
       this._yjudge.clearUndoHistory();
     }
-    transact(f: () => void, undoable = true): void {
-      this._yjudge.ydoc.transact(f, undoable ? this : null);
+    transact(f: () => void, undoable = true, origin: any = null): void {
+      this._yjudge.ydoc.transact(f, origin ?? (undoable ? this : null));
     }
 
     get disposed(): ISignal<this, void> {

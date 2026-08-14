@@ -2,8 +2,12 @@ const jestJupyterLab = require('@jupyterlab/testutils/lib/jest-config');
 
 const esModules = [
   '@codemirror',
-  '@jupyter/ydoc',
+  // lab 4.4 cells depends on the ESM-only @jupyter/react-components, so
+  // include all of @jupyter/ and its deps (fast, exenv-es6) in transforms.
+  '@jupyter/',
   '@jupyterlab/',
+  '@microsoft/fast',
+  'exenv-es6',
   'lib0',
   'nanoid',
   'vscode-ws-jsonrpc',

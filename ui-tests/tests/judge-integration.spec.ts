@@ -49,7 +49,9 @@ test.describe('Judge Integration', () => {
     // Fix the error - clear and write correct code
     const cmContent = page.locator('.jp-JudgePanel-editor .cm-content');
     await cmContent.click();
-    await page.keyboard.press('Control+a');
+    // On macOS, CodeMirror maps Ctrl+A to cursor-to-line-start, not
+    // select-all.
+    await page.keyboard.press('ControlOrMeta+a');
     await page.keyboard.press('Backspace');
     await page.keyboard.insertText(
       'a, b = map(int, input().split())\nprint(a + b)'
