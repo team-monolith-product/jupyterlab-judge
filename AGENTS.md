@@ -18,21 +18,14 @@ discipline that code cannot express. For everything else:
 - `@jupyterlab/*` packages are federated singletons: pin dependencies and
   resolutions to the matrix measured from the target lab version's monorepo
   tag — never guess sub-package versions.
-- When bumping lab, check whether `@jupyter/ydoc` requires a major bump
-  alongside (follow what `@jupyterlab/cells` requires).
 
-## Workflow gates
+## Verification
 
-- Before push: `jlpm build:check`, `jlpm test`, and `jlpm lint:check` must
-  pass.
-- After creating or updating a PR: `jlpm build:prod` and the Galata suite
-  as well.
+We verify with tsc, eslint, prettier, stylelint, jest, pytest, and Galata;
+GitHub Actions runs all of them on every PR. Locally you can run the same
+checks scoped down (`jlpm build:check`, `jlpm lint:check`, `jlpm test`).
+After opening or updating a PR, ensure every GitHub Action succeeds.
 
-## Writing rules
+## Language
 
-- Comments cover business background, technical constraints, and hidden
-  failure scenarios — never restate the code.
-- Write commits as conventional commits in English; tag AI-generated
-  commits with `[AI]`.
-- Write PR titles and descriptions in English — the repo is public and
-  merged PR titles land verbatim in the released CHANGELOG.
+Write everything — comments, commits, PRs — in English.
