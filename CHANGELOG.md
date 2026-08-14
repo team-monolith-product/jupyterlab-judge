@@ -2,6 +2,25 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 1.31.0
+
+([Full Changelog](https://github.com/team-monolith-product/jupyterlab-judge/compare/v1.30.0...0ed168b07213c902175571425cdbf331c37cbc52))
+
+### Merged PRs
+
+- [INF-371] D.4 - Align jupyterlab-judge to JupyterLab 4.4 (deps matrix, ydoc 3, tests) [#76](https://github.com/team-monolith-product/jupyterlab-judge/pull/76) ([@HoseonRyu](https://github.com/HoseonRyu), [@a3626a](https://github.com/a3626a), [@claude](https://github.com/claude))
+
+### Contributors to this release
+
+The following people contributed discussions, new ideas, code and documentation contributions, and review.
+See [our definition of contributors](https://github-activity.readthedocs.io/en/latest/use/#how-does-this-tool-define-contributions-in-the-reports).
+
+([GitHub contributors page for this release](https://github.com/team-monolith-product/jupyterlab-judge/graphs/contributors?from=2026-05-07&to=2026-08-14&type=c))
+
+@a3626a ([activity](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3Aa3626a+updated%3A2026-05-07..2026-08-14&type=Issues)) | @claude ([activity](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3Aclaude+updated%3A2026-05-07..2026-08-14&type=Issues)) | @HoseonRyu ([activity](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3AHoseonRyu+updated%3A2026-05-07..2026-08-14&type=Issues))
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 1.30.0
 
 ([Full Changelog](https://github.com/team-monolith-product/jupyterlab-judge/compare/v1.30.0rc1...30277564f285c5598f00b280b2eaa16f1b4d31a5))
@@ -18,8 +37,6 @@ See [our definition of contributors](https://github-activity.readthedocs.io/en/l
 ([GitHub contributors page for this release](https://github.com/team-monolith-product/jupyterlab-judge/graphs/contributors?from=2026-04-30&to=2026-05-07&type=c))
 
 @a3626a ([activity](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3Aa3626a+updated%3A2026-04-30..2026-05-07&type=Issues)) | @claude ([activity](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3Aclaude+updated%3A2026-04-30..2026-05-07&type=Issues)) | @shcshcshc ([activity](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3Ashcshcshc+updated%3A2026-04-30..2026-05-07&type=Issues))
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 1.30.0rc1
 
