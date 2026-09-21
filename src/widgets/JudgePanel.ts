@@ -49,7 +49,7 @@ function bytesToBase64(bytes: Uint8Array) {
   return btoa(binString);
 }
 
-type IRunResult =
+export type IRunResult =
   | {
       status: 'OK' | 'OLE';
       output: string;
@@ -114,6 +114,7 @@ export namespace JudgePanel {
     submitted: Signal<any, JudgeSignal.ISubmissionArgs>;
     executed: Signal<any, JudgeSignal.IExecutionArgs>;
 
+    initializeSession?: boolean;
     panelTitleIcon?: LabIcon;
     judgeSubmissionAreaFactory: (
       options: JudgeSubmissionArea.IOptions
@@ -194,7 +195,7 @@ export class JudgePanel extends BoxPanel {
 
     this.title.icon = options.panelTitleIcon ?? textEditorIcon;
 
-    if (!this.session.isReady) {
+    if (options.initializeSession !== false && !this.session.isReady) {
       void this.session.initialize();
     }
   }
@@ -377,40 +378,178 @@ export class JudgePanel extends BoxPanel {
       return;
     }
 
-    const oldKernel = this.session.session?.kernel;
-    if (!oldKernel) {
-      void this._sessionContextDialogs.selectKernel(this.session);
+    const sessionContext = this.createJudgeSession();
+    if (!sessionContext) {
       this.model.submissionStatus = { type: 'idle' };
       return;
     }
 
-    const sessionContext = new SessionContext({
+    let submissionRequest: ProblemProvider.ISubmissionRequest;
+    try {
+      let kernel = await this.prepareJudgeSession(sessionContext);
+      if (!kernel) {
+        this.model.submissionStatus = { type: 'idle' };
+        return;
+      }
+
+      this.model.submissionStatus = {
+        type: 'progress',
+        runCount: 0,
+        totalCount: testCases.length
+      };
+
+      const results: IRunResult[] = [];
+      for (const testCase of testCases) {
+        const result = await this.runWithInput(kernel, code, problem, testCase);
+        results.push(result);
+        this.model.submissionStatus = {
+          type: 'progress',
+          runCount: results.length,
+          totalCount: testCases.length
+        };
+        if (results.length < testCases.length) {
+          kernel = await this.recoverJudgeSession(sessionContext, result);
+        }
+      }
+
+      const validateResult = await this.model.validate(
+        results.map(result => (result.status === 'OK' ? result.output : null))
+      );
+
+      if (validateResult === null) {
+        throw new ValidationFailedError(
+          this._trans.__('Validation failed. Please try again')
+        );
+      }
+
+      submissionRequest = {
+        problemId: problem.id,
+        code,
+        token: validateResult.token,
+        language: 'python',
+        details: results.map((result, index) => {
+          switch (result.status) {
+            case 'OK':
+              if (validateResult.results[index]) {
+                return {
+                  status: 'AC',
+                  cpuTime: result.cpuTime,
+                  memory: 0
+                };
+              } else {
+                return {
+                  status: 'WA',
+                  answer: result.output,
+                  cpuTime: result.cpuTime,
+                  memory: 0
+                };
+              }
+            case 'TLE':
+              return {
+                status: 'TLE',
+                cpuTime: result.cpuTime,
+                memory: 0
+              };
+            case 'OLE':
+              return {
+                status: 'OLE',
+                cpuTime: result.cpuTime,
+                memory: 0
+              };
+            case 'RE':
+              return {
+                status: 'RE',
+                memory: 0,
+                cpuTime: result.cpuTime,
+                errorName: result.errorName,
+                errorValue: result.errorValue
+              };
+          }
+        })
+      };
+    } finally {
+      await this.disposeJudgeSession(sessionContext);
+    }
+
+    const submission = await this.model.submit(submissionRequest, this);
+    this.model.submissionStatus = { type: 'idle' };
+
+    this._submitted.emit({
+      widget: this,
+      submission,
+      problem
+    });
+  }
+
+  protected createJudgeSession(): ISessionContext | null {
+    if (!this.session.session?.kernel) {
+      void this._sessionContextDialogs.selectKernel(this.session);
+      return null;
+    }
+    return new SessionContext({
       sessionManager: this.session.sessionManager,
       specsManager: this.session.specsManager,
       name: 'Judge'
     });
+  }
 
-    await sessionContext.initialize();
-    await sessionContext.changeKernel(await oldKernel.spec);
-
-    const kernel = sessionContext.session?.kernel;
-    if (!kernel) {
-      void this._sessionContextDialogs.selectKernel(sessionContext);
-      this.model.submissionStatus = { type: 'idle' };
-      return;
+  protected async prepareJudgeSession(
+    session: ISessionContext
+  ): Promise<IKernelConnection | null> {
+    const oldKernel = this.session.session?.kernel;
+    if (!oldKernel) {
+      throw new JudgeKernelNotConnectedError();
     }
+    await session.initialize();
+    await session.changeKernel(await oldKernel.spec);
+    const kernel = session.session?.kernel;
+    if (!kernel) {
+      void this._sessionContextDialogs.selectKernel(session);
+      return null;
+    }
+    await this.waitForJudgeKernel(kernel);
+    return kernel;
+  }
 
+  protected async recoverJudgeSession(
+    session: ISessionContext,
+    result: IRunResult
+  ): Promise<IKernelConnection> {
+    const kernel = session.session?.kernel;
+    if (!kernel) {
+      throw new JudgeKernelNotConnectedError();
+    }
+    return kernel;
+  }
+
+  protected async disposeJudgeSession(session: ISessionContext): Promise<void> {
+    try {
+      // Initialization failures can leave the context's shutdown gate unresolved.
+      await session.session?.shutdown();
+    } finally {
+      session.dispose();
+    }
+  }
+
+  protected async interruptJudgeKernel(
+    kernel: IKernelConnection
+  ): Promise<void> {
+    await kernel.interrupt();
+  }
+
+  protected async waitForJudgeKernel(kernel: IKernelConnection): Promise<void> {
     // Wait for kernel to be ready by awaiting kernel.info (health check)
     // This ensures the kernel can respond to requests
     const KERNEL_INFO_TIMEOUT = 20000;
     const timeoutSymbol = Symbol('timeout');
 
+    let timer: ReturnType<typeof setTimeout> | undefined;
     try {
       await Promise.race([
         kernel.info,
-        new Promise<never>((_, reject) =>
-          setTimeout(() => reject(timeoutSymbol), KERNEL_INFO_TIMEOUT)
-        )
+        new Promise<never>((_, reject) => {
+          timer = setTimeout(() => reject(timeoutSymbol), KERNEL_INFO_TIMEOUT);
+        })
       ]);
     } catch (e) {
       // Timeout error: classify based on connection status
@@ -455,94 +594,9 @@ export class JudgePanel extends BoxPanel {
 
       // Unexpected error: rethrow
       throw e;
+    } finally {
+      clearTimeout(timer);
     }
-
-    this.model.submissionStatus = {
-      type: 'progress',
-      runCount: 0,
-      totalCount: testCases.length
-    };
-
-    const results: IRunResult[] = [];
-    for (const testCase of testCases) {
-      const result = await this.runWithInput(kernel, code, problem, testCase);
-      results.push(result);
-      this.model.submissionStatus = {
-        type: 'progress',
-        runCount: results.length,
-        totalCount: testCases.length
-      };
-    }
-
-    const validateResult = await this.model.validate(
-      results.map(result => (result.status === 'OK' ? result.output : null))
-    );
-
-    if (validateResult === null) {
-      throw new ValidationFailedError(
-        this._trans.__('Validation failed. Please try again')
-      );
-    }
-
-    await kernel.shutdown();
-    kernel.dispose();
-
-    const submission = await this.model.submit(
-      {
-        problemId: problem.id,
-        code,
-        token: validateResult.token,
-        language: 'python',
-        details: results.map((result, index) => {
-          switch (result.status) {
-            case 'OK':
-              if (validateResult.results[index]) {
-                return {
-                  status: 'AC',
-                  cpuTime: result.cpuTime,
-                  memory: 0
-                };
-              } else {
-                return {
-                  status: 'WA',
-                  answer: result.output,
-                  cpuTime: result.cpuTime,
-                  memory: 0
-                };
-              }
-            case 'TLE':
-              return {
-                status: 'TLE',
-                cpuTime: result.cpuTime,
-                memory: 0
-              };
-            case 'OLE':
-              return {
-                status: 'OLE',
-                cpuTime: result.cpuTime,
-                memory: 0
-              };
-            case 'RE':
-              return {
-                status: 'RE',
-                memory: 0,
-                cpuTime: result.cpuTime,
-                errorName: result.errorName,
-                errorValue: result.errorValue
-              };
-          }
-        })
-      },
-      this
-    );
-
-    this.model.submissionStatus = { type: 'idle' };
-
-    this._submitted.emit({
-      widget: this,
-      submission,
-      problem
-    });
   }
 
   private async runWithInput(
@@ -649,16 +703,22 @@ JUDGE_INPUT_STRING_IO.seek(0)
 
     const timelimit = 1000 * problem.timeout;
 
+    let timer: ReturnType<typeof setTimeout> | undefined;
     const timeout = new Promise<number>(resolve => {
       // 강제로 종료하는 것은 20% 여유를 두고 진행합니다.
-      setTimeout(() => {
+      timer = setTimeout(() => {
         resolve(0);
       }, timelimit * 1.2);
     });
-    const a = await Promise.race([future.done, timeout]);
+    let a: KernelMessage.IExecuteReplyMsg | number;
+    try {
+      a = await Promise.race([future.done, timeout]);
+    } finally {
+      clearTimeout(timer);
+    }
     if (a === 0) {
       future.dispose();
-      await kernel.interrupt();
+      await this.interruptJudgeKernel(kernel);
 
       // 강제 종료는 당연히 TLE
       // result.status = 'TLE';
