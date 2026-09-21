@@ -38,8 +38,7 @@ document session. Embedders must also disable automatic document kernel startup
 in the document context's kernel preference.
 
 The embedding application must supply an authorized Contents root through
-`judgeRoot` when calling `openOrCreateFromId` or its command. This extension does
-not derive tenant or user paths.
+`judgeRoot` when calling `openOrCreateFromId` or its command.
 
 ## Security
 
