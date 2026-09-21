@@ -524,7 +524,6 @@ export class JudgePanel extends BoxPanel {
 
   protected async disposeJudgeSession(session: ISessionContext): Promise<void> {
     try {
-      // Initialization failures can leave the context's shutdown gate unresolved.
       await session.session?.shutdown();
     } finally {
       session.dispose();

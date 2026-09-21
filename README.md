@@ -33,39 +33,13 @@ Problem and submission storage can be configured.
 
 ## Embedding sessions and storage
 
-`JudgePanel.judge()` owns testcase execution, validation, result mapping,
-submission, and the submitted signal. Subclasses can customize session lifetime
-through these protected hooks:
-
-- `createJudgeSession(): ISessionContext | null` synchronously allocates a
-  context, without starting its kernel. Returning null cancels judging.
-- `prepareJudgeSession(session): Promise<IKernelConnection | null>` starts and
-  checks the kernel. The context is already covered by failure cleanup.
-- `interruptJudgeKernel(kernel): Promise<void>` handles a forced testcase
-  timeout. The default interrupts; runtimes without interrupt support can
-  override it and recover through the next hook.
-- `recoverJudgeSession(session, result): Promise<IKernelConnection>` runs
-  between testcases. A lazy runtime can await shutdown and changeKernel on the
-  supplied context after TLE, then return the replacement kernel. The default
-  keeps the current kernel.
-- `disposeJudgeSession(session): Promise<void>` runs once before submission,
-  including on preparation, execution, recovery, or validation failure. The
-  default shuts down the underlying session connection and disposes the context
-  even if shutdown fails. It does not wait for context initialization to finish.
-- `waitForJudgeKernel(kernel): Promise<void>` provides the default Hub health
-  check; a runtime can supply its own readiness check in preparation/recovery.
-
 Pass `initializeSession: false` to avoid panel construction initializing the
 document session. Embedders must also disable automatic document kernel startup
-in the document context's kernel preference. Judge session hooks do not create a
-replacement session after cleanup. Interactive `execute()` retains its document
-session behavior.
+in the document context's kernel preference.
 
-`openOrCreateFromId(provider, docManager, problemId, judgeRoot?)` accepts a
-Contents path supplied by the embedding application, including a named drive
-such as `judge:shared` or `judge:`. It defaults to `.jce-judge`. The command accepts
-the same optional `judgeRoot` argument. The application supplies the authorized
-root; this extension does not derive tenant or user paths.
+The embedding application must supply an authorized Contents root through
+`judgeRoot` when calling `openOrCreateFromId` or its command. This extension does
+not derive tenant or user paths.
 
 ## Security
 
