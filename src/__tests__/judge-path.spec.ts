@@ -7,12 +7,12 @@ describe('Judge Contents roots', () => {
 
   function fixture(root?: string) {
     const drive = new Drive(
-      root?.startsWith('judge:') ? { name: 'judge' } : {}
+      root?.startsWith('lite-home:') ? { name: 'lite-home' } : {}
     );
     const contents = new ContentsManager(
-      root?.startsWith('judge:') ? {} : { defaultDrive: drive }
+      root?.startsWith('lite-home:') ? {} : { defaultDrive: drive }
     );
-    if (root?.startsWith('judge:')) {
+    if (root?.startsWith('lite-home:')) {
       contents.addDrive(drive);
     }
     const stored = new Map<string, any>();
@@ -52,14 +52,14 @@ describe('Judge Contents roots', () => {
       '.jce-judge/hash/Addition.judge'
     ],
     [
-      'judge:shared',
-      'judge:shared/hash/Addition.judge',
+      'lite-home:shared',
+      'lite-home:shared/hash/Addition.judge',
       'shared/hash/Addition.judge'
     ],
-    ['judge:', 'judge:hash/Addition.judge', 'hash/Addition.judge'],
+    ['lite-home:', 'lite-home:hash/Addition.judge', 'hash/Addition.judge'],
     [
-      'judge:shared/',
-      'judge:shared/hash/Addition.judge',
+      'lite-home:shared/',
+      'lite-home:shared/hash/Addition.judge',
       'shared/hash/Addition.judge'
     ]
   ])(
@@ -87,7 +87,7 @@ describe('Judge Contents roots', () => {
         expect(
           save.mock.calls.filter(([, options]) => options?.type === 'file')
         ).toHaveLength(1);
-        if (root === 'judge:') {
+        if (root === 'lite-home:') {
           expect(save).not.toHaveBeenCalledWith('', expect.anything());
         }
       } finally {
@@ -97,17 +97,42 @@ describe('Judge Contents roots', () => {
   );
 
   it('does not open a document when reading it is forbidden', async () => {
-    const { drive, contents, provider, manager } = fixture('judge:shared');
+    const { drive, contents, provider, manager } = fixture('lite-home:shared');
     const failure = new ServerConnection.ResponseError(
       new Response('', { status: 403 })
     );
     jest.spyOn(drive, 'get').mockRejectedValue(failure);
     try {
       await expect(
-        openOrCreateFromId(provider, manager, 'hash', 'judge:shared')
+        openOrCreateFromId(provider, manager, 'hash', 'lite-home:shared')
       ).rejects.toBe(failure);
       expect(manager.openOrReveal).not.toHaveBeenCalled();
       expect(JudgeModel.newFileContent).not.toHaveBeenCalled();
+    } finally {
+      contents.dispose();
+    }
+  });
+
+  it('creates Judge directories through Contents under the Lite home root', async () => {
+    const root = 'lite-home:tenant/users/70/user-directory/.jce-judge';
+    const { contents, stored, provider, manager } = fixture(root);
+    const save = jest.spyOn(contents, 'save');
+    try {
+      await openOrCreateFromId(provider, manager, 'hash', root);
+      expect(save).toHaveBeenNthCalledWith(1, root, {
+        name: '.jce-judge',
+        type: 'directory'
+      });
+      expect(save).toHaveBeenNthCalledWith(2, `${root}/hash`, {
+        name: 'hash',
+        type: 'directory'
+      });
+      expect(stored.get('tenant/users/70/user-directory/.jce-judge')).toEqual(
+        expect.objectContaining({ type: 'directory' })
+      );
+      expect(manager.openOrReveal).toHaveBeenCalledWith(
+        `${root}/hash/Addition.judge`
+      );
     } finally {
       contents.dispose();
     }
