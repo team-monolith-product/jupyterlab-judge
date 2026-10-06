@@ -415,14 +415,12 @@ export class JudgePanel extends BoxPanel {
       executionFailed = true;
       throw error;
     } finally {
-      try {
-        await this.disposeJudgeSession(sessionContext);
-      } catch (error) {
+      await this.disposeJudgeSession(sessionContext).catch(error => {
         if (!executionFailed) {
           throw error;
         }
         console.error('Failed to dispose the judge session', error);
-      }
+      });
     }
 
     const validateResult = await this.model.validate(
