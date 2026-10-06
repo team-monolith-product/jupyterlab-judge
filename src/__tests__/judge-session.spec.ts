@@ -93,6 +93,7 @@ function fixture() {
 describe('canonical judging session lifecycle', () => {
   afterEach(() => {
     jest.useRealTimers();
+    jest.restoreAllMocks();
     jest.clearAllMocks();
   });
 
@@ -124,9 +125,9 @@ describe('canonical judging session lifecycle', () => {
       'change',
       'run',
       'run',
-      'validate',
       'shutdown',
       'dispose',
+      'validate',
       'submit',
       'signal'
     ]);
@@ -247,7 +248,72 @@ describe('canonical judging session lifecycle', () => {
     session.shutdown.mockRejectedValue(new Error('shutdown'));
     await expect(panel.judge()).rejects.toThrow('shutdown');
     expect(session.dispose).toHaveBeenCalledTimes(1);
+    expect(model.validate).not.toHaveBeenCalled();
     expect(model.submit).not.toHaveBeenCalled();
+  });
+
+  it.each(['initialize', 'changeKernel', 'run', 'recover'])(
+    'preserves the %s error when cleanup also fails',
+    async stage => {
+      const { panel, internals, session, kernel, model } = fixture();
+      const failure = new Error(stage);
+      const cleanupFailure = new Error('shutdown');
+      const report = jest.spyOn(console, 'error').mockImplementation(() => {});
+      if (stage === 'initialize' || stage === 'changeKernel') {
+        session[stage].mockRejectedValue(failure);
+      } else if (stage === 'run') {
+        kernel.requestExecute.mockImplementation(() => {
+          throw failure;
+        });
+      } else {
+        internals.recoverJudgeSession = jest.fn().mockRejectedValue(failure);
+      }
+      session.shutdown.mockRejectedValue(cleanupFailure);
+      await expect(panel.judge()).rejects.toBe(failure);
+      expect(session.dispose).toHaveBeenCalledTimes(1);
+      expect(report).toHaveBeenCalledWith(
+        'Failed to dispose the judge session',
+        cleanupFailure
+      );
+      expect(model.validate).not.toHaveBeenCalled();
+      expect(model.submit).not.toHaveBeenCalled();
+    }
+  );
+
+  it('terminates the last hard TLE before waiting for validation', async () => {
+    jest.useFakeTimers();
+    const { panel, internals, session, kernel, model } = fixture();
+    model.getTestCases.mockResolvedValue(['']);
+    const originalExecute = kernel.requestExecute.getMockImplementation()!;
+    kernel.requestExecute = jest.fn((content: { code: string }) =>
+      content.code.includes('JUDGE_INPUT_STRING_IO.seek(0)')
+        ? { done: new Promise(() => {}), dispose: jest.fn() }
+        : originalExecute(content)
+    );
+    internals.interruptJudgeKernel = jest.fn(async () => {});
+    internals.recoverJudgeSession = jest.fn();
+    let finishValidation!: (value: {
+      results: boolean[];
+      token: string;
+    }) => void;
+    model.validate.mockImplementation(
+      () =>
+        new Promise(resolve => {
+          finishValidation = resolve;
+        })
+    );
+    const judging = panel.judge();
+    await jest.advanceTimersByTimeAsync(1200);
+    expect(model.validate).toHaveBeenCalledWith([null]);
+    expect(session.shutdown).toHaveBeenCalledTimes(1);
+    expect(session.dispose).toHaveBeenCalledTimes(1);
+    expect(session.changeKernel).toHaveBeenCalledTimes(1);
+    expect(internals.recoverJudgeSession).not.toHaveBeenCalled();
+    expect(model.submit).not.toHaveBeenCalled();
+    finishValidation({ results: [false], token: 'token' });
+    await judging;
+    expect(model.submit).toHaveBeenCalledTimes(1);
+    expect(jest.getTimerCount()).toBe(0);
   });
 
   it('has already cleaned up when backend submit fails', async () => {
@@ -299,9 +365,9 @@ describe('canonical judging session lifecycle', () => {
               'shutdown',
               'replace',
               'run',
-              'validate',
               'shutdown',
               'dispose',
+              'validate',
               'submit',
               'signal'
             ]
@@ -310,9 +376,9 @@ describe('canonical judging session lifecycle', () => {
               'change',
               'hang',
               'timeout',
-              'validate',
               'shutdown',
               'dispose',
+              'validate',
               'submit',
               'signal'
             ]

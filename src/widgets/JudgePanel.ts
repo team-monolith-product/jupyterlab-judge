@@ -384,7 +384,8 @@ export class JudgePanel extends BoxPanel {
       return;
     }
 
-    let submissionRequest: ProblemProvider.ISubmissionRequest;
+    const results: IRunResult[] = [];
+    let executionFailed = false;
     try {
       let kernel = await this.prepareJudgeSession(sessionContext);
       if (!kernel) {
@@ -398,7 +399,6 @@ export class JudgePanel extends BoxPanel {
         totalCount: testCases.length
       };
 
-      const results: IRunResult[] = [];
       for (const testCase of testCases) {
         const result = await this.runWithInput(kernel, code, problem, testCase);
         results.push(result);
@@ -411,66 +411,75 @@ export class JudgePanel extends BoxPanel {
           kernel = await this.recoverJudgeSession(sessionContext, result);
         }
       }
-
-      const validateResult = await this.model.validate(
-        results.map(result => (result.status === 'OK' ? result.output : null))
-      );
-
-      if (validateResult === null) {
-        throw new ValidationFailedError(
-          this._trans.__('Validation failed. Please try again')
-        );
-      }
-
-      submissionRequest = {
-        problemId: problem.id,
-        code,
-        token: validateResult.token,
-        language: 'python',
-        details: results.map((result, index) => {
-          switch (result.status) {
-            case 'OK':
-              if (validateResult.results[index]) {
-                return {
-                  status: 'AC',
-                  cpuTime: result.cpuTime,
-                  memory: 0
-                };
-              } else {
-                return {
-                  status: 'WA',
-                  answer: result.output,
-                  cpuTime: result.cpuTime,
-                  memory: 0
-                };
-              }
-            case 'TLE':
-              return {
-                status: 'TLE',
-                cpuTime: result.cpuTime,
-                memory: 0
-              };
-            case 'OLE':
-              return {
-                status: 'OLE',
-                cpuTime: result.cpuTime,
-                memory: 0
-              };
-            case 'RE':
-              return {
-                status: 'RE',
-                memory: 0,
-                cpuTime: result.cpuTime,
-                errorName: result.errorName,
-                errorValue: result.errorValue
-              };
-          }
-        })
-      };
+    } catch (error) {
+      executionFailed = true;
+      throw error;
     } finally {
-      await this.disposeJudgeSession(sessionContext);
+      try {
+        await this.disposeJudgeSession(sessionContext);
+      } catch (error) {
+        if (!executionFailed) {
+          throw error;
+        }
+        console.error('Failed to dispose the judge session', error);
+      }
     }
 
+    const validateResult = await this.model.validate(
+      results.map(result => (result.status === 'OK' ? result.output : null))
+    );
+
+    if (validateResult === null) {
+      throw new ValidationFailedError(
+        this._trans.__('Validation failed. Please try again')
+      );
+    }
+
+    const submissionRequest: ProblemProvider.ISubmissionRequest = {
+      problemId: problem.id,
+      code,
+      token: validateResult.token,
+      language: 'python',
+      details: results.map((result, index) => {
+        switch (result.status) {
+          case 'OK':
+            if (validateResult.results[index]) {
+              return {
+                status: 'AC',
+                cpuTime: result.cpuTime,
+                memory: 0
+              };
+            } else {
+              return {
+                status: 'WA',
+                answer: result.output,
+                cpuTime: result.cpuTime,
+                memory: 0
+              };
+            }
+          case 'TLE':
+            return {
+              status: 'TLE',
+              cpuTime: result.cpuTime,
+              memory: 0
+            };
+          case 'OLE':
+            return {
+              status: 'OLE',
+              cpuTime: result.cpuTime,
+              memory: 0
+            };
+          case 'RE':
+            return {
+              status: 'RE',
+              memory: 0,
+              cpuTime: result.cpuTime,
+              errorName: result.errorName,
+              errorValue: result.errorValue
+            };
+        }
+      })
+    };
     const submission = await this.model.submit(submissionRequest, this);
     this.model.submissionStatus = { type: 'idle' };
 
