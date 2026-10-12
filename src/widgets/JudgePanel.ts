@@ -433,52 +433,55 @@ export class JudgePanel extends BoxPanel {
       );
     }
 
-    const submissionRequest: ProblemProvider.ISubmissionRequest = {
-      problemId: problem.id,
-      code,
-      token: validateResult.token,
-      language: 'python',
-      details: results.map((result, index) => {
-        switch (result.status) {
-          case 'OK':
-            if (validateResult.results[index]) {
+    const submission = await this.model.submit(
+      {
+        problemId: problem.id,
+        code,
+        token: validateResult.token,
+        language: 'python',
+        details: results.map((result, index) => {
+          switch (result.status) {
+            case 'OK':
+              if (validateResult.results[index]) {
+                return {
+                  status: 'AC',
+                  cpuTime: result.cpuTime,
+                  memory: 0
+                };
+              } else {
+                return {
+                  status: 'WA',
+                  answer: result.output,
+                  cpuTime: result.cpuTime,
+                  memory: 0
+                };
+              }
+            case 'TLE':
               return {
-                status: 'AC',
+                status: 'TLE',
                 cpuTime: result.cpuTime,
                 memory: 0
               };
-            } else {
+            case 'OLE':
               return {
-                status: 'WA',
-                answer: result.output,
+                status: 'OLE',
                 cpuTime: result.cpuTime,
                 memory: 0
               };
-            }
-          case 'TLE':
-            return {
-              status: 'TLE',
-              cpuTime: result.cpuTime,
-              memory: 0
-            };
-          case 'OLE':
-            return {
-              status: 'OLE',
-              cpuTime: result.cpuTime,
-              memory: 0
-            };
-          case 'RE':
-            return {
-              status: 'RE',
-              memory: 0,
-              cpuTime: result.cpuTime,
-              errorName: result.errorName,
-              errorValue: result.errorValue
-            };
-        }
-      })
-    };
-    const submission = await this.model.submit(submissionRequest, this);
+            case 'RE':
+              return {
+                status: 'RE',
+                memory: 0,
+                cpuTime: result.cpuTime,
+                errorName: result.errorName,
+                errorValue: result.errorValue
+              };
+          }
+        })
+      },
+      this
+    );
+
     this.model.submissionStatus = { type: 'idle' };
 
     this._submitted.emit({
