@@ -31,14 +31,11 @@ This project includes jupyter lab extension for solving problems and submitting 
 (WIP) Basically, problems are retrieved from [codle.io](https://codle.io/), and submission history is stored in browsers.
 Problem and submission storage can be configured.
 
-## Embedding sessions and storage
+## Embedding sessions
 
 Pass `initializeSession: false` to avoid panel construction initializing the
 document session. Embedders must also disable automatic document kernel startup
 in the document context's kernel preference.
-
-The embedding application must supply an authorized Contents root through
-`judgeRoot` when calling `openOrCreateFromId` or its command.
 
 ## Security
 
