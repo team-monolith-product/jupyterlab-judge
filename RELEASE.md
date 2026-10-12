@@ -64,8 +64,6 @@ Check out the [workflow documentation](https://jupyter-releaser.readthedocs.io/e
 
 Here is a summary of the steps to cut a new release:
 
-- Add tokens to the [Github Secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets) in the repository:
-  - `ADMIN_GITHUB_TOKEN` (with "public_repo" and "repo:status" permissions); see the [documentation](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)
 - Set up NPM and trusted publisher
 - Set up PyPI and trusted publisher
 
