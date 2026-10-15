@@ -49,7 +49,7 @@ function bytesToBase64(bytes: Uint8Array) {
   return btoa(binString);
 }
 
-type IRunResult =
+export type IRunResult =
   | {
       status: 'OK' | 'OLE';
       output: string;
@@ -377,101 +377,57 @@ export class JudgePanel extends BoxPanel {
       return;
     }
 
-    const oldKernel = this.session.session?.kernel;
-    if (!oldKernel) {
+    if (!this.session.session?.kernel) {
       void this._sessionContextDialogs.selectKernel(this.session);
       this.model.submissionStatus = { type: 'idle' };
       return;
     }
-
     const sessionContext = new SessionContext({
       sessionManager: this.session.sessionManager,
       specsManager: this.session.specsManager,
       name: 'Judge'
     });
 
-    await sessionContext.initialize();
-    await sessionContext.changeKernel(await oldKernel.spec);
-
-    const kernel = sessionContext.session?.kernel;
-    if (!kernel) {
-      void this._sessionContextDialogs.selectKernel(sessionContext);
-      this.model.submissionStatus = { type: 'idle' };
-      return;
-    }
-
-    // Wait for kernel to be ready by awaiting kernel.info (health check)
-    // This ensures the kernel can respond to requests
-    const KERNEL_INFO_TIMEOUT = 20000;
-    const timeoutSymbol = Symbol('timeout');
-
-    try {
-      await Promise.race([
-        kernel.info,
-        new Promise<never>((_, reject) =>
-          setTimeout(() => reject(timeoutSymbol), KERNEL_INFO_TIMEOUT)
-        )
-      ]);
-    } catch (e) {
-      // Timeout error: classify based on connection status
-      if (e === timeoutSymbol) {
-        if (kernel.connectionStatus === 'connecting') {
-          // Network problem: check reconnect attempts for detailed classification
-          const reconnectAttempt: number | undefined = (kernel as any)
-            ._reconnectAttempt;
-
-          if (reconnectAttempt === undefined) {
-            throw new JudgeKernelImplementationError(
-              this._trans.__(
-                'Kernel is still connecting. Please check your network.'
-              )
-            );
-          } else if (reconnectAttempt > 0) {
-            throw new JudgeKernelReconnectingFailedError(
-              this._trans.__(
-                'Kernel is still connecting. Please check your network.'
-              )
-            );
-          } else {
-            throw new JudgeKernelNotConnectedError(
-              this._trans.__(
-                'Kernel is still connecting. Please check your network.'
-              )
-            );
-          }
-        }
-        // Connected but not responding
-        throw new JudgeError(
-          this._trans.__('Kernel is not responding. Please try again.')
-        );
-      }
-
-      // kernel.info rejected (e.g., 'Kernel info reply errored')
-      if (typeof e === 'string') {
-        throw new JudgeError(
-          this._trans.__('Kernel returned an error. Please try again.')
-        );
-      }
-
-      // Unexpected error: rethrow
-      throw e;
-    }
-
-    this.model.submissionStatus = {
-      type: 'progress',
-      runCount: 0,
-      totalCount: testCases.length
-    };
-
     const results: IRunResult[] = [];
-    for (const testCase of testCases) {
-      const result = await this.runWithInput(kernel, code, problem, testCase);
-      results.push(result);
+    let executionFailed = false;
+    try {
+      let kernel = await this.prepareJudgeSession(sessionContext);
+      if (!kernel) {
+        this.model.submissionStatus = { type: 'idle' };
+        return;
+      }
+
       this.model.submissionStatus = {
         type: 'progress',
-        runCount: results.length,
+        runCount: 0,
         totalCount: testCases.length
       };
+
+      for (const testCase of testCases) {
+        const result = await this.runWithInput(kernel, code, problem, testCase);
+        results.push(result);
+        this.model.submissionStatus = {
+          type: 'progress',
+          runCount: results.length,
+          totalCount: testCases.length
+        };
+        if (results.length < testCases.length) {
+          kernel = await this.recoverJudgeSession(sessionContext, result);
+        }
+      }
+    } catch (error) {
+      executionFailed = true;
+      throw error;
+    } finally {
+      await Promise.resolve()
+        .then(() => sessionContext.session?.shutdown())
+        .finally(() => sessionContext.dispose())
+        .catch(error => {
+          if (!executionFailed) {
+            throw error;
+          }
+          console.error('Failed to dispose the judge session', error);
+        });
     }
 
     const validateResult = await this.model.validate(
@@ -483,9 +439,6 @@ export class JudgePanel extends BoxPanel {
         this._trans.__('Validation failed. Please try again')
       );
     }
-
-    await kernel.shutdown();
-    kernel.dispose();
 
     const submission = await this.model.submit(
       {
@@ -543,6 +496,97 @@ export class JudgePanel extends BoxPanel {
       submission,
       problem
     });
+  }
+
+  protected async prepareJudgeSession(
+    session: ISessionContext
+  ): Promise<IKernelConnection | null> {
+    const oldKernel = this.session.session?.kernel;
+    if (!oldKernel) {
+      throw new JudgeKernelNotConnectedError();
+    }
+    await session.initialize();
+    await session.changeKernel(await oldKernel.spec);
+    const kernel = session.session?.kernel;
+    if (!kernel) {
+      void this._sessionContextDialogs.selectKernel(session);
+      return null;
+    }
+    await this.waitForJudgeKernel(kernel);
+    return kernel;
+  }
+
+  protected async recoverJudgeSession(
+    session: ISessionContext,
+    result: IRunResult
+  ): Promise<IKernelConnection> {
+    const kernel = session.session?.kernel;
+    if (!kernel) {
+      throw new JudgeKernelNotConnectedError();
+    }
+    return kernel;
+  }
+
+  protected async waitForJudgeKernel(kernel: IKernelConnection): Promise<void> {
+    // Wait for kernel to be ready by awaiting kernel.info (health check)
+    // This ensures the kernel can respond to requests
+    const KERNEL_INFO_TIMEOUT = 20000;
+    const timeoutSymbol = Symbol('timeout');
+
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    try {
+      await Promise.race([
+        kernel.info,
+        new Promise<never>((_, reject) => {
+          timer = setTimeout(() => reject(timeoutSymbol), KERNEL_INFO_TIMEOUT);
+        })
+      ]);
+    } catch (e) {
+      // Timeout error: classify based on connection status
+      if (e === timeoutSymbol) {
+        if (kernel.connectionStatus === 'connecting') {
+          // Network problem: check reconnect attempts for detailed classification
+          const reconnectAttempt: number | undefined = (kernel as any)
+            ._reconnectAttempt;
+
+          if (reconnectAttempt === undefined) {
+            throw new JudgeKernelImplementationError(
+              this._trans.__(
+                'Kernel is still connecting. Please check your network.'
+              )
+            );
+          } else if (reconnectAttempt > 0) {
+            throw new JudgeKernelReconnectingFailedError(
+              this._trans.__(
+                'Kernel is still connecting. Please check your network.'
+              )
+            );
+          } else {
+            throw new JudgeKernelNotConnectedError(
+              this._trans.__(
+                'Kernel is still connecting. Please check your network.'
+              )
+            );
+          }
+        }
+        // Connected but not responding
+        throw new JudgeError(
+          this._trans.__('Kernel is not responding. Please try again.')
+        );
+      }
+
+      // kernel.info rejected (e.g., 'Kernel info reply errored')
+      if (typeof e === 'string') {
+        throw new JudgeError(
+          this._trans.__('Kernel returned an error. Please try again.')
+        );
+      }
+
+      // Unexpected error: rethrow
+      throw e;
+    } finally {
+      clearTimeout(timer);
+    }
   }
 
   private async runWithInput(
@@ -649,13 +693,19 @@ JUDGE_INPUT_STRING_IO.seek(0)
 
     const timelimit = 1000 * problem.timeout;
 
+    let timer: ReturnType<typeof setTimeout> | undefined;
     const timeout = new Promise<number>(resolve => {
       // 강제로 종료하는 것은 20% 여유를 두고 진행합니다.
-      setTimeout(() => {
+      timer = setTimeout(() => {
         resolve(0);
       }, timelimit * 1.2);
     });
-    const a = await Promise.race([future.done, timeout]);
+    let a: KernelMessage.IExecuteReplyMsg | number;
+    try {
+      a = await Promise.race([future.done, timeout]);
+    } finally {
+      clearTimeout(timer);
+    }
     if (a === 0) {
       future.dispose();
       await kernel.interrupt();
