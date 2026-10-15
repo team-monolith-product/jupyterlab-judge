@@ -114,7 +114,6 @@ export namespace JudgePanel {
     submitted: Signal<any, JudgeSignal.ISubmissionArgs>;
     executed: Signal<any, JudgeSignal.IExecutionArgs>;
 
-    initializeSession?: boolean;
     panelTitleIcon?: LabIcon;
     judgeSubmissionAreaFactory: (
       options: JudgeSubmissionArea.IOptions
@@ -195,7 +194,7 @@ export class JudgePanel extends BoxPanel {
 
     this.title.icon = options.panelTitleIcon ?? textEditorIcon;
 
-    if (options.initializeSession !== false && !this.session.isReady) {
+    if (!this.session.isReady) {
       void this.session.initialize();
     }
   }
@@ -378,11 +377,16 @@ export class JudgePanel extends BoxPanel {
       return;
     }
 
-    const sessionContext = this.createJudgeSession();
-    if (!sessionContext) {
+    if (!this.session.session?.kernel) {
+      void this._sessionContextDialogs.selectKernel(this.session);
       this.model.submissionStatus = { type: 'idle' };
       return;
     }
+    const sessionContext = new SessionContext({
+      sessionManager: this.session.sessionManager,
+      specsManager: this.session.specsManager,
+      name: 'Judge'
+    });
 
     const results: IRunResult[] = [];
     let executionFailed = false;
@@ -415,12 +419,15 @@ export class JudgePanel extends BoxPanel {
       executionFailed = true;
       throw error;
     } finally {
-      await this.disposeJudgeSession(sessionContext).catch(error => {
-        if (!executionFailed) {
-          throw error;
-        }
-        console.error('Failed to dispose the judge session', error);
-      });
+      await Promise.resolve()
+        .then(() => sessionContext.session?.shutdown())
+        .finally(() => sessionContext.dispose())
+        .catch(error => {
+          if (!executionFailed) {
+            throw error;
+          }
+          console.error('Failed to dispose the judge session', error);
+        });
     }
 
     const validateResult = await this.model.validate(
@@ -491,18 +498,6 @@ export class JudgePanel extends BoxPanel {
     });
   }
 
-  protected createJudgeSession(): ISessionContext | null {
-    if (!this.session.session?.kernel) {
-      void this._sessionContextDialogs.selectKernel(this.session);
-      return null;
-    }
-    return new SessionContext({
-      sessionManager: this.session.sessionManager,
-      specsManager: this.session.specsManager,
-      name: 'Judge'
-    });
-  }
-
   protected async prepareJudgeSession(
     session: ISessionContext
   ): Promise<IKernelConnection | null> {
@@ -530,20 +525,6 @@ export class JudgePanel extends BoxPanel {
       throw new JudgeKernelNotConnectedError();
     }
     return kernel;
-  }
-
-  protected async disposeJudgeSession(session: ISessionContext): Promise<void> {
-    try {
-      await session.session?.shutdown();
-    } finally {
-      session.dispose();
-    }
-  }
-
-  protected async interruptJudgeKernel(
-    kernel: IKernelConnection
-  ): Promise<void> {
-    await kernel.interrupt();
   }
 
   protected async waitForJudgeKernel(kernel: IKernelConnection): Promise<void> {
@@ -727,7 +708,7 @@ JUDGE_INPUT_STRING_IO.seek(0)
     }
     if (a === 0) {
       future.dispose();
-      await this.interruptJudgeKernel(kernel);
+      await kernel.interrupt();
 
       // 강제 종료는 당연히 TLE
       // result.status = 'TLE';

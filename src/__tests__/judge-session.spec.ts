@@ -1,5 +1,4 @@
-import { ISessionContext, SessionContext } from '@jupyterlab/apputils';
-import { Kernel } from '@jupyterlab/services';
+import { SessionContext } from '@jupyterlab/apputils';
 import { JudgePanel, ValidationFailedError } from '../widgets/JudgePanel';
 
 jest.mock('@jupyterlab/apputils', () => ({
@@ -152,38 +151,6 @@ describe('canonical judging session lifecycle', () => {
     expect(model.submissionStatus.type).toBe('error');
   });
 
-  it('allows lazy Python acquisition without a document kernel or an idle replacement', async () => {
-    const { panel, internals, session, model } = fixture();
-    class LazyPanel extends JudgePanel {
-      protected createJudgeSession(): ISessionContext {
-        return new SessionContext({
-          sessionManager: this.session.sessionManager,
-          specsManager: this.session.specsManager,
-          kernelPreference: { shouldStart: false },
-          name: 'Judge'
-        });
-      }
-
-      protected async prepareJudgeSession(
-        context: ISessionContext
-      ): Promise<Kernel.IKernelConnection> {
-        await context.initialize();
-        await context.changeKernel({ name: 'python' });
-        return context.session!.kernel!;
-      }
-    }
-    Object.setPrototypeOf(panel, LazyPanel.prototype);
-    internals._context.sessionContext.session = null;
-    expect(SessionContext).not.toHaveBeenCalled();
-    await panel.judge();
-    expect(SessionContext).toHaveBeenCalledTimes(1);
-    expect(session.changeKernel).toHaveBeenCalledTimes(1);
-    expect(session.changeKernel).toHaveBeenCalledWith({ name: 'python' });
-    expect(session.shutdown).toHaveBeenCalledTimes(1);
-    expect(session.dispose).toHaveBeenCalledTimes(1);
-    expect(model.submit).toHaveBeenCalledTimes(1);
-  });
-
   it.each(['initialize', 'changeKernel', 'run', 'validate', 'recover'])(
     'cleans up when %s rejects',
     async stage => {
@@ -290,7 +257,6 @@ describe('canonical judging session lifecycle', () => {
         ? { done: new Promise(() => {}), dispose: jest.fn() }
         : originalExecute(content)
     );
-    internals.interruptJudgeKernel = jest.fn(async () => {});
     internals.recoverJudgeSession = jest.fn();
     let finishValidation!: (value: {
       results: boolean[];
@@ -305,6 +271,7 @@ describe('canonical judging session lifecycle', () => {
     const judging = panel.judge();
     await jest.advanceTimersByTimeAsync(1200);
     expect(model.validate).toHaveBeenCalledWith([null]);
+    expect(kernel.interrupt).toHaveBeenCalledTimes(1);
     expect(session.shutdown).toHaveBeenCalledTimes(1);
     expect(session.dispose).toHaveBeenCalledTimes(1);
     expect(session.changeKernel).toHaveBeenCalledTimes(1);
@@ -340,7 +307,7 @@ describe('canonical judging session lifecycle', () => {
         }
         return originalExecute(content);
       });
-      internals.interruptJudgeKernel = jest.fn(async () => {
+      kernel.interrupt.mockImplementation(async () => {
         events.push('timeout');
       });
       internals.recoverJudgeSession = jest.fn(async (_session, result) => {
@@ -353,7 +320,7 @@ describe('canonical judging session lifecycle', () => {
       const judging = panel.judge();
       await jest.advanceTimersByTimeAsync(1200);
       await judging;
-      expect(kernel.interrupt).not.toHaveBeenCalled();
+      expect(kernel.interrupt).toHaveBeenCalledTimes(1);
       expect(internals.recoverJudgeSession).toHaveBeenCalledTimes(count - 1);
       expect(events).toEqual(
         count === 2
