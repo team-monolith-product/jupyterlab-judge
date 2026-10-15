@@ -52,9 +52,9 @@ describe('Judge Contents roots', () => {
       '.jce-judge/hash/Addition.judge'
     ],
     [
-      'lite-home:shared',
-      'lite-home:shared/hash/Addition.judge',
-      'shared/hash/Addition.judge'
+      'lite-home:tenant/users/70/user-directory/.jce-judge',
+      'lite-home:tenant/users/70/user-directory/.jce-judge/hash/Addition.judge',
+      'tenant/users/70/user-directory/.jce-judge/hash/Addition.judge'
     ],
     ['lite-home:', 'lite-home:hash/Addition.judge', 'hash/Addition.judge'],
     [
@@ -72,8 +72,14 @@ describe('Judge Contents roots', () => {
           openOrCreateFromId(provider, manager, 'hash', root)
         ).resolves.toBe(document);
         expect(manager.openOrReveal).toHaveBeenCalledWith(globalPath);
-        expect(save).toHaveBeenCalledWith(
-          localPath,
+        const directory = localPath!.slice(0, localPath!.lastIndexOf('/'));
+        const rootDirectory = directory.split('/').slice(0, -1).join('/');
+        for (const path of [rootDirectory, directory].filter(Boolean)) {
+          expect(stored.get(path)).toEqual(
+            expect.objectContaining({ type: 'directory' })
+          );
+        }
+        expect(stored.get(localPath!)).toEqual(
           expect.objectContaining({
             name: 'Addition.judge',
             type: 'file',
@@ -81,12 +87,12 @@ describe('Judge Contents roots', () => {
           })
         );
         stored.get(localPath!).content = 'saved solution';
-        await openOrCreateFromId(provider, manager, 'hash', root);
+        manager.openOrReveal.mockClear();
+        await expect(
+          openOrCreateFromId(provider, manager, 'hash', root)
+        ).resolves.toBe(document);
+        expect(manager.openOrReveal).toHaveBeenCalledWith(globalPath);
         expect(stored.get(localPath!).content).toBe('saved solution');
-        expect(JudgeModel.newFileContent).toHaveBeenCalledTimes(1);
-        expect(
-          save.mock.calls.filter(([, options]) => options?.type === 'file')
-        ).toHaveLength(1);
         if (root === 'lite-home:') {
           expect(save).not.toHaveBeenCalledWith('', expect.anything());
         }
@@ -97,7 +103,8 @@ describe('Judge Contents roots', () => {
   );
 
   it('does not open a document when reading it is forbidden', async () => {
-    const { drive, contents, provider, manager } = fixture('lite-home:shared');
+    const { drive, contents, stored, provider, manager } =
+      fixture('lite-home:shared');
     const failure = new ServerConnection.ResponseError(
       new Response('', { status: 403 })
     );
@@ -107,32 +114,7 @@ describe('Judge Contents roots', () => {
         openOrCreateFromId(provider, manager, 'hash', 'lite-home:shared')
       ).rejects.toBe(failure);
       expect(manager.openOrReveal).not.toHaveBeenCalled();
-      expect(JudgeModel.newFileContent).not.toHaveBeenCalled();
-    } finally {
-      contents.dispose();
-    }
-  });
-
-  it('creates Judge directories through Contents under the Lite home root', async () => {
-    const root = 'lite-home:tenant/users/70/user-directory/.jce-judge';
-    const { contents, stored, provider, manager } = fixture(root);
-    const save = jest.spyOn(contents, 'save');
-    try {
-      await openOrCreateFromId(provider, manager, 'hash', root);
-      expect(save).toHaveBeenNthCalledWith(1, root, {
-        name: '.jce-judge',
-        type: 'directory'
-      });
-      expect(save).toHaveBeenNthCalledWith(2, `${root}/hash`, {
-        name: 'hash',
-        type: 'directory'
-      });
-      expect(stored.get('tenant/users/70/user-directory/.jce-judge')).toEqual(
-        expect.objectContaining({ type: 'directory' })
-      );
-      expect(manager.openOrReveal).toHaveBeenCalledWith(
-        `${root}/hash/Addition.judge`
-      );
+      expect(stored.has('shared/hash/Addition.judge')).toBe(false);
     } finally {
       contents.dispose();
     }
