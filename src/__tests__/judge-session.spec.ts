@@ -1,5 +1,5 @@
 import { SessionContext } from '@jupyterlab/apputils';
-import { JudgePanel } from '../widgets/JudgePanel';
+import { JudgePanel, ValidationFailedError } from '../widgets/JudgePanel';
 
 jest.mock('@jupyterlab/apputils', () => ({
   ...jest.requireActual('@jupyterlab/apputils'),
@@ -153,6 +153,21 @@ describe('canonical judging session lifecycle', () => {
     await expect(panel.judge()).rejects.toBe(failure);
     expect(context.isDisposed).toBe(true);
     expect(model.submit).not.toHaveBeenCalled();
+  });
+
+  it('rejects missing validation without submitting', async () => {
+    const { panel, model } = fixture();
+    model.validate.mockResolvedValue(null as any);
+    await expect(panel.judge()).rejects.toBeInstanceOf(ValidationFailedError);
+    expect(model.submit).not.toHaveBeenCalled();
+  });
+
+  it('does not signal success when backend submission fails', async () => {
+    const { panel, model, internals } = fixture();
+    const failure = new Error('submission');
+    model.submit.mockRejectedValue(failure);
+    await expect(panel.judge()).rejects.toBe(failure);
+    expect(internals._submitted.emit).not.toHaveBeenCalled();
   });
 
   it('disposes even if shutdown fails and does not submit', async () => {
