@@ -2,6 +2,27 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 1.32.0
+
+([Full Changelog](https://github.com/team-monolith-product/jupyterlab-judge/compare/v1.31.0...b43c1e00ac9761ad3dd888cdaffb1969dda1217a))
+
+### Merged PRs
+
+- chore: replace release robot token with GitHub App [#81](https://github.com/team-monolith-product/jupyterlab-judge/pull/81) ([@a3626a](https://github.com/a3626a))
+- [INF-374] D.5 - Support JupyterLite [#80](https://github.com/team-monolith-product/jupyterlab-judge/pull/80) ([@HoseonRyu](https://github.com/HoseonRyu), [@a3626a](https://github.com/a3626a), [@codex](https://github.com/codex))
+- [INF-458] P.0 - Pin build environments to JupyterLab 4.4.10 [#79](https://github.com/team-monolith-product/jupyterlab-judge/pull/79) ([@HoseonRyu](https://github.com/HoseonRyu), [@a3626a](https://github.com/a3626a), [@codex](https://github.com/codex))
+
+### Contributors to this release
+
+The following people contributed discussions, new ideas, code and documentation contributions, and review.
+See [our definition of contributors](https://github-activity.readthedocs.io/en/latest/use/#how-does-this-tool-define-contributions-in-the-reports).
+
+([GitHub contributors page for this release](https://github.com/team-monolith-product/jupyterlab-judge/graphs/contributors?from=2026-08-14&to=2026-10-26&type=c))
+
+@a3626a ([activity](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3Aa3626a+updated%3A2026-08-14..2026-10-26&type=Issues)) | @codex ([activity](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3Acodex+updated%3A2026-08-14..2026-10-26&type=Issues)) | @HoseonRyu ([activity](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3AHoseonRyu+updated%3A2026-08-14..2026-10-26&type=Issues))
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 1.31.0
 
 ([Full Changelog](https://github.com/team-monolith-product/jupyterlab-judge/compare/v1.30.0...0ed168b07213c902175571425cdbf331c37cbc52))
@@ -18,8 +39,6 @@ See [our definition of contributors](https://github-activity.readthedocs.io/en/l
 ([GitHub contributors page for this release](https://github.com/team-monolith-product/jupyterlab-judge/graphs/contributors?from=2026-05-07&to=2026-08-14&type=c))
 
 @a3626a ([activity](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3Aa3626a+updated%3A2026-05-07..2026-08-14&type=Issues)) | @claude ([activity](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3Aclaude+updated%3A2026-05-07..2026-08-14&type=Issues)) | @HoseonRyu ([activity](https://github.com/search?q=repo%3Ateam-monolith-product%2Fjupyterlab-judge+involves%3AHoseonRyu+updated%3A2026-05-07..2026-08-14&type=Issues))
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 1.30.0
 
