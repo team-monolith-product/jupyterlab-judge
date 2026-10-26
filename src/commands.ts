@@ -11,6 +11,7 @@ import { JUDGE_HIDDEN_FOLDER_NAME, PLUGIN_ID } from './constants';
 import { IProblemProvider } from './tokens';
 import { IDocumentWidget } from '@jupyterlab/docregistry';
 import { opened } from './judgeSignal';
+import { PathExt } from '@jupyterlab/coreutils';
 
 /**
  * The command IDs used by the fileeditor plugin.
@@ -50,7 +51,8 @@ export function addCommands(
         await openOrCreateFromId(
           problemProvider,
           docManager,
-          args.problemId as string
+          args.problemId as string,
+          args.judgeRoot as string | undefined
         );
       }
     },
@@ -105,21 +107,28 @@ export function addCommands(
 export async function openOrCreateFromId(
   problemProvider: IProblemProvider,
   docManager: IDocumentManager,
-  problemId: string
+  problemId: string,
+  judgeRoot: string = JUDGE_HIDDEN_FOLDER_NAME
 ): Promise<IDocumentWidget | undefined> {
   const problem = await problemProvider.getProblem(problemId);
   if (problem) {
     const title = problem.title;
-    const path = `${JUDGE_HIDDEN_FOLDER_NAME}/${problemId}/${title}.judge`;
+    const contents = docManager.services.contents;
+    const driveName = contents.driveName(judgeRoot);
+    const root = contents.localPath(judgeRoot);
+    const globalPath = (localPath: string) =>
+      driveName ? `${driveName}:${localPath}` : localPath;
+    const directoryId = globalPath(PathExt.join(root, problemId));
+    const path = globalPath(PathExt.join(root, problemId, `${title}.judge`));
 
-    const directory = `${JUDGE_HIDDEN_FOLDER_NAME}`;
-    await docManager.services.contents.save(directory, {
-      name: directory,
-      type: 'directory'
-    });
-    const directoryId = `${JUDGE_HIDDEN_FOLDER_NAME}/${problemId}`;
+    if (root) {
+      await contents.save(globalPath(root), {
+        name: PathExt.basename(root),
+        type: 'directory'
+      });
+    }
     await docManager.services.contents.save(directoryId, {
-      name: directoryId,
+      name: problemId,
       type: 'directory'
     });
     return openOrCreate(problemProvider, docManager, path, problemId);
@@ -140,18 +149,17 @@ async function openOrCreate(
       e.response.status === 404
     ) {
       await docManager.services.contents.save(path, {
-        name: path,
+        name: PathExt.basename(path),
         type: 'file',
         format: 'text',
         content: await JudgeModel.newFileContent(problemProvider, problemId)
       });
+    } else {
+      throw e;
     }
-    throw e;
-  } finally {
-    opened.emit({ problemId });
-    // eslint-disable-next-line no-unsafe-finally
-    return docManager.openOrReveal(path);
   }
+  opened.emit({ problemId });
+  return docManager.openOrReveal(path);
 }
 
 /**
